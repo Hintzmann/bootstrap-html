@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Docs `sitePath` always inserts a slash between GitHub Pages `base` and the route, so sidebar links are `/bootstrap-html/components/…` rather than `/bootstrap-htmlcomponents/…`.
 - **Spinner** — `aria-busy="true"` on the host paints a loading disc with Bootstrap’s spinner tokens. No extra `.spinner-border` child and no spinner plugin. Buttons keep their name and use the small disc (`.spinner-border-sm` size). A block host hides its children visually. `prefers-reduced-motion` slows the turn. The docs page can toggle the attribute on each example; that script is not part of the package.
 - Docs sidebar lists composed recipes under **Recipes** after Components, not as a component. One mixed-examples page for now.
 - Docs README lists every inventory route (A–Z, then forms). Getting started names `interestForElement` next to the other polyfill checks. `AGENTS.md` documents `src/behaviors/count.js` as a module, not a `pe-*` element.
