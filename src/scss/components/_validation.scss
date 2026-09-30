@@ -1,0 +1,26 @@
+// Native form validation — Bootstrap 5.3.8 styles on :user-valid / :user-invalid
+// :user-invalid / :user-valid  replace .was-validated :invalid / :valid
+// .is-invalid / .is-valid      stay for server-side markup
+// No .was-validated wrapper, no JS classList
+
+@mixin form-validation-state-selector($state) {
+  @if ($state == "valid") {
+    // Non-required checkboxes and radios are always :valid. After a click
+    // they match :user-valid and would pick up the success color even
+    // though there is no constraint to satisfy. Keep the success paint
+    // for required checks, and for other controls.
+    #{if(&, "&", "")}:user-valid:is(:required, :not([type="checkbox"], [type="radio"])),
+    #{if(&, "&", "")}.is-valid {
+      @content;
+    }
+  } @else if ($state == "invalid") {
+    #{if(&, "&", "")}:user-invalid,
+    #{if(&, "&", "")}.is-invalid {
+      @content;
+    }
+  } @else {
+    #{if(&, "&", "")}.is-#{$state} {
+      @content;
+    }
+  }
+}

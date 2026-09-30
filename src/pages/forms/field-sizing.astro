@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const inputCode = `<label class="form-label" for="tag">Tag</label>
+<input type="text" class="form-control field-sizing" id="tag" name="tag" value="css">`;
+
+const textareaCode = `<label class="form-label" for="note">Note</label>
+<textarea class="form-control field-sizing" id="note" name="note">Type more lines to grow the box.</textarea>`;
+
+const selectCode = `<label class="form-label" for="size">Size</label>
+<select class="form-select field-sizing" id="size" name="size">
+  <option>S</option>
+  <option selected>Medium</option>
+  <option>Extra large, long label</option>
+</select>`;
+---
+
+<BaseLayout
+  title="Field sizing · Bootstrap HTML"
+  description="Opt-in field-sizing: content on Bootstrap form controls. The field grows to its value."
+>
+  <h1>Field sizing</h1>
+  <p class="lead">
+    Add <code>.field-sizing</code> on a <code>.form-control</code> or
+    <code>.form-select</code>. The control grows to its contents. Bootstrap
+    has no equivalent; there is no script.
+  </p>
+
+  <DocsMeta id="field-sizing" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>field-sizing: content</code> sizes the field to its value,
+      including the placeholder. An explicit <code>width</code> or
+      <code>height</code> wins, so this class resets Bootstrap’s
+      <code>width: 100%</code> on inputs and selects, and
+      <code>height</code> on textareas.
+    </li>
+    <li>
+      A text input grows inline, from
+      <code>--bs-field-sizing-min-inline</code> (15ch) to
+      <code>--bs-field-sizing-max-inline</code> (50ch).
+    </li>
+    <li>
+      A textarea stays full width so a long placeholder does not collapse
+      the box when the first character is typed. It grows in block size
+      from 3lh to 10lh, then scrolls.
+    </li>
+    <li>
+      A select sizes to the selected option, not the longest one.
+    </li>
+    <li>
+      Without support, the control keeps the usual Bootstrap box.
+    </li>
+  </ul>
+
+  <Example
+    title="Input"
+    lead="Type in the field. The width follows the value, within the min and max."
+    code={inputCode}
+  />
+
+  <Example
+    title="Textarea"
+    lead="Add lines. The height follows the text until the max block size."
+    code={textareaCode}
+  />
+
+  <Example
+    title="Select"
+    lead="Pick a short or long option. The closed select follows the selected label."
+    code={selectCode}
+  />
+
+  <DocsMeta id="field-sizing" at="end" />
+</BaseLayout>

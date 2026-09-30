@@ -1,0 +1,15 @@
+---
+import { componentById } from "../data/components.js";
+import { inlineMarkup } from "../lib/markup.js";
+
+interface Props {
+  id: keyof typeof componentById;
+}
+
+const { id } = Astro.props;
+const item = componentById[id];
+if (!item) throw new Error(`Unknown component: ${String(id)}`);
+---
+
+<h2 class="h4">Accessibility</h2>
+{item.a11y.map((line) => <p set:html={inlineMarkup(line)} />)}

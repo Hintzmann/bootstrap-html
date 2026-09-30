@@ -1,0 +1,213 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const buttonsCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary">Publish</button>
+  <button type="button" class="btn btn-primary" aria-busy="true" disabled>Publish</button>
+  <button type="button" class="btn btn-outline-secondary" aria-busy="true" disabled>Export CSS</button>
+  <button type="button" class="btn btn-sm btn-primary" aria-busy="true" disabled>Publish</button>
+</div>`;
+
+const cardCode = `<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card h-100" role="status" aria-busy="true" aria-label="Loading page notes">
+      <div class="card-body">
+        <h3 class="card-title h5">Field sizing</h3>
+        <p class="card-text mb-0">The control grows to its contents.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h3 class="card-title h5">Field sizing</h3>
+        <p class="card-text mb-0">The control grows to its contents.</p>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const inlineCode = `<ul class="list-unstyled mb-0">
+  <li class="mb-2"><span aria-busy="true">Compiling Sass…</span></li>
+  <li class="mb-2"><span aria-busy="true">Writing changelog…</span></li>
+  <li>Inventory updated</li>
+</ul>`;
+
+const tableCode = `<table class="table mb-0" aria-busy="true" aria-label="Loading catalog">
+  <thead>
+    <tr>
+      <th scope="col">Page</th>
+      <th scope="col">Baseline</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tooltip</td>
+      <td>Newly</td>
+    </tr>
+    <tr>
+      <td>Carousel</td>
+      <td>Experimental</td>
+    </tr>
+  </tbody>
+</table>`;
+
+const statusCode = `<div class="alert alert-info mb-0" role="status" aria-live="polite" aria-busy="true">
+  <p class="mb-0">Indexing the catalog…</p>
+</div>`;
+
+const standaloneCode = `<div role="status" aria-busy="true" aria-label="Loading catalog"></div>`;
+---
+
+<BaseLayout
+  title="Spinner · Bootstrap HTML"
+  description="aria-busy on the host paints a spinner. No extra spinner element and no spinner plugin."
+>
+  <h1>Spinner</h1>
+  <p class="lead">
+    Set
+    <code>aria-busy="true"</code>
+    on the host that is loading. CSS paints the disc. Remove the
+    attribute when the work is done. There is no extra
+    <code>.spinner-border</code>
+    child and no spinner plugin. A known percent is a
+    <a href={sitePath("/components/progress")}><code>&lt;progress&gt;</code></a>.
+  </p>
+
+  <DocsMeta id="spinner" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      The attribute is the state. CSS matches
+      <code>[aria-busy="true"]</code>.
+      Your app sets it and clears it. This package ships no script for
+      that.
+    </li>
+    <li>
+      A block host hides its children visually and centers a disc. Keep
+      the children’s box so the layout does not collapse.
+    </li>
+    <li>
+      A
+      <code>&lt;button&gt;</code>
+      or
+      <code>.btn</code>
+      keeps its name. The disc is a small
+      <code>::before</code>
+      at
+      <code>.spinner-border-sm</code>
+      size. Add
+      <code>disabled</code>
+      so a second click does not submit.
+    </li>
+    <li>
+      An inline
+      <code>&lt;span&gt;</code>
+      keeps its text and shows a smaller disc ahead of it.
+    </li>
+    <li>
+      <code>prefers-reduced-motion</code>
+      slows the turn. It does not freeze the disc.
+    </li>
+    <li>
+      <code>.spinner-border</code>
+      remains in the stylesheet if you need a disc that is not a busy
+      host. Do not put one inside a host that already has
+      <code>aria-busy</code>.
+    </li>
+  </ul>
+
+  <p>
+    Toggle busy on each example is a docs demo, not required markup.
+  </p>
+
+  <Example
+    title="Buttons"
+    lead="The idle control and the busy one share a name. disabled blocks a second press."
+    code={buttonsCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <Example
+    title="Card"
+    lead="role=status names the host while the body is visually hidden. The box stays."
+    code={cardCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <Example
+    title="Inline"
+    lead="The status text stays. A small disc sits before it."
+    code={inlineCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <Example
+    title="Table"
+    lead="Put aria-busy on the table. Rows keep their height under the disc."
+    code={tableCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <Example
+    title="Live region"
+    lead="Assistive technology waits until you clear aria-busy before announcing the update."
+    code={statusCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <Example
+    title="Standalone"
+    lead="An empty host still needs a name. min-block-size comes from CSS when there are no children."
+    code={standaloneCode}
+  >
+    <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
+      Toggle busy
+    </button>
+  </Example>
+
+  <DocsMeta id="spinner" at="end" />
+
+  <script is:inline>
+    for (const toggle of document.querySelectorAll("[data-busy-toggle]")) {
+      const preview = toggle.closest(".docs-example")?.querySelector(".example-preview");
+      if (!preview) continue;
+      const hosts = [...preview.querySelectorAll('[aria-busy="true"]')];
+      const sync = (busy) => {
+        for (const el of hosts) {
+          if (busy) {
+            el.setAttribute("aria-busy", "true");
+            if (el instanceof HTMLButtonElement) el.disabled = true;
+          } else {
+            el.removeAttribute("aria-busy");
+            if (el instanceof HTMLButtonElement) el.disabled = false;
+          }
+        }
+        toggle.setAttribute("aria-pressed", String(busy));
+      };
+      sync(true);
+      toggle.addEventListener("click", () => {
+        sync(!hosts.some((el) => el.getAttribute("aria-busy") === "true"));
+      });
+    }
+  </script>
+</BaseLayout>

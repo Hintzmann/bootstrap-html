@@ -1,0 +1,424 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sitePath } from "../lib/path.js";
+import { bundleGzipKb, polyfills } from "../data/js-cost.js";
+import Example from "../components/Example.astro";
+import loaderSource from "../polyfills/index.js?raw";
+
+const invokerCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="polyfillInvokerModal">
+  Open with command / commandfor
+</button>
+
+<dialog class="modal" id="polyfillInvokerModal" closedby="any" aria-labelledby="polyfillInvokerLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="polyfillInvokerLabel">Invoker commands</h1>
+        <button type="button" class="btn-close" command="close" commandfor="polyfillInvokerModal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        This dialog opened through <code>command="show-modal"</code>. Close it with the controls or Escape.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="polyfillInvokerModal">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const closedbyCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="polyfillClosedbyAny">
+    Light-dismiss (closedby="any")
+  </button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="polyfillClosedbyNone">
+    Static (closedby="none")
+  </button>
+</div>
+
+<dialog class="modal" id="polyfillClosedbyAny" closedby="any" aria-labelledby="polyfillClosedbyAnyLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="polyfillClosedbyAnyLabel">closedby="any"</h1>
+        <button type="button" class="btn-close" command="close" commandfor="polyfillClosedbyAny" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Backdrop click or Escape requests close.
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" id="polyfillClosedbyNone" closedby="none" aria-labelledby="polyfillClosedbyNoneLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="polyfillClosedbyNoneLabel">closedby="none"</h1>
+        <button type="button" class="btn-close" command="close" commandfor="polyfillClosedbyNone" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Backdrop click and Escape do nothing. Use Close.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="polyfillClosedbyNone">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const scrollspyCopy = `Placeholder copy so the scroll area is taller than the viewport of the example. Keep scrolling to move the current marker.`;
+
+const scrollspyCode = `<div class="row">
+  <div class="col-4">
+    <div id="polyfillScrollspyNav" class="list-group" data-polyfill-scrollspy>
+      <a class="list-group-item list-group-item-action" href="#polyfill-scroll-1">One</a>
+      <a class="list-group-item list-group-item-action" href="#polyfill-scroll-2">Two</a>
+      <a class="list-group-item list-group-item-action" href="#polyfill-scroll-3">Three</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="scrollspy-example" tabindex="0">
+      <h4 id="polyfill-scroll-1">One</h4>
+      <p>${scrollspyCopy}</p>
+      <h4 id="polyfill-scroll-2">Two</h4>
+      <p>${scrollspyCopy}</p>
+      <h4 id="polyfill-scroll-3">Three</h4>
+      <p>${scrollspyCopy}</p>
+    </div>
+  </div>
+</div>`;
+
+const interestforCode = `<span class="d-inline-block">
+  <button type="button" class="btn btn-secondary" interestfor="polyfillTip">
+    Hint tooltip
+  </button>
+  <div class="tooltip bs-tooltip-top" popover="hint" id="polyfillTip">
+    <div class="tooltip-arrow"></div>
+    <div class="tooltip-inner">Opened with interestfor</div>
+  </div>
+</span>`;
+---
+
+<BaseLayout
+  title="Polyfills · Bootstrap HTML"
+  description="Feature-detected polyfills for command/commandfor, dialog closedby, scroll-target-group, and interestfor."
+>
+  <h1>Polyfills</h1>
+  <p class="lead">
+    Native HTML is the default. When a browser is missing an API this
+    site actually uses, a matching module is loaded — nothing more.
+  </p>
+
+  <h2 class="h4">How loading works</h2>
+  <ul>
+    <li>
+      <code>BaseLayout</code> imports <code>src/polyfills/index.js</code>
+      once. That file is the only top-level <code>await</code> entry
+      (Safari mis-handles several modules importing the same awaiting
+      file at once).
+    </li>
+    <li>
+      Each feature is detected on the prototype or with
+      <code>CSS.supports</code> — not on <code>window</code>.
+    </li>
+    <li>
+      A module is fetched only if the feature is missing <em>and</em>
+      the document contains markup that needs it
+      (<code>[commandfor]</code>, <code>dialog[closedby]</code>,
+      <code>[data-polyfill-scrollspy]</code>, or
+      <code>[interestfor]</code>).
+    </li>
+    <li>
+      Browsers with full support download the loader, run four cheap
+      checks, and stop. No extra chunks, no listeners.
+    </li>
+  </ul>
+
+  <p>
+    A browser that already has the APIs downloads only the loader,
+    <strong>{polyfills[0].kb} KB</strong> gzip. The other modules stay on the server.
+  </p>
+  <div class="table-responsive mb-5">
+    <table class="table table-sm">
+      <caption>
+        Minified and gzip. For scale, Bootstrap’s
+        <code>bootstrap.bundle.min.js</code> is {bundleGzipKb} KB gzip.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Module</th>
+          <th scope="col">When it loads</th>
+          <th scope="col">JavaScript</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          polyfills.map((item) => (
+            <tr>
+              <th scope="row">
+                <code>{item.file}</code>
+              </th>
+              <td>{item.when}</td>
+              <td>{item.kb} KB gzip</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <pre class="example-code mb-5"><code>{loaderSource}</code></pre>
+
+  <h2 class="h4">This browser</h2>
+  <p>
+    Status is read with a classic script before the deferred loader
+    runs, so “Native” means the engine — not a polyfill that already
+    patched the prototype.
+  </p>
+  <div class="table-responsive mb-5">
+    <table class="table">
+      <caption class="caption-top">
+        Support in this user agent, captured before polyfills apply
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Feature</th>
+          <th scope="col">Detect</th>
+          <th scope="col">This browser</th>
+          <th scope="col">Native in</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><code>command</code> / <code>commandfor</code></th>
+          <td><code>'commandForElement' in HTMLButtonElement.prototype</code></td>
+          <td id="polyfill-status-invoker">Needs JavaScript</td>
+          <td>Chrome 135+, Firefox 144+, Safari 26.2+</td>
+        </tr>
+        <tr>
+          <th scope="row"><code>closedby</code></th>
+          <td><code>'closedBy' in HTMLDialogElement.prototype</code></td>
+          <td id="polyfill-status-closedby">Needs JavaScript</td>
+          <td>Chrome 134+, Firefox 141+; Safari still preview</td>
+        </tr>
+        <tr>
+          <th scope="row"><code>scroll-target-group</code></th>
+          <td><code>CSS.supports('scroll-target-group: auto')</code></td>
+          <td id="polyfill-status-scroll">Needs JavaScript</td>
+          <td>Chrome/Edge 140+</td>
+        </tr>
+        <tr>
+          <th scope="row"><code>interestfor</code></th>
+          <td><code>HTMLButtonElement.prototype.hasOwnProperty('interestForElement')</code></td>
+          <td id="polyfill-status-interestfor">Needs JavaScript</td>
+          <td>Chrome/Edge 142+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="h4" id="invoker-commands">Invoker commands</h2>
+  <p>
+    File: <code>src/polyfills/invoker-commands.js</code>.
+    MDN:
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">
+      Invoker Commands API
+    </a>.
+    Used by
+    <a href={sitePath("/components/modal")}>Modal</a>,
+    <a href={sitePath("/components/offcanvas")}>Offcanvas</a>,
+    <a href={sitePath("/components/dropdown")}>Dropdown</a>,
+    <a href={sitePath("/components/popover")}>Popover</a>,
+    and the Scrollspy dropdown.
+  </p>
+  <ul>
+    <li>
+      Loads when <code>commandForElement</code> is missing and the
+      document has <code>[commandfor]</code>.
+    </li>
+    <li>
+      Built-in commands: <code>show-modal</code>, <code>close</code>,
+      <code>request-close</code>, <code>show-picker</code>,
+      <code>toggle-popover</code>, <code>show-popover</code>,
+      <code>hide-popover</code> (plus <code>open-popover</code> /
+      <code>close-popover</code> aliases). Custom <code>--*</code>
+      commands dispatch <code>command</code> and do nothing else.
+    </li>
+    <li>
+      The native <code>command</code> event does not bubble — listen
+      on the target.
+    </li>
+    <li>
+      If a button also has <code>popovertarget</code> and the Popover
+      API exists, the polyfill skips popover commands so the control
+      is not toggled twice.
+    </li>
+  </ul>
+  <Example title="Try command / commandfor" code={invokerCode} />
+
+  <h2 class="h4" id="closedby">Dialog <code>closedby</code></h2>
+  <p>
+    File: <code>src/polyfills/dialog-closedby.js</code>.
+    MDN:
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy">
+      HTMLDialogElement.closedBy
+    </a>.
+    Used by Modal and Offcanvas static backdrops
+    (<code>closedby="none"</code>).
+  </p>
+  <ul>
+    <li>
+      Loads when <code>closedBy</code> is missing and the document has
+      <code>dialog[closedby]</code>.
+    </li>
+    <li>
+      <code>any</code>: backdrop click requests close (cancel, then
+      close).
+    </li>
+    <li>
+      <code>none</code>: Escape / close-request is cancelled.
+    </li>
+    <li>
+      <code>closerequest</code> and a missing attribute already match
+      native modal Escape, so the polyfill does not extra-handle them.
+    </li>
+  </ul>
+  <Example
+    title="Try closedby"
+    lead="Open each dialog and try Escape or a click on the backdrop."
+    code={closedbyCode}
+  />
+
+  <h2 class="h4" id="scroll-target-group">scroll-target-group</h2>
+  <p>
+    File: <code>src/polyfills/scroll-target-group.js</code>.
+    MDN:
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-target-group">
+      scroll-target-group
+    </a>.
+    Used by
+    <a href={sitePath("/components/scrollspy")}>Scrollspy</a>.
+  </p>
+  <ul>
+    <li>
+      Loads when <code>CSS.supports('scroll-target-group: auto')</code>
+      is false and the document has
+      <code>[data-polyfill-scrollspy]</code> — any element, not only
+      Bootstrap navs. Put the attribute on the fragment-link group.
+      An optional value is a scroller selector
+      (<code>data-polyfill-scrollspy="#pane"</code>); an empty
+      attribute uses the overflow ancestor of the targets.
+    </li>
+    <li>
+      An <code>IntersectionObserver</code> watches the overflow box
+      that contains the targets and toggles a class named
+      <code>:target-current</code> on the matching fragment link.
+    </li>
+    <li>
+      Styles use
+      <code>:is(:target-current, .\:target-current)</code> so browsers
+      that do not understand the pseudo-class still match the polyfill
+      class.
+    </li>
+    <li>
+      The polyfill does not set <code>aria-current</code>. Native
+      <code>:target-current</code> is visual only as well.
+    </li>
+  </ul>
+  <Example
+    title="Try scroll-target-group"
+    lead="Scroll the pane. The list item that matches the heading in view is highlighted."
+    code={scrollspyCode}
+  />
+
+  <h2 class="h4" id="interestfor">Interest invokers</h2>
+  <p>
+    File: <code>src/polyfills/interestfor.js</code>.
+    Adapted from Mason Freed’s
+    <a href="https://github.com/mfreed7/interestfor">interestfor</a>
+    (BSD-3-Clause).
+    MDN:
+    <a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers">
+      Using interest invokers
+    </a>.
+    Used by
+    <a href={sitePath("/components/tooltip")}>Tooltip</a>
+    hint popovers.
+  </p>
+  <ul>
+    <li>
+      Loads when <code>interestForElement</code> is missing on
+      <code>HTMLButtonElement.prototype</code> and the document has
+      <code>[interestfor]</code>.
+    </li>
+    <li>
+      Hover, keyboard focus, or a long-press on a
+      <code>&lt;button&gt;</code> shows the target. Long-press on
+      links is not polyfilled (the browser context menu stays).
+    </li>
+    <li>
+      Opens a popover with <code>showPopover(&#123; source &#125;)</code>
+      so CSS Anchor Positioning can tether. If the trigger has no
+      <code>anchor-name</code>, the polyfill assigns one.
+    </li>
+    <li>
+      Delay is read from <code>--interest-delay-start</code> /
+      <code>--interest-delay-end</code>. Hint tooltips also set the
+      native <code>interest-delay-*</code> properties to <code>0s</code>
+      unless the author overrides <code>--bs-tooltip-delay-*</code>.
+    </li>
+    <li>
+      Does not polyfill <code>popover=&quot;hint&quot;</code>. Firefox
+      153+ has hint natively; Safari does not. Use the tooltip
+      <code>aria-description</code> fallback there.
+    </li>
+    <li>
+      A plain hint gets <code>aria-describedby</code>. Native
+      <code>interestfor</code> does that association itself — do not
+      add those attributes on the native path.
+    </li>
+  </ul>
+  <Example
+    title="Try interestfor"
+    lead="Hover or focus the button. In Chrome the engine opens the hint; elsewhere this page loads the polyfill."
+    code={interestforCode}
+  />
+
+  <script is:inline>
+    (function () {
+      function setStatus(id, supported) {
+        var cell = document.getElementById(id);
+        if (!cell) return;
+        cell.textContent = "";
+        var badge = document.createElement("span");
+        badge.className = supported
+          ? "badge rounded-pill text-bg-success"
+          : "badge rounded-pill text-bg-warning";
+        badge.textContent = supported ? "Native" : "Missing — polyfill loads on this page";
+        cell.appendChild(badge);
+      }
+
+      setStatus(
+        "polyfill-status-invoker",
+        "commandForElement" in HTMLButtonElement.prototype
+      );
+      setStatus(
+        "polyfill-status-closedby",
+        "closedBy" in HTMLDialogElement.prototype
+      );
+      setStatus(
+        "polyfill-status-scroll",
+        typeof CSS === "object" &&
+          typeof CSS.supports === "function" &&
+          CSS.supports("scroll-target-group: auto")
+      );
+      setStatus(
+        "polyfill-status-interestfor",
+        Object.prototype.hasOwnProperty.call(
+          HTMLButtonElement.prototype,
+          "interestForElement"
+        )
+      );
+    })();
+  </script>
+</BaseLayout>

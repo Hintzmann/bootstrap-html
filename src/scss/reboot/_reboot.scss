@@ -1,0 +1,20 @@
+// stylelint-disable declaration-no-important
+
+// Native HTML the Bootstrap reboot does not cover.
+//
+// `search` is a landmark (Chrome 118, Firefox 118, Safari 17). Unknown
+// elements are `display: inline`; the UA stylesheet for `<search>` is block.
+//
+// `[hidden] { display: none !important }` in Bootstrap’s reboot maps
+// `hidden="until-found"` to `display: none` and Find in page cannot match
+// the region. Restore `content-visibility: hidden` so the browser can reveal
+// it. Do not set `display` or `visibility` on that element yourself.
+
+search {
+  display: block;
+}
+
+[hidden="until-found"] {
+  display: revert !important;
+  content-visibility: hidden;
+}

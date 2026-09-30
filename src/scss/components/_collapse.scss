@@ -1,0 +1,67 @@
+// Native collapse — Bootstrap 5.3.8 styles on <details>/<summary>
+// [open]              replaces .show
+// ::details-content   replaces .collapsing + height/width JS
+// summary.btn         is the trigger; it must be a child of details
+// interpolate-size    makes 0 -> auto (and 0 -> max-content, for
+//                     .collapse-horizontal) animatable. Chromium-only, so
+//                     Firefox and Safari snap the panel open instead.
+
+// Bootstrap’s .collapse:not(.show) { display: none } would hide the
+// <summary> as well. Keep the disclosure widget visible; the UA hides
+// the panel until [open].
+details.collapse {
+  display: block;
+  interpolate-size: allow-keywords;
+
+  &:not(.show) {
+    display: block;
+  }
+
+  > summary {
+    list-style: none;
+    cursor: pointer;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: none;
+    }
+  }
+
+  &::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size .35s ease, content-visibility .35s ease allow-discrete;
+  }
+
+  &[open]::details-content {
+    block-size: auto;
+  }
+}
+
+details.collapse-horizontal {
+  &::details-content {
+    inline-size: 0;
+    block-size: auto;
+    overflow: hidden;
+    transition: inline-size .35s ease, content-visibility .35s ease allow-discrete;
+  }
+
+  &[open]::details-content {
+    // Shrink-wrap the fixed-width child (Bootstrap sets width on that child).
+    inline-size: max-content;
+  }
+}
+
+@if $enable-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    details.collapse,
+    details.collapse-horizontal {
+      interpolate-size: numeric-only;
+
+      &::details-content {
+        transition: none;
+      }
+    }
+  }
+}

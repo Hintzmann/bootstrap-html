@@ -1,0 +1,49 @@
+---
+import { componentById } from "../data/components.js";
+import { inlineMarkup } from "../lib/markup.js";
+import { sitePath } from "../lib/path.js";
+
+interface Props {
+  id: keyof typeof componentById;
+}
+
+const { id } = Astro.props;
+const item = componentById[id];
+if (!item) throw new Error(`Unknown component: ${String(id)}`);
+---
+
+<div class="mb-4">
+  <table class="table table-sm mb-0">
+    <caption>Markup this component accepts. The full inventory is <a href={sitePath("/components.json")}>/components.json</a>.</caption>
+    <tbody>
+      {
+        item.behavior && (
+          <tr>
+            <th scope="row">{item.behavior.required ? "Required" : "Optional"}</th>
+            <td>
+              <code set:html={`&lt;${item.behavior.element}&gt;`} />
+              <span class="text-body-secondary"> · </span>
+              <code>{item.behavior.module}</code>
+              {". "}
+              <Fragment set:html={inlineMarkup(item.behavior.adds)} />
+            </td>
+          </tr>
+        )
+      }
+      {
+        item.avoid.length > 0 && (
+          <tr>
+            <th scope="row">Avoid</th>
+            <td>
+              <ul class="mb-0 ps-3">
+                {item.avoid.map((line) => (
+                  <li set:html={inlineMarkup(line)} />
+                ))}
+              </ul>
+            </td>
+          </tr>
+        )
+      }
+    </tbody>
+  </table>
+</div>

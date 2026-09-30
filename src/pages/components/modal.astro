@@ -1,0 +1,612 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const componentsCode = `<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Modal title</h5>
+      <button type="button" class="btn-close" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <p>Modal body text goes here.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary">Close</button>
+      <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+</div>`;
+
+const liveDemoCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModal">
+  Launch demo modal
+</button>
+
+<dialog class="modal" closedby="any" id="exampleModal" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Woohoo, you’re reading this text in a modal!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const staticBackdropCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="staticBackdrop">
+  Launch static backdrop modal
+</button>
+
+<dialog class="modal" closedby="none" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="staticBackdrop" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        I will not close if you click outside of me. Don’t even try to press escape key.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="staticBackdrop">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const scrollingCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalLong">
+  Launch demo modal
+</button>
+
+<dialog class="modal" closedby="any" id="exampleModalLong" aria-labelledby="exampleModalLongTitle">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLongTitle">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalLong" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This is some placeholder content to show the scrolling behavior for modals. Repeated line breaks demonstrate how content can exceed the inner height of the modal.</p>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <p>This content should appear at the bottom after you scroll.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalLong">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const scrollableCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalScrollable">
+  Launch scrolling modal
+</button>
+
+<dialog class="modal" closedby="any" id="exampleModalScrollable" aria-labelledby="exampleModalScrollableTitle">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalScrollableTitle">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalScrollable" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable. You can put any content here and it will scroll independently inside the modal body.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalScrollable">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const centeredCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalCenter">
+    Vertically centered modal
+  </button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalCenteredScrollable">
+    Vertically centered scrollable modal
+  </button>
+</div>
+
+<dialog class="modal" closedby="any" id="exampleModalCenter" aria-labelledby="exampleModalCenterTitle">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalCenterTitle">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalCenter" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This is a vertically centered modal.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalCenter">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="modal" closedby="any" id="exampleModalCenteredScrollable" aria-labelledby="exampleModalCenteredScrollableTitle">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalCenteredScrollableTitle">Modal title</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalCenteredScrollable" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+        <p>This is some placeholder content to show a vertically centered modal that’s also scrollable.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalCenteredScrollable">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const gridCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="gridModal">
+  Launch demo modal
+</button>
+
+<dialog class="modal" closedby="any" id="gridModal" aria-labelledby="gridModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="gridModalLabel">Grids in modals</h1>
+        <button type="button" class="btn-close" command="close" commandfor="gridModal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4">.col-md-4</div>
+            <div class="col-md-4 ms-auto">.col-md-4 .ms-auto</div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 ms-auto">.col-md-3 .ms-auto</div>
+            <div class="col-md-2 ms-auto">.col-md-2 .ms-auto</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 ms-auto">.col-md-6 .ms-auto</div>
+          </div>
+          <div class="row">
+            <div class="col-sm-9">
+              Level 1: .col-sm-9
+              <div class="row">
+                <div class="col-8 col-sm-6">
+                  Level 2: .col-8 .col-sm-6
+                </div>
+                <div class="col-4 col-sm-6">
+                  Level 2: .col-4 .col-sm-6
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="gridModal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const toggleCode = `<dialog class="modal" closedby="any" id="exampleModalToggle" aria-labelledby="exampleModalToggleLabel">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Modal 1</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalToggle" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Show a second modal with the button below.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" command="show-modal" commandfor="exampleModalToggle2">Open second modal</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalToggle2" aria-labelledby="exampleModalToggleLabel2">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalToggle2" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Hide this modal and show the first with the button below.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" command="show-modal" commandfor="exampleModalToggle">Back to first</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<button class="btn btn-primary" command="show-modal" commandfor="exampleModalToggle">Open first modal</button>`;
+
+const sizesCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalXl">Extra large modal</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalLg">Large modal</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalSm">Small modal</button>
+</div>
+
+<dialog class="modal" closedby="any" id="exampleModalXl" aria-labelledby="exampleModalXlLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalXlLabel">Extra large modal</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalXl" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalLg" aria-labelledby="exampleModalLgLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalLgLabel">Large modal</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalLg" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalSm" aria-labelledby="exampleModalSmLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalSmLabel">Small modal</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalSm" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const dialogFormCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="dialogFormModal">
+  Launch confirm
+</button>
+
+<dialog class="modal" closedby="any" id="dialogFormModal" aria-labelledby="dialogFormModalLabel">
+  <form method="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="dialogFormModalLabel">Delete file?</h1>
+          <button type="submit" class="btn-close" value="cancel" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Submit buttons close the dialog and set <code>returnValue</code> to their <code>value</code>.
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-secondary" value="cancel">Cancel</button>
+          <button type="submit" class="btn btn-danger" value="delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</dialog>`;
+
+const fullscreenCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreen">Full screen</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreenSm">Full screen below sm</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreenMd">Full screen below md</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreenLg">Full screen below lg</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreenXl">Full screen below xl</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModalFullscreenXxl">Full screen below xxl</button>
+</div>
+
+<dialog class="modal" closedby="any" id="exampleModalFullscreen" aria-labelledby="exampleModalFullscreenLabel">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenLabel">Full screen modal</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreen" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreen">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalFullscreenSm" aria-labelledby="exampleModalFullscreenSmLabel">
+  <div class="modal-dialog modal-fullscreen-sm-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenSmLabel">Full screen below sm</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreenSm" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreenSm">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalFullscreenMd" aria-labelledby="exampleModalFullscreenMdLabel">
+  <div class="modal-dialog modal-fullscreen-md-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenMdLabel">Full screen below md</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreenMd" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreenMd">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalFullscreenLg" aria-labelledby="exampleModalFullscreenLgLabel">
+  <div class="modal-dialog modal-fullscreen-lg-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenLgLabel">Full screen below lg</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreenLg" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreenLg">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalFullscreenXl" aria-labelledby="exampleModalFullscreenXlLabel">
+  <div class="modal-dialog modal-fullscreen-xl-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenXlLabel">Full screen below xl</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreenXl" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreenXl">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>
+<dialog class="modal" closedby="any" id="exampleModalFullscreenXxl" aria-labelledby="exampleModalFullscreenXxlLabel">
+  <div class="modal-dialog modal-fullscreen-xxl-down">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalFullscreenXxlLabel">Full screen below xxl</h1>
+        <button type="button" class="btn-close" command="close" commandfor="exampleModalFullscreenXxl" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModalFullscreenXxl">Close</button>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+---
+
+<BaseLayout
+  title="Modal · Bootstrap HTML"
+  description="Native HTML modal using dialog and command/commandfor, styled with Bootstrap 5.3.8."
+>
+  <h1>Modal</h1>
+  <p class="lead">
+    Use Bootstrap’s modal markup on a native <code>&lt;dialog&gt;</code>. Open
+    and close with <code>command</code> / <code>commandfor</code> — no Modal
+    plugin.
+  </p>
+
+  <DocsMeta id="modal" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>command="show-modal"</code> and <code>commandfor="id"</code> replace
+      <code>data-bs-toggle="modal"</code>.
+    </li>
+    <li>
+      <code>command="close"</code> replaces <code>data-bs-dismiss="modal"</code>.
+    </li>
+    <li>
+      The browser draws the backdrop as <code>::backdrop</code>. Fade and slide
+      use CSS transitions and <code>@starting-style</code>.
+    </li>
+    <li>
+      Default live dialogs use <code>closedby=&quot;any&quot;</code> so
+      backdrop click and Escape request close.
+      <code>closedby=&quot;none&quot;</code> replaces a static backdrop.
+    </li>
+    <li>
+      Native events on the dialog are <code>close</code> and
+      <code>cancel</code> instead of <code>*.bs.modal</code>.
+    </li>
+    <li>
+      A <code>&lt;form method="dialog"&gt;</code> inside the dialog
+      closes it on submit. Each submit button’s
+      <code>value</code> becomes <code>dialog.returnValue</code> — a
+      confirm or prompt without script. Read that property on the
+      <code>close</code> event if you need it in the page.
+    </li>
+  </ul>
+
+  <Example
+    title="Modal components"
+    lead="A static example of the modal header, body, and footer. This preview is not a dialog — use the live demo to open one."
+    bg="body-tertiary"
+    code={componentsCode}
+  />
+
+  <Example title="Live demo" code={liveDemoCode} />
+
+  <Example
+    title="Static backdrop"
+    lead="closedby=&quot;none&quot; prevents closing on backdrop click and Escape. Dismiss with the close control instead."
+    code={staticBackdropCode}
+  />
+
+  <Example
+    title="Scrolling long content"
+    lead="When modals become too long for the viewport, they scroll independent of the page itself."
+    code={scrollingCode}
+  />
+
+  <Example
+    title="Scrollable modal body"
+    lead="Add .modal-dialog-scrollable to keep the header and footer visible while the body scrolls."
+    code={scrollableCode}
+  />
+
+  <Example
+    title="Vertically centered"
+    lead="Add .modal-dialog-centered to center the modal vertically."
+    code={centeredCode}
+  />
+
+  <Example
+    title="Using the grid"
+    lead="Utilize the Bootstrap grid system within a modal by nesting .container-fluid within the .modal-body."
+    code={gridCode}
+  />
+
+  <Example
+    title="Toggle between modals"
+    lead="Open another dialog with commandfor."
+    code={toggleCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Bootstrap’s Modal plugin shows only one modal at a time and hides the
+      current one when another opens. Native <code>&lt;dialog&gt;</code>
+      elements stack instead — there is no way to auto-hide the first
+      dialog without JavaScript.
+    </div>
+  </Example>
+
+  <Example
+    title="Optional sizes"
+    lead="Modals have three optional sizes via modifier classes on .modal-dialog. These sizes kick in at certain breakpoints."
+    code={sizesCode}
+  />
+
+  <Example
+    title="Fullscreen modal"
+    lead="Cover the viewport with modifier classes on .modal-dialog."
+    code={fullscreenCode}
+  />
+
+  <Example
+    title="Confirm with method=dialog"
+    lead="The form wraps the modal shell. Cancel, Delete, and the close control are submit buttons. No command=close on those controls."
+    code={dialogFormCode}
+  />
+
+  <h3>returnValue</h3>
+  <p>
+    Open the dialog, pick a button, then read
+    <code>dialog.returnValue</code> on <code>close</code>. This output
+    is a docs demo — the markup above needs no script.
+  </p>
+  <figure class="example-figure mb-5">
+    <div class="example-preview">
+      <button
+        type="button"
+        class="btn btn-primary"
+        command="show-modal"
+        commandfor="dialogReturnModal"
+      >
+        Launch confirm
+      </button>
+      <p class="small text-body-secondary mt-3 mb-0">
+        Last returnValue:
+        <output id="dialog-return-out">—</output>
+      </p>
+      <dialog
+        class="modal"
+        closedby="any"
+        id="dialogReturnModal"
+        aria-labelledby="dialogReturnModalLabel"
+      >
+        <form method="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="dialogReturnModalLabel">
+                  Delete file?
+                </h1>
+                <button
+                  type="submit"
+                  class="btn-close"
+                  value="cancel"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                Choose Delete or Cancel. Backdrop or Escape leaves
+                returnValue empty.
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-secondary" value="cancel">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-danger" value="delete">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </dialog>
+    </div>
+  </figure>
+  <script is:inline>
+    const dialog = document.getElementById("dialogReturnModal");
+    const out = document.getElementById("dialog-return-out");
+    if (dialog && out) {
+      dialog.addEventListener("close", () => {
+        out.textContent = dialog.returnValue === "" ? "(empty)" : dialog.returnValue;
+      });
+    }
+  </script>
+
+  <DocsMeta id="modal" at="end" />
+</BaseLayout>

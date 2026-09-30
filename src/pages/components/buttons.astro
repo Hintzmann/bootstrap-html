@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const checkboxCode = `<fieldset>
+  <legend class="visually-hidden">Notifications</legend>
+  <input type="checkbox" class="btn-check" id="buttons-email" autocomplete="off" checked>
+  <label class="btn btn-outline-primary" for="buttons-email">Email</label>
+  <input type="checkbox" class="btn-check" id="buttons-sms" autocomplete="off">
+  <label class="btn btn-outline-primary" for="buttons-sms">SMS</label>
+</fieldset>`;
+
+const radioCode = `<fieldset>
+  <legend class="visually-hidden">Plan</legend>
+  <input type="radio" class="btn-check" name="buttons-plan" id="buttons-monthly" autocomplete="off" checked>
+  <label class="btn btn-outline-primary" for="buttons-monthly">Monthly</label>
+  <input type="radio" class="btn-check" name="buttons-plan" id="buttons-yearly" autocomplete="off">
+  <label class="btn btn-outline-primary" for="buttons-yearly">Yearly</label>
+</fieldset>`;
+---
+
+<BaseLayout
+  title="Buttons · Bootstrap HTML"
+  description="Toggle buttons are a checkbox or radio plus Bootstrap’s .btn-check. No button plugin."
+>
+  <h1>Buttons</h1>
+  <p class="lead">
+    A command is a <code>&lt;button&gt;</code>. A toggle that should
+    persist or submit is a checkbox or radio with
+    <code>.btn-check</code> and a <code>&lt;label class="btn"&gt;</code>.
+    There is no <code>data-bs-toggle="button"</code> and no script that
+    sets <code>aria-pressed</code>. A price-toggle recipe that uses this
+    pattern lives on
+    <a href={sitePath("/components/composed")}>Composed examples</a>.
+  </p>
+
+  <DocsMeta id="buttons" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>.btn-check</code> visually hides the input. The label is
+      the hit target and takes the button look. The input stays in the
+      accessibility tree and in the form.
+    </li>
+    <li>
+      Checkbox groups are additive. Radio groups share a
+      <code>name</code> so one choice is exclusive.
+    </li>
+    <li>
+      State is <code>checked</code>. Do not add
+      <code>data-bs-toggle="button"</code> or toggle
+      <code>.active</code> from script.
+    </li>
+    <li>
+      Ordinary <code>.btn</code> command buttons are unchanged. They
+      still use <code>command</code> / <code>commandfor</code> to open
+      a dialog or popover.
+    </li>
+  </ul>
+
+  <Example
+    title="Checkbox"
+    lead="Each label is a toggle. Both can stay on."
+    code={checkboxCode}
+  />
+
+  <Example
+    title="Radio"
+    lead="One name, one selected. The checked label uses the button active look."
+    code={radioCode}
+  />
+
+  <DocsMeta id="buttons" at="end" />
+</BaseLayout>

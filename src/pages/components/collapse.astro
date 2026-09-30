@@ -1,0 +1,193 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const exampleCode = `<details class="collapse">
+  <summary class="btn btn-primary mb-2">Toggle collapse</summary>
+  <div class="card card-body">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger. Find in page can still match it: the token is <strong>archaeopteryx</strong>.
+  </div>
+</details>`;
+
+const horizontalCode = `<div style="min-height: 120px;">
+  <details class="collapse collapse-horizontal">
+    <summary class="btn btn-primary mb-2">Toggle width collapse</summary>
+    <div class="card card-body" style="width: 300px;">
+      This is some placeholder content for a horizontal collapse. It’s hidden by default and shown when triggered.
+    </div>
+  </details>
+</div>`;
+
+const multipleCode = `<div class="row">
+  <div class="col">
+    <details class="collapse">
+      <summary class="btn btn-primary mb-2">Toggle first element</summary>
+      <div class="card card-body">
+        Some placeholder content for the first collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      </div>
+    </details>
+  </div>
+  <div class="col">
+    <details class="collapse">
+      <summary class="btn btn-primary mb-2">Toggle second element</summary>
+      <div class="card card-body">
+        Some placeholder content for the second collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+      </div>
+    </details>
+  </div>
+</div>`;
+
+const untilFoundCode = `<p>Search this page for <strong>coelacanth</strong>.</p>
+<div hidden="until-found">
+  <div class="card card-body">
+    Find in page revealed this region. The token is <strong>coelacanth</strong>.
+  </div>
+</div>`;
+---
+
+<BaseLayout
+  title="Collapse · Bootstrap HTML"
+  description="Native HTML collapse using details and summary, styled with Bootstrap 5.3.8."
+>
+  <h1>Collapse</h1>
+  <p class="lead">
+    Show and hide a panel with <code>&lt;details&gt;</code> and
+    <code>&lt;summary&gt;</code> — no Collapse plugin. The trigger and
+    the panel must be parent and child.
+  </p>
+
+  <DocsMeta id="collapse" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      The widget is <code>details.collapse</code>. Add
+      <code>open</code> to start expanded (replaces
+      <code>.collapse.show</code>).
+    </li>
+    <li>
+      The trigger is the <code>&lt;summary&gt;</code>, typically with
+      <code>.btn</code>. It has to live inside the
+      <code>&lt;details&gt;</code> — there is no
+      <code>data-bs-target</code> / <code>href</code> pointing at a
+      distant id.
+    </li>
+    <li>
+      The browser exposes expanded/collapsed on the summary (replaces
+      <code>aria-expanded</code> toggling from JavaScript). You can
+      still add <code>aria-controls</code> if you give the panel an
+      <code>id</code>, but it is not required.
+    </li>
+    <li>
+      <code>::details-content</code> is the panel, and height (or width
+      with <code>.collapse-horizontal</code>) transitions on it. That
+      transition also needs <code>interpolate-size: allow-keywords</code>,
+      which only Chromium has, so Firefox and Safari snap the panel open.
+      Do not put padding on <code>.collapse</code> itself — keep it on an
+      inner wrapper such as <code>.card-body</code>, same as Bootstrap.
+    </li>
+    <li>
+      The same <code>name</code> on several
+      <code>&lt;details&gt;</code> elements makes the group exclusive
+      (replaces <code>data-bs-parent</code>). See
+      <a href={sitePath("/components/accordion")}>Accordion</a> for that pattern.
+    </li>
+    <li>
+      <code>&lt;summary&gt;</code> is a button-like control, not an
+      <code>&lt;a href&gt;</code>.
+    </li>
+    <li>
+      Closed panels stay in the document, so Find in page can match
+      them (try <strong>archaeopteryx</strong> in the first example).
+      Do not put <code>hidden</code> or <code>display: none</code> on
+      the inner wrapper. For a custom region that is not a
+      <code>&lt;details&gt;</code> panel, use
+      <code>hidden="until-found"</code> with padding on a nested
+      child. Bootstrap’s reboot would otherwise force
+      <code>display: none</code> and break that attribute.
+    </li>
+  </ul>
+
+  <Example
+    title="Example"
+    lead="Click the summary to show and hide the panel. .collapse hides content; [open] shows it; ::details-content handles the transition."
+    code={exampleCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Bootstrap’s example uses a link and a button that both target one
+      distant <code>#collapseExample</code>. A
+      <code>&lt;details&gt;</code> element has a single
+      <code>&lt;summary&gt;</code>, so there is one trigger, and it
+      must sit next to the panel.
+    </div>
+  </Example>
+
+  <Example
+    title="Horizontal"
+    lead="Add .collapse-horizontal to transition width instead of height, and set a width on the immediate child of the panel."
+    code={horizontalCode}
+  />
+
+  <Example
+    title="Multiple toggles and targets"
+    lead="Each panel has its own summary. Independent details elements can be open at the same time."
+    code={multipleCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      One control cannot open two panels, and two controls cannot share
+      one panel — both need a
+      <code>data-bs-target</code> selector and JavaScript. Native HTML
+      also has no “Toggle both” button.
+    </div>
+  </Example>
+
+  <Example
+    title="Find in page"
+    lead="hidden=&quot;until-found&quot; hides a custom region until Find in page matches it. Collapse panels themselves stay on details — do not put hidden on the card."
+    code={untilFoundCode}
+  />
+
+  <DocsMeta id="collapse" at="end" />
+
+  <h2 class="h4">Checkbox hack</h2>
+  <p>
+    A hidden checkbox plus a <code>&lt;label for&gt;</code> can toggle
+    a sibling with <code>:checked</code>. That would let the trigger
+    sit beside the panel (still not across the document), and several
+    labels could share one id.
+  </p>
+  <p>
+    It is not worth a second Collapse variant, mainly for WCAG:
+  </p>
+  <ul>
+    <li>
+      <strong>4.1.2 Name, Role, Value.</strong> The control is exposed
+      as a checkbox (“checked / not checked”), not as a disclosure
+      (“expanded / collapsed”). <code>&lt;details&gt;</code> /
+      <code>&lt;summary&gt;</code> already maps to that disclosure
+      role. Fixing the checkbox with <code>role="button"</code> and
+      live <code>aria-expanded</code> needs JavaScript, which is what
+      the hack is meant to avoid.
+    </li>
+    <li>
+      <strong>2.4.3 Focus Order / 2.4.7 Focus Visible.</strong> The
+      real tab stop is the visually hidden input, so focus rings and
+      AT cursor land off the visible button.
+    </li>
+    <li>
+      <strong>1.3.1 Info and Relationships.</strong> A form control
+      used as chrome is announced in forms mode and can be submitted
+      with a surrounding form.
+    </li>
+    <li>
+      <strong>2.1.1 Keyboard.</strong> A checkbox toggles with Space.
+      A summary (and Bootstrap’s button trigger) also accepts Enter.
+    </li>
+  </ul>
+  <p>
+    Keep remote or one-to-many toggles for JavaScript. For native
+    collapse, <code>&lt;details&gt;</code> is the accessible control.
+  </p>
+</BaseLayout>

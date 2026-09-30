@@ -1,0 +1,222 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const slide = (label: string, bg: string) =>
+  `<div class="d-flex w-100 align-items-center justify-content-center ${bg}" style="min-height: 16rem">${label}</div>`;
+
+const slides = (prefix: string) =>
+  `<div class="carousel-item" data-label="Slide 1">
+    ${slide(`${prefix} first slide`, "bg-secondary text-white")}
+  </div>
+  <div class="carousel-item" data-label="Slide 2">
+    ${slide(`${prefix} second slide`, "bg-dark text-white")}
+  </div>
+  <div class="carousel-item" data-label="Slide 3">
+    ${slide(`${prefix} third slide`, "bg-secondary text-white")}
+  </div>`;
+
+const basicCode = `<div class="carousel slide">
+  <div class="carousel-inner">
+    ${slides("Basic")}
+  </div>
+</div>`;
+
+const captionsCode = `<div class="carousel slide">
+  <div class="carousel-inner">
+    <div class="carousel-item" data-label="First slide">
+      ${slide("First slide", "bg-secondary text-white")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>First slide label</h5>
+        <p>Some representative placeholder content for the first slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-label="Second slide">
+      ${slide("Second slide", "bg-dark text-white")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Second slide label</h5>
+        <p>Some representative placeholder content for the second slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-label="Third slide">
+      ${slide("Third slide", "bg-secondary text-white")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Third slide label</h5>
+        <p>Some representative placeholder content for the third slide.</p>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const fallbackCode = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/carousel.js"></script>
+
+<pe-carousel class="carousel slide">
+  <button type="button" class="carousel-control-prev" command="--prev" commandfor="fallback-carousel">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <div class="carousel-inner" id="fallback-carousel">
+    ${slides("Fallback")}
+  </div>
+  <button type="button" class="carousel-control-next" command="--next" commandfor="fallback-carousel">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+  <div class="carousel-indicators">
+    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 1"></button>
+    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 2"></button>
+    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 3"></button>
+  </div>
+</pe-carousel>`;
+
+const darkCode = `<div class="carousel slide" data-bs-theme="dark">
+  <div class="carousel-inner">
+    <div class="carousel-item" data-label="First slide">
+      ${slide("First slide", "bg-body-secondary")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>First slide label</h5>
+        <p>Some representative placeholder content for the first slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-label="Second slide">
+      ${slide("Second slide", "bg-secondary text-white")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Second slide label</h5>
+        <p>Some representative placeholder content for the second slide.</p>
+      </div>
+    </div>
+    <div class="carousel-item" data-label="Third slide">
+      ${slide("Third slide", "bg-dark text-white")}
+      <div class="carousel-caption d-none d-md-block">
+        <h5>Third slide label</h5>
+        <p>Some representative placeholder content for the third slide.</p>
+      </div>
+    </div>
+  </div>
+</div>`;
+---
+
+<BaseLayout
+  title="Carousel · Bootstrap HTML"
+  description="Native Bootstrap carousel with CSS scroll snap, ::scroll-button, and ::scroll-marker."
+>
+  <h1>Carousel</h1>
+  <p class="lead">
+    A sliding gallery with Bootstrap’s
+    <a href="https://getbootstrap.com/docs/5.3/components/carousel/">
+      carousel
+    </a>
+    classes. The browser owns snapping, swipe, and (where supported)
+    previous/next and indicators — no Carousel plugin.
+  </p>
+
+  <DocsMeta id="carousel" at="start" />
+
+  <div class="alert alert-warning" role="alert">
+    <strong>Experimental technology.</strong>
+    Previous/next and indicator pips are CSS Overflow 5
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::scroll-button">
+      <code>::scroll-button</code>
+    </a>
+    and
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/::scroll-marker">
+      <code>::scroll-marker</code>
+    </a>
+    (Chrome 135+, not native in Firefox or Safari). Scroll snap and
+    swipe work without those pseudos. The first examples stay on that
+    native path.
+    <a href="#fallback-controls"><code>&lt;pe-carousel&gt;</code></a>
+    is a later option for browsers that lack
+    <code>::scroll-button</code>.
+  </div>
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>.carousel-inner</code> is a horizontal scroller with
+      <code>scroll-snap-type: x mandatory</code>. That replaces
+      Bootstrap’s <code>transform</code> + JavaScript.
+    </li>
+    <li>
+      Every <code>.carousel-item</code> is in the row
+      (<code>flex: 0 0 100%</code>). <code>.active</code> is not
+      required for the first slide to show.
+    </li>
+    <li>
+      Do not add HTML <code>.carousel-control-prev</code> /
+      <code>.carousel-control-next</code> or
+      <code>.carousel-indicators</code>. Those need script. The
+      browser generates equivalent controls from CSS.
+    </li>
+    <li>
+      Put <code>data-label</code> on each item so
+      <code>::scroll-marker</code> has an accessible name
+      (<code>content: attr(data-label)</code>).
+    </li>
+    <li>
+      Without <code>::scroll-button</code>, swipe, drag the
+      scrollbar, or focus the scroller and use the keyboard. HTML
+      buttons, pips, and mouse panning are the
+      <a href="#fallback-controls">fallback</a>, not this markup.
+    </li>
+    <li>
+      <code>scroll-behavior: smooth</code> follows
+      <code>prefers-reduced-motion</code>.
+    </li>
+  </ul>
+
+  <div class="alert alert-info" role="alert">
+    Autoplay (<code>data-bs-ride</code>), crossfade
+    (<code>.carousel-fade</code>), and wrap-around cycling are not
+    CSS. This demo does not implement them.
+  </div>
+
+  <Example
+    title="Slides"
+    lead="Swipe or use the generated previous/next buttons. Indicator pips jump to a slide. All three slides stay in the DOM — none are display: none."
+    code={basicCode}
+  />
+
+  <Example
+    title="Captions"
+    lead="Add .carousel-caption inside any .carousel-item. Hide them on small viewports with .d-none .d-md-block as in Bootstrap’s docs."
+    code={captionsCode}
+  />
+
+  <Example
+    title="Dark controls"
+    lead="Set data-bs-theme=&quot;dark&quot; on the carousel (or a parent) so captions and control icons invert. .carousel-dark is deprecated in Bootstrap 5.3."
+    code={darkCode}
+  />
+
+  <DocsMeta id="carousel" at="end" />
+
+  <h2 class="h4" id="fallback-controls">Browsers without scroll buttons</h2>
+  <p>
+    <code>&lt;pe-carousel&gt;</code> is the carousel, with
+    <code>class=&quot;carousel&quot;</code>. Load
+    <code>src/behaviors/carousel.js</code> only on pages that use it.
+    Where <code>::scroll-button</code> exists, the element does nothing:
+    the generated buttons and pips stay, and the HTML controls are
+    hidden. Where it does not, the two buttons scroll one
+    <code>.carousel-item</code> via
+    <code>command=&quot;--prev&quot;</code> and
+    <code>command=&quot;--next&quot;</code>.
+    <code>commandfor</code> is the <code>.carousel-inner</code> id, with
+    no hash. A mouse drag pans that scroller; touch scrolling stays
+    native. Links inside a slide still click. Indicator buttons use
+    <code>command=&quot;--slide&quot;</code> in the same order as the
+    slides. The current one is <code>aria-current=&quot;true&quot;</code>.
+  </p>
+
+  <Example
+    title="Fallback controls"
+    lead="In Chrome the HTML buttons and pips are hidden and the generated controls remain. In Firefox and Safari the buttons move one slide, the pips jump to a slide, and dragging with the mouse pans."
+    code={fallbackCode}
+  />
+
+  <script>
+    import "../../behaviors/carousel.js";
+  </script>
+</BaseLayout>

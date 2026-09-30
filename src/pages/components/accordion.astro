@@ -1,0 +1,224 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const exampleCode = `<div class="accordion">
+  <details class="accordion-item" name="accordionExample" open>
+    <summary class="accordion-button">Accordion Item #1</summary>
+    <div class="accordion-body">
+      <strong>This is the first item’s accordion body.</strong> It is shown by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </details>
+  <details class="accordion-item" name="accordionExample">
+    <summary class="accordion-button">Accordion Item #2</summary>
+    <div class="accordion-body">
+      <strong>This is the second item’s accordion body.</strong> It is hidden by default. Find in page can still match this panel: the token is <strong>quetzalcoatlus</strong>.
+    </div>
+  </details>
+  <details class="accordion-item" name="accordionExample">
+    <summary class="accordion-button">Accordion Item #3</summary>
+    <div class="accordion-body">
+      <strong>This is the third item’s accordion body.</strong> It is hidden by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </details>
+</div>`;
+
+const flushCode = `<div class="accordion accordion-flush">
+  <details class="accordion-item" name="accordionFlushExample">
+    <summary class="accordion-button">Accordion Item #1</summary>
+    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item’s accordion body.</div>
+  </details>
+  <details class="accordion-item" name="accordionFlushExample">
+    <summary class="accordion-button">Accordion Item #2</summary>
+    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the second item’s accordion body. Let’s imagine this being filled with some actual content.</div>
+  </details>
+  <details class="accordion-item" name="accordionFlushExample">
+    <summary class="accordion-button">Accordion Item #3</summary>
+    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item’s accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+  </details>
+</div>`;
+
+const alwaysOpenCode = `<div class="accordion">
+  <details class="accordion-item" open>
+    <summary class="accordion-button">Accordion Item #1</summary>
+    <div class="accordion-body">
+      <strong>This is the first item’s accordion body.</strong> It is shown by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </details>
+  <details class="accordion-item">
+    <summary class="accordion-button">Accordion Item #2</summary>
+    <div class="accordion-body">
+      <strong>This is the second item’s accordion body.</strong> It is hidden by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </details>
+  <details class="accordion-item">
+    <summary class="accordion-button">Accordion Item #3</summary>
+    <div class="accordion-body">
+      <strong>This is the third item’s accordion body.</strong> It is hidden by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    </div>
+  </details>
+</div>`;
+
+const untilFoundCode = `<p>Search this page for <strong>thylacine</strong>.</p>
+<div hidden="until-found">
+  <div class="accordion-body border rounded">
+    Find in page revealed this region. The token is <strong>thylacine</strong>.
+  </div>
+</div>`;
+
+const focusGroupCode = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/focus-group.js"></script>
+
+<pe-focus-group items="summary" orientation="vertical">
+  <div class="accordion">
+    <details class="accordion-item" name="accordionFocusGroup" open>
+      <summary class="accordion-button">Accordion Item #1</summary>
+      <div class="accordion-body">
+        <div class="mb-3">
+          <label class="form-label" for="accordionFocusNote">Note</label>
+          <input class="form-control" id="accordionFocusNote" type="text" value="Arrow keys stay in this field">
+        </div>
+        <p><a href="#focus-group">A link in the panel</a>. Arrow keys here do not move between summaries.</p>
+        <div class="d-flex flex-wrap gap-2">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="accordionMenuPlain">
+              Menu without focus group
+            </button>
+            <ul class="dropdown-menu" popover="auto" id="accordionMenuPlain">
+              <li><a class="dropdown-item" href="#focus-group">Action</a></li>
+              <li><a class="dropdown-item" href="#focus-group">Another action</a></li>
+            </ul>
+          </div>
+          <pe-focus-group items=".dropdown-item:not(.disabled, [aria-disabled='true'])">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="accordionMenuGrouped">
+                Menu with focus group
+              </button>
+              <ul class="dropdown-menu" popover="auto" id="accordionMenuGrouped">
+                <li><a class="dropdown-item" href="#focus-group">Action</a></li>
+                <li><a class="dropdown-item" href="#focus-group">Another action</a></li>
+              </ul>
+            </div>
+          </pe-focus-group>
+        </div>
+      </div>
+    </details>
+    <details class="accordion-item" name="accordionFocusGroup">
+      <summary class="accordion-button">Accordion Item #2</summary>
+      <div class="accordion-body">
+        <strong>This is the second item’s accordion body.</strong> The shared <code>name</code> still keeps only one item open.
+      </div>
+    </details>
+    <details class="accordion-item" name="accordionFocusGroup">
+      <summary class="accordion-button">Accordion Item #3</summary>
+      <div class="accordion-body">
+        <strong>This is the third item’s accordion body.</strong> Home and End jump to the first and last summary.
+      </div>
+    </details>
+  </div>
+</pe-focus-group>`;
+---
+
+<BaseLayout
+  title="Accordion · Bootstrap HTML"
+  description="Native HTML accordion using details and summary, styled with Bootstrap 5.3.8."
+>
+  <h1>Accordion</h1>
+  <p class="lead">
+    Vertically collapsing accordions using <code>&lt;details&gt;</code> and
+    <code>&lt;summary&gt;</code> — no Collapse plugin.
+  </p>
+
+  <DocsMeta id="accordion" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <p>
+    Each item is a <code>details.accordion-item</code> with a
+    <code>summary.accordion-button</code>. The same <code>name</code> on every
+    item makes the group exclusive (replaces <code>data-bs-parent</code>). Add
+    <code>open</code> to start expanded (replaces <code>.show</code> /
+    omitting <code>.collapsed</code>).
+  </p>
+  <p>
+    The browser fires a <code>toggle</code> event on <code>&lt;details&gt;</code>
+    when the open state changes.
+  </p>
+  <p>
+    The panel is <code>::details-content</code>, and its height transitions
+    there instead of from JavaScript. Animating <code>block-size</code> from
+    <code>0</code> to <code>auto</code> needs
+    <code>interpolate-size: allow-keywords</code>, which only Chromium has.
+    Firefox and Safari open and close the item without the transition.
+  </p>
+  <p>
+    Closed panels stay in the document, so Find in page can match them
+    (try <strong>quetzalcoatlus</strong> in the first example). Do not
+    put <code>hidden</code> or <code>display: none</code> on
+    <code>.accordion-body</code>. For a custom hidden region that is
+    not a <code>&lt;details&gt;</code> panel, use
+    <code>hidden="until-found"</code> and keep padding on an inner
+    wrapper. Bootstrap’s reboot would otherwise force
+    <code>display: none</code> and break that attribute.
+  </p>
+
+  <Example
+    title="Example"
+    lead="Click the accordions below to expand/collapse the accordion content."
+    code={exampleCode}
+  >
+    <p slot="intro">
+      To render an accordion that’s expanded by default, add the
+      <code>open</code> attribute on the <code>&lt;details&gt;</code> element.
+    </p>
+  </Example>
+
+  <Example
+    title="Flush"
+    lead="Add .accordion-flush to remove some borders and rounded corners to render accordions edge-to-edge with their parent container."
+    bg="body-secondary"
+    code={flushCode}
+  />
+
+  <Example
+    title="Always open"
+    lead="Omit the name attribute on each details element to make accordion items stay open when another item is opened."
+    code={alwaysOpenCode}
+  />
+
+  <Example
+    title="Find in page"
+    lead="hidden=&quot;until-found&quot; hides a custom region until Find in page matches it. Accordion items themselves stay on details — do not put hidden on .accordion-body."
+    code={untilFoundCode}
+  />
+
+  <DocsMeta id="accordion" at="end" />
+
+  <h2 class="h4" id="focus-group">Arrow keys</h2>
+  <p>
+    Tab still moves through each <code>&lt;summary&gt;</code> when no extra
+    script is loaded. Arrow keys, Home, and End are optional. Wrap the
+    accordion in <code>&lt;pe-focus-group&gt;</code> with
+    <code>items=&quot;summary&quot;</code> and
+    <code>orientation=&quot;vertical&quot;</code>, and load
+    <code>src/behaviors/focus-group.js</code>. Without that module the
+    element is only a wrapper: the items still open, and Tab still reaches
+    every summary.
+  </p>
+  <p>
+    Up focuses the previous summary. Down focuses the next. Home and End
+    jump to the ends. Focusing a summary does not open it; Enter and Space
+    still do. The shared <code>name</code> keeps the group exclusive.
+    Keys inside the panel stay there: the text field, the link, and the
+    menu without its own focus group. The menu wrapped in a nested
+    <code>&lt;pe-focus-group&gt;</code> handles its own arrow keys.
+  </p>
+
+  <Example
+    title="Focus group"
+    lead="The open panel has a text field, a link, and two menus. Only the menu wrapped in pe-focus-group moves with arrow keys. The accordion group moves between summaries."
+    code={focusGroupCode}
+  />
+  <script>
+    import "../../behaviors/focus-group.js";
+  </script>
+</BaseLayout>

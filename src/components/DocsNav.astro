@@ -1,0 +1,112 @@
+---
+import { listed } from "../data/components.js";
+import { isCurrent, sitePath } from "../lib/path.js";
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+
+// Glyphs are Bootstrap Icons (MIT), the same as getbootstrap.com’s sidebar.
+const icons = {
+  start: {
+    d: "M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783",
+  },
+  components: {
+    d: "M1.5 0A1.5 1.5 0 0 0 0 1.5v2A1.5 1.5 0 0 0 1.5 5h13A1.5 1.5 0 0 0 16 3.5v-2A1.5 1.5 0 0 0 14.5 0zm1 2h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m9.927.427A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5",
+  },
+  forms: {
+    d: "M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zM0 12a3 3 0 1 1 6 0 3 3 0 0 1-6 0m7-1.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5M3 1a3 3 0 1 0 0 6 3 3 0 0 0 0-6m0 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3",
+  },
+  recipes: {
+    d: "M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z",
+  },
+  polyfills: {
+    d: "M1 8a7 7 0 1 1 2.898 5.673c-.167-.121-.216-.406-.002-.62l1.8-1.8a3.5 3.5 0 0 0 4.572-.328l1.414-1.415a.5.5 0 0 0 0-.707l-.707-.707 1.559-1.563a.5.5 0 1 0-.708-.706l-1.559 1.562-1.414-1.414 1.56-1.562a.5.5 0 1 0-.707-.706l-1.56 1.56-.707-.706a.5.5 0 0 0-.707 0L5.318 5.975a3.5 3.5 0 0 0-.328 4.571l-1.8 1.8c-.58.58-.62 1.6.121 2.137A8 8 0 1 0 0 8a.5.5 0 0 0 1 0",
+    evenodd: true,
+  },
+};
+
+const sections = [
+  {
+    title: "Start",
+    icon: "start",
+    color: "indigo",
+    links: [{ href: "/getting-started", label: "Getting started" }],
+  },
+  {
+    title: "Components",
+    icon: "components",
+    color: "cyan",
+    links: listed("components").map((item) => ({ href: item.route, label: item.name })),
+  },
+  {
+    title: "Recipes",
+    icon: "recipes",
+    color: "teal",
+    links: listed("recipes").map((item) => ({ href: item.route, label: item.name })),
+  },
+  {
+    title: "Form",
+    icon: "forms",
+    color: "blue",
+    links: listed("forms").map((item) => ({ href: item.route, label: item.name })),
+  },
+  {
+    title: "Polyfills",
+    icon: "polyfills",
+    color: "orange",
+    links: [{ href: "/polyfills", label: "Polyfills" }],
+  },
+];
+---
+
+<ul class="nav nav-pills flex-column">
+  <li class="nav-item">
+    <a
+      class:list={["nav-link", isCurrent(pathname, "/") && "active"]}
+      href={sitePath("/")}
+      aria-current={isCurrent(pathname, "/") ? "page" : undefined}
+    >
+      Overview
+    </a>
+  </li>
+</ul>
+{
+  sections.map((section) => {
+    const icon = icons[section.icon];
+    return (
+      <Fragment>
+        <h2 class="docs-nav-heading">
+          <svg
+            class="docs-nav-icon"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+            aria-hidden="true"
+            style={`color: var(--bs-${section.color})`}
+          >
+            <path fill-rule={icon.evenodd ? "evenodd" : undefined} d={icon.d} />
+          </svg>
+          {section.title}
+        </h2>
+        <ul class="nav nav-pills flex-column">
+          {section.links.map((link) => (
+            <li class="nav-item">
+              <a
+                class:list={["nav-link", "ps-4", isCurrent(pathname, link.href) && "active"]}
+                href={sitePath(link.href)}
+                aria-current={isCurrent(pathname, link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Fragment>
+    );
+  })
+}

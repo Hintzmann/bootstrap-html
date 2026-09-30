@@ -1,0 +1,203 @@
+html {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scroll-padding-top: 4.5rem;
+  color-scheme: light dark;
+}
+
+html[data-bs-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-bs-theme="dark"] {
+  color-scheme: dark;
+}
+
+// Header and rails share one offset. A shorter header made the
+// sticky rail sit below its in-flow position and jump up on scroll.
+.docs-header {
+  min-height: 4.5rem;
+}
+
+// Short pages (Toasts, Planned) used to end the sticky containing
+// block as soon as the article did, so the rail jumped up on scroll.
+.docs-layout {
+  min-height: calc(100dvh - 4.5rem);
+}
+
+.docs-rail {
+  overflow-anchor: none;
+}
+
+// sticky-top is top: 0, which sits under the sticky navbar.
+.docs-sticky {
+  top: 4.5rem;
+  max-height: calc(100dvh - 5.5rem);
+  overscroll-behavior: contain;
+}
+
+.docs-nav-heading {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  text-transform: uppercase;
+}
+
+.docs-nav-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+}
+
+// Left rail instead of .nav-underline’s border-bottom. Inactive stays
+// transparent so the bar does not shift when :target-current moves.
+.docs-toc .nav-link {
+  padding-block: 0.125rem;
+  padding-inline: 0.75rem 0.25rem;
+  color: var(--bs-secondary-color);
+  border-inline-start: 0.125rem solid transparent;
+  border-radius: 0;
+}
+
+.docs-toc .nav-link:hover,
+.docs-toc .nav-link:focus-visible {
+  color: var(--bs-body-color);
+}
+
+.docs-toc .nav-link:is(:target-current, .\:target-current, .active) {
+  font-weight: 600;
+  color: var(--bs-emphasis-color);
+  border-inline-start-color: var(--bs-primary);
+}
+
+.docs-skip:focus {
+  position: fixed;
+  z-index: 1080;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  box-shadow: var(--bs-box-shadow);
+}
+
+.example-figure {
+  margin: 0;
+}
+
+.example-preview {
+  padding: 1.5rem;
+  background-color: var(--bs-body-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-bottom: 0;
+  border-top-left-radius: var(--bs-border-radius);
+  border-top-right-radius: var(--bs-border-radius);
+}
+
+.example-preview.bg-body-tertiary {
+  background-color: var(--bs-tertiary-bg);
+}
+
+.example-preview > .modal-dialog {
+  max-width: 500px;
+  margin-right: auto;
+  margin-left: auto;
+  transform: none;
+}
+
+// Static menu previews (items, headers, forms) without popover="auto".
+.example-preview > .dropdown-menu {
+  position: static;
+  display: block;
+  width: max-content;
+}
+
+// Static component previews use <div class="offcanvas">. Live <dialog>
+// examples must keep position:fixed and stay hidden until :open.
+.example-preview > div.offcanvas {
+  position: static;
+  display: block;
+  height: 200px;
+  visibility: visible;
+  transform: none;
+}
+
+.example-preview > .carousel {
+  max-width: 100%;
+}
+
+.example-code {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.875em;
+  background-color: var(--bs-tertiary-bg);
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-bottom-left-radius: var(--bs-border-radius);
+  border-bottom-right-radius: var(--bs-border-radius);
+}
+
+.example-code code {
+  font-family: var(--bs-font-monospace);
+  color: var(--bs-body-color);
+  word-wrap: break-word;
+  white-space: pre;
+}
+
+.custom-popover {
+  --bs-popover-max-width: 200px;
+  --bs-popover-border-color: var(--bs-purple);
+  --bs-popover-header-bg: var(--bs-purple);
+  --bs-popover-header-color: var(--bs-white);
+  --bs-popover-body-padding-x: 1rem;
+  --bs-popover-body-padding-y: 0.5rem;
+}
+
+.custom-tooltip {
+  --bs-tooltip-bg: var(--bs-purple);
+  --bs-tooltip-color: var(--bs-white);
+}
+
+.scrollspy-example {
+  position: relative;
+  height: 200px;
+  margin-top: 0.5rem;
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.scrollspy-example-2 {
+  position: relative;
+  height: 350px;
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.scrollspy-example h4,
+.scrollspy-example-2 h4,
+.scrollspy-example-2 h5 {
+  scroll-margin-top: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollspy-example,
+  .scrollspy-example-2 {
+    scroll-behavior: auto;
+  }
+}
+
+.simple-list-example-scrollspy a.active,
+.simple-list-example-scrollspy a:is(:target-current, .\:target-current) {
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+}
+
+.browser-list li + li {
+  margin-top: 0.25rem;
+}

@@ -1,0 +1,264 @@
+// stylelint-disable function-disallowed-list
+
+// Native offcanvas — Bootstrap 5.3.8 styles on <dialog>
+// .offcanvas / .offcanvas-{sm,md,lg,xl,xxl}  sidebar overlay
+// .offcanvas-{start,end,top,bottom}          placement
+// :open + @starting-style replace .showing / .show / .hiding
+
+
+html:has(dialog.offcanvas:modal),
+html:has(dialog.offcanvas-sm:modal),
+html:has(dialog.offcanvas-md:modal),
+html:has(dialog.offcanvas-lg:modal),
+html:has(dialog.offcanvas-xl:modal),
+html:has(dialog.offcanvas-xxl:modal) {
+  overflow: hidden;
+}
+
+%offcanvas-css-vars {
+  // scss-docs-start offcanvas-css-vars
+  --#{$prefix}offcanvas-zindex: #{$zindex-offcanvas};
+  --#{$prefix}offcanvas-width: #{$offcanvas-horizontal-width};
+  --#{$prefix}offcanvas-height: #{$offcanvas-vertical-height};
+  --#{$prefix}offcanvas-padding-x: #{$offcanvas-padding-x};
+  --#{$prefix}offcanvas-padding-y: #{$offcanvas-padding-y};
+  --#{$prefix}offcanvas-color: #{$offcanvas-color};
+  --#{$prefix}offcanvas-bg: #{$offcanvas-bg-color};
+  --#{$prefix}offcanvas-border-width: #{$offcanvas-border-width};
+  --#{$prefix}offcanvas-border-color: #{$offcanvas-border-color};
+  --#{$prefix}offcanvas-box-shadow: #{$offcanvas-box-shadow};
+  --#{$prefix}offcanvas-transition: #{transform $offcanvas-transition-duration ease-in-out};
+  --#{$prefix}offcanvas-title-line-height: #{$offcanvas-title-line-height};
+  // scss-docs-end offcanvas-css-vars
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $next: breakpoint-next($breakpoint, $grid-breakpoints);
+  $infix: breakpoint-infix($next, $grid-breakpoints);
+
+  .offcanvas#{$infix} {
+    @extend %offcanvas-css-vars;
+  }
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  $next: breakpoint-next($breakpoint, $grid-breakpoints);
+  $infix: breakpoint-infix($next, $grid-breakpoints);
+
+  .offcanvas#{$infix} {
+    @include media-breakpoint-down($next) {
+      position: fixed;
+      inset: auto;
+      bottom: 0;
+      z-index: var(--#{$prefix}offcanvas-zindex);
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      max-width: none;
+      height: auto;
+      max-height: none;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      color: var(--#{$prefix}offcanvas-color);
+      visibility: hidden;
+      background-color: var(--#{$prefix}offcanvas-bg);
+      background-clip: padding-box;
+      border: 0;
+      outline: 0;
+      @include box-shadow(var(--#{$prefix}offcanvas-box-shadow));
+      transition: var(--#{$prefix}offcanvas-transition), visibility $offcanvas-transition-duration ease-in-out, overlay $offcanvas-transition-duration ease-in-out allow-discrete, display $offcanvas-transition-duration ease-in-out allow-discrete;
+
+      // :open = modal <dialog>; :popover-open = body-scrolling popover
+      &:is(:open, :popover-open) {
+        display: flex;
+        visibility: visible;
+      }
+
+      &.offcanvas-start {
+        top: 0;
+        right: auto;
+        bottom: 0;
+        left: 0;
+        width: var(--#{$prefix}offcanvas-width);
+        border-right: var(--#{$prefix}offcanvas-border-width) solid var(--#{$prefix}offcanvas-border-color);
+        transform: translateX(-100%);
+
+        &:is(:open, :popover-open) {
+          transform: none;
+        }
+
+        @starting-style {
+          &:is(:open, :popover-open) {
+            transform: translateX(-100%);
+          }
+        }
+      }
+
+      &.offcanvas-end {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: auto;
+        width: var(--#{$prefix}offcanvas-width);
+        border-left: var(--#{$prefix}offcanvas-border-width) solid var(--#{$prefix}offcanvas-border-color);
+        transform: translateX(100%);
+
+        &:is(:open, :popover-open) {
+          transform: none;
+        }
+
+        @starting-style {
+          &:is(:open, :popover-open) {
+            transform: translateX(100%);
+          }
+        }
+      }
+
+      &.offcanvas-top {
+        top: 0;
+        right: 0;
+        bottom: auto;
+        left: 0;
+        width: auto;
+        height: var(--#{$prefix}offcanvas-height);
+        max-height: 100%;
+        border-bottom: var(--#{$prefix}offcanvas-border-width) solid var(--#{$prefix}offcanvas-border-color);
+        transform: translateY(-100%);
+
+        &:is(:open, :popover-open) {
+          transform: none;
+        }
+
+        @starting-style {
+          &:is(:open, :popover-open) {
+            transform: translateY(-100%);
+          }
+        }
+      }
+
+      &.offcanvas-bottom {
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        height: var(--#{$prefix}offcanvas-height);
+        max-height: 100%;
+        border-top: var(--#{$prefix}offcanvas-border-width) solid var(--#{$prefix}offcanvas-border-color);
+        transform: translateY(100%);
+
+        &:is(:open, :popover-open) {
+          transform: none;
+        }
+
+        @starting-style {
+          &:is(:open, :popover-open) {
+            transform: translateY(100%);
+          }
+        }
+      }
+
+      // Modal dialogs and popover="auto" get a dimmed backdrop.
+      // popover="manual" (body scrolling only) stays undimmed.
+      &:modal::backdrop,
+      &[popover="auto"]::backdrop {
+        pointer-events: auto !important; // stylelint-disable-line declaration-no-important
+        background-color: $offcanvas-backdrop-bg;
+        opacity: 0;
+        transition: opacity $offcanvas-transition-duration ease-in-out, overlay $offcanvas-transition-duration ease-in-out allow-discrete, display $offcanvas-transition-duration ease-in-out allow-discrete;
+      }
+
+      &:modal:open::backdrop,
+      &[popover="auto"]:popover-open::backdrop {
+        opacity: $offcanvas-backdrop-opacity;
+      }
+
+      @starting-style {
+        &:modal:open::backdrop,
+        &[popover="auto"]:popover-open::backdrop {
+          opacity: 0;
+        }
+      }
+    }
+
+    @if $enable-reduced-motion {
+      @include media-breakpoint-down($next) {
+        @media (prefers-reduced-motion: reduce) {
+          transition: none;
+
+          &:modal::backdrop,
+          &[popover="auto"]::backdrop {
+            transition: none;
+          }
+        }
+      }
+    }
+
+    @if not ($infix == "") {
+      @include media-breakpoint-up($next) {
+        position: static;
+        inset: auto;
+        // Author origin beats UA `dialog:not([open]) { display: none }`,
+        // so a closed responsive dialog still shows in the flow.
+        display: block;
+        width: auto;
+        max-width: none;
+        height: auto;
+        max-height: none;
+        padding: 0;
+        margin: 0;
+        overflow: visible;
+        visibility: visible;
+        background-color: transparent !important; // stylelint-disable-line declaration-no-important
+        border: 0;
+        transform: none;
+        --#{$prefix}offcanvas-height: auto;
+        --#{$prefix}offcanvas-border-width: 0;
+
+        .offcanvas-header {
+          display: none;
+        }
+
+        .offcanvas-body {
+          display: flex;
+          flex-grow: 0;
+          padding: 0;
+          overflow-y: visible;
+          // Reset `background-color` in case `.bg-*` classes are used in offcanvas
+          background-color: transparent !important; // stylelint-disable-line declaration-no-important
+        }
+      }
+    }
+  }
+}
+
+.offcanvas-backdrop {
+  @include overlay-backdrop($zindex-offcanvas-backdrop, $offcanvas-backdrop-bg, $offcanvas-backdrop-opacity);
+}
+
+.offcanvas-header {
+  display: flex;
+  align-items: center;
+  padding: var(--#{$prefix}offcanvas-padding-y) var(--#{$prefix}offcanvas-padding-x);
+
+  .btn-close {
+    padding: calc(var(--#{$prefix}offcanvas-padding-y) * .5) calc(var(--#{$prefix}offcanvas-padding-x) * .5);
+    // Split properties to avoid invalid calc() function if value is 0
+    margin-top: calc(-.5 * var(--#{$prefix}offcanvas-padding-y));
+    margin-right: calc(-.5 * var(--#{$prefix}offcanvas-padding-x));
+    margin-bottom: calc(-.5 * var(--#{$prefix}offcanvas-padding-y));
+    margin-left: auto;
+  }
+}
+
+.offcanvas-title {
+  margin-bottom: 0;
+  line-height: var(--#{$prefix}offcanvas-title-line-height);
+}
+
+.offcanvas-body {
+  flex-grow: 1;
+  padding: var(--#{$prefix}offcanvas-padding-y) var(--#{$prefix}offcanvas-padding-x);
+  overflow-y: auto;
+}

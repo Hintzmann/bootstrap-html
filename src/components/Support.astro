@@ -1,0 +1,37 @@
+---
+import { componentById } from "../data/components.js";
+import { inlineMarkup } from "../lib/markup.js";
+import { sitePath } from "../lib/path.js";
+
+interface Props {
+  id: keyof typeof componentById;
+}
+
+const { id } = Astro.props;
+const item = componentById[id];
+if (!item) throw new Error(`Unknown component: ${String(id)}`);
+---
+
+<h2 class="h4">Browser support</h2>
+<div class="table-responsive mb-4">
+  <table class="table table-sm">
+    <caption>
+      Three columns, not one baseline. The same row is on the
+      <a href={sitePath("/")}>overview</a>.
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">No script</th>
+        <th scope="col">Polyfill</th>
+        <th scope="col">No fallback</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td set:html={inlineMarkup(item.support.noScript)} />
+        <td set:html={inlineMarkup(item.support.polyfill)} />
+        <td set:html={inlineMarkup(item.support.noFallback)} />
+      </tr>
+    </tbody>
+  </table>
+</div>

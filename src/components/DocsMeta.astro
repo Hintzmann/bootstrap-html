@@ -1,0 +1,28 @@
+---
+import JsCost from "./JsCost.astro";
+import Contract from "./Contract.astro";
+import A11y from "./A11y.astro";
+import Support from "./Support.astro";
+import { componentById } from "../data/components.js";
+
+interface Props {
+  id: keyof typeof componentById;
+  at: "start" | "end";
+}
+
+const { id, at } = Astro.props;
+---
+
+{
+  at === "start" ? (
+    <>
+      <JsCost id={id} />
+      <Contract id={id} />
+    </>
+  ) : (
+    <>
+      <A11y id={id} />
+      <Support id={id} />
+    </>
+  )
+}

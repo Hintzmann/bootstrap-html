@@ -1,0 +1,144 @@
+// Nested details tree. Opt-in on .nav-tree so it can live in offcanvas
+// or on the page. Summaries are the controls; do not add aria-expanded.
+
+.nav-tree {
+  --#{$prefix}nav-tree-indent: 1.25rem;
+}
+
+.nav-tree details > :not(summary) {
+  margin-inline-start: var(--#{$prefix}nav-tree-indent);
+}
+
+.nav-tree details > summary {
+  display: flex;
+  column-gap: .5rem;
+  align-items: center;
+  padding-block: .35rem;
+  list-style: none;
+  cursor: pointer;
+}
+
+.nav-tree details > summary::-webkit-details-marker,
+.nav-tree details > summary::marker {
+  display: none;
+  content: none;
+}
+
+.nav-tree details > summary::before {
+  display: block;
+  flex-shrink: 0;
+  width: .45rem;
+  height: .45rem;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  content: "";
+  background-color: currentcolor;
+}
+
+.nav-tree details[open] > summary::before {
+  clip-path: polygon(0 20%, 100% 20%, 50% 90%);
+}
+
+.nav-tree a {
+  display: block;
+  padding-block: .35rem;
+  color: var(--#{$prefix}link-color);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--#{$prefix}link-hover-color);
+    text-decoration: underline;
+  }
+}
+
+// Opt-in scroll recipes for a nested scroller. Decorative: no JS
+// scroll-listener fallback. Do not put these classes on the docs chrome.
+
+.scroll-demo {
+  max-block-size: 16rem;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scroll-timeline: --#{$prefix}scroll-demo block;
+  border: var(--#{$prefix}border-width) solid var(--#{$prefix}border-color);
+  @include border-radius(var(--#{$prefix}border-radius));
+}
+
+.scroll-progress {
+  display: none;
+  height: .25rem;
+  pointer-events: none;
+  background-color: var(--#{$prefix}primary);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.header-shrink {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  padding-inline: 1rem;
+  overflow: hidden;
+  font-weight: $font-weight-semibold;
+  background-color: var(--#{$prefix}body-bg);
+  border-bottom: var(--#{$prefix}border-width) solid var(--#{$prefix}border-color);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
+    .scroll-progress {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: block;
+      animation-name: pe-scroll-progress;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-timeline: --#{$prefix}scroll-demo;
+    }
+
+    .header-shrink {
+      animation-name: pe-header-shrink;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --#{$prefix}scroll-demo;
+      animation-range: 0 8rem;
+    }
+  }
+}
+
+@keyframes pe-scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pe-header-shrink {
+  from {
+    height: 4rem;
+  }
+
+  to {
+    height: 2.5rem;
+  }
+}
+
+// Radio .btn-check switches the visible price. Without :has() the
+// monthly figure stays. The radios still submit.
+.price-toggle .price-yearly {
+  display: none;
+}
+
+.price-toggle:has([value="yearly"]:checked) .price-monthly {
+  display: none;
+}
+
+.price-toggle:has([value="yearly"]:checked) .price-yearly {
+  display: inline;
+}

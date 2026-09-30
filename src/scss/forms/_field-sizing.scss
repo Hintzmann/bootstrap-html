@@ -1,0 +1,38 @@
+// Native field-sizing — opt-in .field-sizing on .form-control / .form-select
+// Bootstrap has no equivalent. field-sizing: content is Baseline Newly
+// (Chrome 123, Firefox 152, Safari 26.2). .form-control’s width: 100% and
+// height would otherwise override it. Unsupported browsers keep the usual box.
+
+$field-sizing-min-inline: 15ch !default;
+$field-sizing-max-inline: 50ch !default;
+$field-sizing-min-block: 3lh !default;
+$field-sizing-max-block: 10lh !default;
+
+.form-control.field-sizing,
+.form-select.field-sizing {
+  --#{$prefix}field-sizing-min-inline: #{$field-sizing-min-inline};
+  --#{$prefix}field-sizing-max-inline: #{$field-sizing-max-inline};
+  --#{$prefix}field-sizing-min-block: #{$field-sizing-min-block};
+  --#{$prefix}field-sizing-max-block: #{$field-sizing-max-block};
+
+  field-sizing: content;
+  align-self: start;
+}
+
+.form-control.field-sizing:not(textarea) {
+  min-inline-size: var(--#{$prefix}field-sizing-min-inline);
+  max-inline-size: var(--#{$prefix}field-sizing-max-inline);
+  width: auto;
+}
+
+textarea.form-control.field-sizing {
+  width: 100%;
+  min-block-size: var(--#{$prefix}field-sizing-min-block);
+  max-block-size: var(--#{$prefix}field-sizing-max-block);
+  height: auto;
+}
+
+.form-select.field-sizing {
+  max-inline-size: var(--#{$prefix}field-sizing-max-inline);
+  width: auto;
+}

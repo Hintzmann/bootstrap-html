@@ -1,0 +1,30 @@
+{
+  "extends": ["stylelint-config-twbs-bootstrap"],
+  "ignoreFiles": ["src/scss/docs.scss"],
+  "rules": {
+    "selector-no-qualifying-type": null,
+    "selector-class-pattern": null,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["target-current", "popover-open", "open"]
+      }
+    ],
+    "selector-pseudo-element-no-unknown": [
+      true,
+      {
+        "ignorePseudoElements": [
+          "details-content",
+          "scroll-button",
+          "scroll-marker",
+          "scroll-marker-group",
+          "picker",
+          "picker-icon",
+          "checkmark",
+          "field-content",
+          "slider-fill"
+        ]
+      }
+    ]
+  }
+}

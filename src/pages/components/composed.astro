@@ -1,0 +1,617 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const tabsScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/tabs.js"></script>
+
+`;
+
+const toastScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/toast.js"></script>
+
+`;
+
+const countScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
+
+`;
+
+const contextHostCode = `<div
+  class="card context-host"
+  oncontextmenu="event.preventDefault(); this.querySelector('[popover]').showPopover({source: event.target})"
+>
+  <div class="card-body">
+    <p class="mb-2">Right-click this card. Actions is a separate left-click control.</p>
+    <button type="button" class="btn btn-sm btn-secondary" command="toggle-popover" commandfor="composed-context-host">
+      Actions
+    </button>
+  </div>
+  <ul class="dropdown-menu dropdown-menu-context" popover="auto" id="composed-context-host">
+    <li><button type="button" class="dropdown-item">Edit</button></li>
+    <li><button type="button" class="dropdown-item">Duplicate</button></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><button type="button" class="dropdown-item text-danger">Delete</button></li>
+  </ul>
+</div>`;
+
+const contextButtonCode = `<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="composed-context-btn">
+    Actions
+  </button>
+  <ul class="dropdown-menu dropdown-menu-context" popover="auto" id="composed-context-btn">
+    <li><button type="button" class="dropdown-item">Edit</button></li>
+    <li><button type="button" class="dropdown-item">Duplicate</button></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><button type="button" class="dropdown-item text-danger">Delete</button></li>
+  </ul>
+</div>`;
+
+const drawerCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="composed-drawer">
+  Open drawer
+</button>
+
+<dialog class="offcanvas offcanvas-start" id="composed-drawer" closedby="any" aria-labelledby="composed-drawer-label">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="composed-drawer-label">Catalog</h5>
+    <button type="button" class="btn-close" command="close" commandfor="composed-drawer" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <nav class="nav-tree" aria-label="Catalog">
+      <details open>
+        <summary>Products</summary>
+        <details open>
+          <summary>Shoes</summary>
+          <a href="#">Runners</a>
+          <a href="#">Boots</a>
+        </details>
+        <details>
+          <summary>Jackets</summary>
+          <a href="#">Rain</a>
+          <a href="#">Fleece</a>
+        </details>
+      </details>
+      <details open>
+        <summary>Account</summary>
+        <a href="#">Orders</a>
+        <a href="#">Settings</a>
+      </details>
+    </nav>
+  </div>
+</dialog>`;
+
+const navTreePageCode = `<div class="card" style="max-width: 22rem">
+  <div class="card-body">
+    <nav class="nav-tree" aria-label="On-page catalog">
+      <details open>
+        <summary>Products</summary>
+        <details open>
+          <summary>Shoes</summary>
+          <a href="#">Runners</a>
+          <a href="#">Boots</a>
+        </details>
+        <details>
+          <summary>Jackets</summary>
+          <a href="#">Rain</a>
+          <a href="#">Fleece</a>
+        </details>
+      </details>
+      <details open>
+        <summary>Account</summary>
+        <a href="#">Orders</a>
+        <a href="#">Settings</a>
+      </details>
+    </nav>
+  </div>
+</div>`;
+
+const toastBarCode = `${toastScript}<button type="button" class="btn btn-primary" command="show-popover" commandfor="composed-toast">
+  Show toast
+</button>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <pe-toast class="toast" id="composed-toast" popover="manual" data-delay="5000" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap HTML</strong>
+      <small>just now</small>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="composed-toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Hover the toast to pause the bar. Leaving starts the delay again.</div>
+  </pe-toast>
+</div>`;
+
+const tabUnderlineCode = `${tabsScript}<pe-tabs>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="composed-home-tab" type="button" role="tab" aria-controls="composed-home-pane" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="composed-profile-tab" type="button" role="tab" aria-controls="composed-profile-pane" aria-selected="false" tabindex="-1">Profile</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="composed-contact-tab" type="button" role="tab" aria-controls="composed-contact-pane" aria-selected="false" tabindex="-1">Contact</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active show" id="composed-home-pane" role="tabpanel" aria-labelledby="composed-home-tab" tabindex="0">
+      <p class="mt-3 mb-0">The underline follows the selected tab.</p>
+    </div>
+    <div class="tab-pane" id="composed-profile-pane" role="tabpanel" aria-labelledby="composed-profile-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the profile pane.</p>
+    </div>
+    <div class="tab-pane" id="composed-contact-pane" role="tabpanel" aria-labelledby="composed-contact-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the contact pane.</p>
+    </div>
+  </div>
+</pe-tabs>`;
+
+const progressRingCode = `<div class="d-flex flex-wrap gap-4 align-items-center">
+  <div class="progress-ring-wrapper">
+    <progress class="progress-ring" value="25" max="100" style="--bs-progress-value: 25" aria-label="Upload 25 percent">25%</progress>
+    <span class="progress-ring-content">25%</span>
+  </div>
+  <div class="progress-ring-wrapper">
+    <progress class="progress-ring text-info" value="70" max="100" style="--bs-progress-value: 70" aria-label="Sync 70 percent">70%</progress>
+    <span class="progress-ring-content">70%</span>
+  </div>
+  <div class="progress-ring-wrapper">
+    <progress class="progress-ring" value="100" max="100" style="--bs-progress-value: 100" aria-label="Complete">100%</progress>
+    <span class="progress-ring-content">100%</span>
+  </div>
+</div>`;
+
+const scrollCode = `<div class="scroll-demo">
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <header class="header-shrink">Brand</header>
+  <div class="p-3">
+    <p>Scroll this panel. The header shrinks and the bar tracks how far you have read. These classes stay on a nested scroller so they do not move the docs chrome.</p>
+    <p>Anchor positioning, popovers, and native widgets on this site are unchanged. The animation is decorative: without scroll-driven animations the header stays tall and the bar is omitted.</p>
+    <p>Keep going. The range is the first 8 rem of this scroller, then the header stays compact.</p>
+    <p>Copy below the fold is here so you can finish the shrink and still have distance left. The bar should not hit 100% the moment the header goes compact.</p>
+    <p>Recipes on this page stay independent. Nested details, tabs, and toasts do not share this timeline. Nothing here measures scroll position.</p>
+    <p>Prefer a nested scroller like this when you try the pattern in an app. Putting the shrink class on the site header would pin and shrink the docs chrome.</p>
+    <p>The bar is one sticky strip at the top of the panel. It only mirrors how far you have scrolled. The heading in the header is the visible landmark.</p>
+    <p>Firefox does not run scroll-driven animations yet. There the header stays tall and the bar is not shown. That is the documented fallback, not a second script.</p>
+    <p>If you reduce motion, both animations stay off. The panel still scrolls; the header just does not change height.</p>
+    <p>A little more height so the shrink can finish before you run out of scroll. Keep moving until the bar is most of the way across.</p>
+    <p>The progress bar is the full scroll of this panel. The header only uses the first 8 rem. After that the compact height holds while you read the rest.</p>
+    <p>More filler so the last stretch is obvious. The named timeline still drives the bar after the header range has ended.</p>
+    <p>Weeknotes, invoices, and a long changelog would look like this in a real card: enough copy that you actually scroll, not a one-screen stub.</p>
+    <p>One more block for the last part of the travel. If the bar is near the end, the header should already be compact and stay there.</p>
+    <p>Almost there. Scroll a bit further so the thumb reaches the bottom of this panel.</p>
+    <p>End of the demo column. Scroll back up to restore the tall header and empty the bar.</p>
+  </div>
+</div>`;
+
+const filterDrawerCode = `${countScript}<div class="d-flex align-items-center gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="composed-filter" aria-describedby="composed-filter-count">
+    Filters
+  </button>
+  <output id="composed-filter-count" class="badge rounded-pill text-bg-secondary" data-controls="composed-filter-list" for="composed-filter-sale composed-filter-new composed-filter-stock">0<span class="visually-hidden"> selected</span></output>
+</div>
+
+<dialog class="offcanvas offcanvas-end" id="composed-filter" closedby="any" aria-labelledby="composed-filter-label">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="composed-filter-label">
+      Filters
+    </h5>
+    <button type="button" class="btn-close" command="close" commandfor="composed-filter" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div id="composed-filter-list">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="sale" id="composed-filter-sale">
+        <label class="form-check-label" for="composed-filter-sale">On sale</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="new" id="composed-filter-new">
+        <label class="form-check-label" for="composed-filter-new">New</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="stock" id="composed-filter-stock">
+        <label class="form-check-label" for="composed-filter-stock">In stock</label>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const lightboxCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="composed-lightbox">
+  View photo
+</button>
+
+<dialog class="modal" closedby="any" id="composed-lightbox" aria-labelledby="composed-lightbox-label">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="composed-lightbox-label">Lake and mountains</h1>
+        <button type="button" class="btn-close" command="close" commandfor="composed-lightbox" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <img class="img-fluid w-100" width="800" height="450" alt="Lake and mountains" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect fill='%236c757d' width='800' height='450'/%3E%3Ctext fill='white' font-family='system-ui,sans-serif' font-size='28' x='50%25' y='50%25' text-anchor='middle' dy='.3em'%3ELake and mountains%3C/text%3E%3C/svg%3E">
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const confirmToastCode = `${toastScript}<button type="button" class="btn btn-danger" command="show-modal" commandfor="composed-delete">
+  Delete file
+</button>
+
+<dialog class="modal" closedby="any" id="composed-delete" aria-labelledby="composed-delete-label">
+  <form method="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="composed-delete-label">Delete file?</h1>
+          <button type="submit" class="btn-close" value="cancel" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          This cannot be undone. Cancel leaves the file. Delete shows a toast.
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-secondary" value="cancel">Cancel</button>
+          <button type="submit" class="btn btn-danger" value="delete">Delete</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <pe-toast class="toast" id="composed-deleted" popover="manual" data-delay="4000" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap HTML</strong>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="composed-deleted" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">File deleted.</div>
+  </pe-toast>
+</div>`;
+
+const paletteCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="composed-palette">
+  Jump to
+</button>
+
+<dialog class="modal" closedby="any" id="composed-palette" aria-labelledby="composed-palette-label">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="composed-palette-label">Jump to</h1>
+        <button type="button" class="btn-close" command="close" commandfor="composed-palette" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <search class="mb-3">
+          <label class="form-label" for="composed-palette-q">Search</label>
+          <input class="form-control" type="search" id="composed-palette-q" name="q" list="composed-palette-list" placeholder="Accordion, modal, …">
+        </search>
+        <datalist id="composed-palette-list">
+          <option value="Accordion"></option>
+          <option value="Buttons"></option>
+          <option value="Modal"></option>
+          <option value="Output"></option>
+        </datalist>
+        <ul class="list-unstyled mb-0">
+          <li><a href="${sitePath("/components/accordion")}">Accordion</a></li>
+          <li><a href="${sitePath("/components/buttons")}">Buttons</a></li>
+          <li><a href="${sitePath("/components/modal")}">Modal</a></li>
+          <li><a href="${sitePath("/forms/output")}">Output</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</dialog>`;
+
+const priceToggleCode = `<div class="price-toggle">
+  <fieldset class="mb-3">
+    <legend class="visually-hidden">Billing</legend>
+    <input type="radio" class="btn-check" name="composed-plan" id="composed-plan-monthly" value="monthly" autocomplete="off" checked>
+    <label class="btn btn-outline-primary" for="composed-plan-monthly">Monthly</label>
+    <input type="radio" class="btn-check" name="composed-plan" id="composed-plan-yearly" value="yearly" autocomplete="off">
+    <label class="btn btn-outline-primary" for="composed-plan-yearly">Yearly</label>
+  </fieldset>
+  <p class="fs-3 mb-0">
+    <span class="price-monthly">$9<span class="fs-6 text-body-secondary"> / month</span></span>
+    <span class="price-yearly">$90<span class="fs-6 text-body-secondary"> / year</span></span>
+  </p>
+</div>`;
+
+const previewCode = `<p class="mb-0">
+  Hover or focus
+  <a href="${sitePath("/components/progress")}" class="link-offset-2" interestfor="composed-preview" aria-description="Progress — native progress and meter.">Progress</a>
+  for a card preview. The description stays if hint is missing.
+</p>
+<div class="tooltip bs-tooltip-top" popover="hint" id="composed-preview">
+  <div class="tooltip-arrow"></div>
+  <div class="tooltip-inner text-start">
+    <strong>Progress</strong>
+    <p class="small mb-1">Native progress and meter. Omit value for the indeterminate stripe.</p>
+    <a class="link-light" href="${sitePath("/components/progress")}">Open page</a>
+  </div>
+</div>`;
+
+const multiselectCode = `${countScript}<div class="dropdown dropdown-multiselect">
+  <button class="btn btn-primary dropdown-toggle" type="button" command="toggle-popover" commandfor="composed-tags" aria-describedby="composed-tags-count">
+    Tags
+  </button>
+  <output id="composed-tags-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger dropdown-multiselect-count" data-controls="composed-tags" for="composed-tag-html composed-tag-css composed-tag-js">1<span class="visually-hidden"> selected</span></output>
+  <ul class="dropdown-menu" popover="auto" id="composed-tags">
+    <li>
+      <label class="dropdown-item" for="composed-tag-html">
+        <input class="form-check-input" type="checkbox" value="html" id="composed-tag-html">
+        HTML
+      </label>
+    </li>
+    <li>
+      <label class="dropdown-item" for="composed-tag-css">
+        <input class="form-check-input" type="checkbox" value="css" id="composed-tag-css" checked>
+        CSS
+      </label>
+    </li>
+    <li>
+      <label class="dropdown-item" for="composed-tag-js">
+        <input class="form-check-input" type="checkbox" value="js" id="composed-tag-js">
+        JavaScript
+      </label>
+    </li>
+  </ul>
+</div>`;
+---
+
+<BaseLayout
+  title="Composed examples · Bootstrap HTML"
+  description="Mixed examples of composed elements on existing Bootstrap HTML primitives. No new pe-* elements."
+>
+  <h1>Composed examples</h1>
+  <p class="lead">
+    These are mixed examples of composed elements, not one widget.
+    Different kinds of recipes share this page for now. Each one stacks
+    markup and CSS you already have: popovers, offcanvas, toasts, tabs,
+    progress, buttons, and form checks. No extra
+    <code>pe-*</code>
+    element, and no script that measures or repositions layout. Checked
+    counts use the
+    <a href={sitePath("/forms/output")}><code>&lt;output&gt;</code></a>
+    contract.
+  </p>
+
+  <DocsMeta id="composed" at="start" />
+
+  <div class="alert alert-warning" role="alert">
+    <strong>Experimental in parts.</strong>
+    The sliding tab underline and context-menu tether need CSS Anchor
+    Positioning. The shrinking header and scroll bar need
+    <code>animation-timeline: scroll()</code> (not in Firefox). The
+    progress ring reads <code>attr()</code> into a custom property where
+    that works; examples also set <code>--bs-progress-value</code>.
+    Without those features the controls still work; the extra motion
+    does not. The interest preview needs <code>interestfor</code> and
+    <code>popover="hint"</code>; <code>aria-description</code> stays.
+  </div>
+
+  <h2 class="h4">Context menu</h2>
+  <p>
+    Right-click is the context menu. The
+    <code>contextmenu</code> event also fires from the Menu key or
+    Shift+F10, so that path needs no extra script. Left-click
+    <strong>Actions</strong> is a command menu on a button — useful as a
+    visible control, not a second way to click the same pixel. Both can
+    share one <code>popover="auto"</code>; the invoker is the anchor.
+    Items are buttons, not <code>role="menu"</code>. There is no CSS
+    path from the last pointer coordinates, so a right-click still
+    tethers to the clicked element rather than the pixel.
+    <code>oncontextmenu</code> calls
+    <code>showPopover(&#123; source: event.target &#125;)</code> after
+    <code>preventDefault()</code>.
+  </p>
+
+  <Example
+    title="On a host"
+    lead="Right-click the card (or the paragraph). Left-click Actions to open the same menu from that button."
+    code={contextHostCode}
+  />
+
+  <Example
+    title="From a button"
+    lead="Left-click only. The menu is a command menu, not a context menu."
+    code={contextButtonCode}
+  />
+
+  <h2 class="h4">Drawer with drill-down</h2>
+  <p>
+    A <code>dialog.offcanvas</code> opened with <code>command</code>.
+    Nested <code>details</code> in <code>.nav-tree</code> are the
+    levels. The tree is not tied to the drawer: the same class works
+    on the page. This is not a JavaScript scroll-snap drawer.
+  </p>
+
+  <Example
+    title="Offcanvas tree"
+    lead="Open the drawer, then expand a branch. Summaries are the controls."
+    code={drawerCode}
+  />
+
+  <Example
+    title="On the page"
+    lead="Same .nav-tree without a dialog. Links indent under their parent."
+    code={navTreePageCode}
+  />
+
+  <h2 class="h4">Toast countdown</h2>
+  <p>
+    <code>pe-toast</code> already hides after <code>data-delay</code>.
+    It also sets <code>--pe-toast-delay</code> so a CSS bar can match
+    that time. Hover and focus pause the timer and the bar; leaving
+    starts a full delay again.
+  </p>
+
+  <Example
+    title="Autohide bar"
+    lead="Show the toast. The bar empties with the delay. Hover to pause."
+    code={toastBarCode}
+  />
+
+  <h2 class="h4">Sliding tab underline</h2>
+  <p>
+    Inside <code>pe-tabs</code>, the selected
+    <code>.nav-link[aria-selected="true"]</code> is an anchor. The
+    tablist paints one <code>::after</code>. Ordinary
+    <code>.nav-tabs</code> page links keep Bootstrap’s static border.
+  </p>
+
+  <Example
+    title="Selected tab"
+    lead="Choose a tab. The underline moves with inset, not position-area."
+    code={tabUnderlineCode}
+  />
+
+  <h2 class="h4">Progress ring</h2>
+  <p>
+    <code>&lt;progress class="progress-ring"&gt;</code> is still a
+    progress element. A conic gradient is the fill. Set
+    <code>--bs-progress-value</code> to the same number as
+    <code>value</code> when <code>max</code> is 100. Do not also add
+    <code>.progress</code>; that class is the linear bar.
+  </p>
+
+  <Example
+    title="Determinate rings"
+    lead="25, 70, and 100. .text-info recolors the fill. 100 uses the success token."
+    code={progressRingCode}
+  />
+
+  <h2 class="h4">Scroll progress and shrinking header</h2>
+  <p>
+    Opt-in classes on a nested <code>.scroll-demo</code> scroller, not
+    the site header. The bar is decorative and
+    <code>aria-hidden="true"</code>. There is no scroll-listener
+    fallback.
+  </p>
+
+  <Example
+    title="Nested scroller"
+    lead="Scroll inside the panel. The header shortens over the first 8 rem."
+    code={scrollCode}
+  />
+
+  <h2 class="h4">Checked count</h2>
+  <p>
+    The contract lives on
+    <a href={sitePath("/forms/output")}>Output</a>:
+    <code>&lt;output data-controls&gt;</code> and
+    <code>src/behaviors/count.js</code>. This page only shows recipes
+    that use it.
+  </p>
+
+  <h2 class="h4">Multi-select dropdown</h2>
+  <p>
+    Checkboxes in a <code>popover="auto"</code> menu. They stay there
+    so a closed popover is not in the tab order. The same
+    <code>&lt;output data-controls&gt;</code> sits beside the toggle as a
+    positioned badge. The button name stays “Tags”.
+    <code>:has(:checked)</code> hides the badge when nothing is selected.
+    This is not <code>&lt;select multiple&gt;</code>.
+  </p>
+
+  <Example
+    title="Counted checks"
+    lead="Open the menu and toggle tags. The pill tracks how many are checked, including when the menu is closed."
+    code={multiselectCode}
+  />
+
+  <h2 class="h4">Filter drawer</h2>
+  <p>
+    The same <code>&lt;output data-controls&gt;</code> sits beside the
+    toggle. The checkboxes live in an offcanvas, so count is not a
+    dropdown feature.
+  </p>
+
+  <Example
+    title="Offcanvas filters"
+    lead="Open the drawer and toggle filters. The badge updates while the drawer is open or closed."
+    code={filterDrawerCode}
+  />
+
+  <h2 class="h4">Lightbox</h2>
+  <p>
+    A <code>&lt;dialog class="modal"&gt;</code> with an
+    <code>&lt;img&gt;</code>. <code>command="show-modal"</code> opens
+    it. There is no script.
+  </p>
+
+  <Example
+    title="Photo dialog"
+    lead="Open the dialog. Escape or the close button dismisses it."
+    code={lightboxCode}
+  />
+
+  <h2 class="h4">Confirm then toast</h2>
+  <p>
+    <code>&lt;form method="dialog"&gt;</code> sets
+    <code>returnValue</code>. A small page script shows the toast only
+    after Delete — the same pattern as the meter playground. Cancel
+    does nothing. This is not a new behavior.
+  </p>
+
+  <Example
+    title="Delete file"
+    lead="Confirm to show the toast. Cancel closes the dialog only."
+    code={confirmToastCode}
+  />
+
+  <h2 class="h4">Command palette</h2>
+  <p>
+    A <code>&lt;dialog&gt;</code>, a <code>&lt;search&gt;</code>
+    landmark, and a static list of links.
+    <code>&lt;datalist&gt;</code> is the typeahead. Do not filter the
+    list with script.
+  </p>
+
+  <Example
+    title="Jump to"
+    lead="Open the dialog. Type to see suggestions. The links stay visible."
+    code={paletteCode}
+  />
+
+  <h2 class="h4">Price toggle</h2>
+  <p>
+    Radio <code>.btn-check</code> from
+    <a href={sitePath("/components/buttons")}>Buttons</a>.
+    <code>:has(:checked)</code> switches the visible price. No script.
+  </p>
+
+  <Example
+    title="Monthly or yearly"
+    lead="Choose yearly. The price switches in CSS. Without :has() the monthly price stays."
+    code={priceToggleCode}
+  />
+
+  <h2 class="h4">Interest preview</h2>
+  <p>
+    Experimental. <code>interestfor</code> plus
+    <code>popover="hint"</code> with more than a one-line tooltip.
+    The polyfill covers hover and focus, not
+    <code>popover="hint"</code>.
+    <code>aria-description</code> stays the no-script fallback. Do not
+    announce the preview from a live region.
+  </p>
+
+  <Example
+    title="Link card"
+    lead="Hover or focus Progress. The hint is a short card. The description remains if hint is missing."
+    code={previewCode}
+  />
+
+  <DocsMeta id="composed" at="end" />
+
+  <script>
+    import "../../behaviors/tabs.js";
+    import "../../behaviors/toast.js";
+    import "../../behaviors/count.js";
+
+    const dialog = document.getElementById("composed-delete");
+    const toast = document.getElementById("composed-deleted");
+    dialog?.addEventListener("close", () => {
+      if (dialog instanceof HTMLDialogElement && dialog.returnValue === "delete") {
+        toast?.showPopover?.();
+      }
+    });
+  </script>
+</BaseLayout>

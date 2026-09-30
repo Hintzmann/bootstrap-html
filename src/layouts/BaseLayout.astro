@@ -1,0 +1,256 @@
+---
+import "../scss/bootstrap-html.scss";
+import "../scss/docs.scss";
+import DocsNav from "../components/DocsNav.astro";
+import { sitePath } from "../lib/path.js";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+interface TocItem {
+  id: string;
+  text: string;
+}
+
+const { title, description } = Astro.props;
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+
+const rendered = await Astro.slots.render("default");
+const toc: TocItem[] = [];
+const usedIds = new Set<string>();
+
+function headingText(inner: string) {
+  return inner
+    .replace(/<[^>]+>/g, "")
+    .replace(/&quot;|&#34;/g, '"')
+    .replace(/&apos;|&#39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function slugify(text: string) {
+  const slug = text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return slug || "section";
+}
+
+function uniqueId(id: string) {
+  let next = id;
+  let n = 2;
+  while (usedIds.has(next)) next = `${id}-${n++}`;
+  usedIds.add(next);
+  return next;
+}
+
+const content = rendered.replace(
+  /<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi,
+  (match, attrs = "", inner: string) => {
+    const className = attrs.match(/\sclass="([^"]*)"/)?.[1] ?? "";
+    if (!/\bh[34]\b/.test(className)) return match;
+
+    const text = headingText(inner);
+    if (!text) return match;
+
+    const existing = attrs.match(/\sid="([^"]+)"/)?.[1];
+    const id = uniqueId(existing || slugify(text));
+    toc.push({ id, text });
+    if (existing === id) return match;
+    const withoutId = attrs.replace(/\sid="[^"]*"/, "");
+    return `<h2 id="${id}"${withoutId}>${inner}</h2>`;
+  },
+);
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    {canonical && <link rel="canonical" href={canonical.href} />}
+    {canonical && <meta property="og:url" content={canonical.href} />}
+    <title>{title}</title>
+    <script is:inline>
+      {
+        const key = "color-scheme";
+        const meta = document.querySelector('meta[name="color-scheme"]');
+        const stored = localStorage.getItem(key);
+        const pinned = stored === "light" || stored === "dark";
+        const systemDark = matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = pinned ? stored : systemDark ? "dark" : "light";
+        document.documentElement.setAttribute("data-bs-theme", theme);
+        if (meta) meta.content = pinned ? stored : "light dark";
+      }
+    </script>
+    <script>
+      import "../polyfills/index.js";
+    </script>
+  </head>
+  <body>
+    <a class="visually-hidden-focusable docs-skip" href="#content">Skip to content</a>
+    <header class="navbar sticky-top docs-header bg-body border-bottom">
+      <div class="container-xxl">
+        <div class="d-flex align-items-center w-100">
+          <button
+            type="button"
+            class="navbar-toggler d-lg-none me-2"
+            command="show-modal"
+            commandfor="docs-nav"
+            aria-controls="docs-nav"
+            aria-label="Open documentation menu"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a class="navbar-brand mb-0" href={sitePath("/")}>Bootstrap HTML</a>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm ms-auto"
+            id="docs-theme"
+          >
+            Theme
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <dialog
+      class="offcanvas offcanvas-start w-100"
+      id="docs-nav"
+      closedby="any"
+      aria-labelledby="docs-nav-label"
+    >
+      <div class="offcanvas-header border-bottom">
+        <h2 class="offcanvas-title h5 mb-0" id="docs-nav-label">Documentation</h2>
+        <button
+          type="button"
+          class="btn-close"
+          command="close"
+          commandfor="docs-nav"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <nav aria-label="Documentation">
+          <DocsNav pathname={pathname} />
+        </nav>
+      </div>
+    </dialog>
+
+    <div class="container-xxl">
+      <div class="row docs-layout">
+        <div class="col-lg-3 col-xl-2 d-none d-lg-block docs-rail">
+          <nav
+            class="sticky-top docs-sticky overflow-y-auto py-4"
+            aria-label="Documentation"
+          >
+            <DocsNav pathname={pathname} />
+          </nav>
+        </div>
+
+        <main id="content" class="col-lg-9 col-xl-8 py-4" tabindex="-1">
+          {
+            toc.length > 0 && (
+              <details class="d-xl-none border rounded mb-4">
+                <summary class="px-3 py-2 fw-semibold">On this page</summary>
+                <nav class="px-3 pb-3" aria-label="On this page">
+                  <ul class="nav flex-column docs-toc">
+                    {toc.map((item) => (
+                      <li class="nav-item">
+                        <a class="nav-link" href={`#${item.id}`}>
+                          {item.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </details>
+            )
+          }
+          <Fragment set:html={content} />
+        </main>
+
+        {
+          toc.length > 0 && (
+            <div class="col-xl-2 d-none d-xl-block docs-rail">
+              <nav
+                class="sticky-top docs-sticky overflow-y-auto py-4 small"
+                aria-label="On this page"
+                data-polyfill-scrollspy
+              >
+                <h2 class="h6">On this page</h2>
+                <ul class="nav flex-column docs-toc">
+                  {toc.map((item) => (
+                    <li class="nav-item">
+                      <a class="nav-link" href={`#${item.id}`}>
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          )
+        }
+      </div>
+    </div>
+    <script is:inline>
+      {
+        const key = "color-scheme";
+        const button = document.getElementById("docs-theme");
+        const meta = document.querySelector('meta[name="color-scheme"]');
+        const query = matchMedia("(prefers-color-scheme: dark)");
+
+        function pinnedTheme() {
+          const stored = localStorage.getItem(key);
+          return stored === "light" || stored === "dark" ? stored : null;
+        }
+
+        function apply(pinned) {
+          const theme = pinned ?? (query.matches ? "dark" : "light");
+          document.documentElement.setAttribute("data-bs-theme", theme);
+          if (meta) meta.content = pinned ?? "light dark";
+          const followingSystem = pinned === null;
+          button.textContent = followingSystem ? (theme === "dark" ? "Light" : "Dark") : "System";
+          button.setAttribute("aria-pressed", followingSystem ? "false" : "true");
+          button.setAttribute(
+            "aria-label",
+            followingSystem
+              ? `Use ${theme === "dark" ? "light" : "dark"} theme`
+              : "Use system theme",
+          );
+        }
+
+        apply(pinnedTheme());
+
+        query.addEventListener("change", () => {
+          if (pinnedTheme() === null) apply(null);
+        });
+
+        button.addEventListener("click", () => {
+          const pinned = pinnedTheme();
+          if (pinned) {
+            localStorage.removeItem(key);
+            apply(null);
+            return;
+          }
+          const next = query.matches ? "light" : "dark";
+          localStorage.setItem(key, next);
+          apply(next);
+        });
+      }
+    </script>
+  </body>
+</html>

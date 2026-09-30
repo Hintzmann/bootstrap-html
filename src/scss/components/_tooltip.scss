@@ -1,0 +1,376 @@
+// Native tooltip — Bootstrap 5.3.8 styles on CSS generated content and hint popovers
+// aria-description                 no-script fallback (plain text; replaces data-bs-title)
+// ::after                          .tooltip-inner via content: attr(aria-description)
+// ::before                         .tooltip-arrow
+// .tooltip[popover="hint"]         top-layer bubble (Chrome 151+, Firefox 153+)
+// interestfor                      hover/focus/long-press invoker (Chrome 142+; experimental)
+// .bs-tooltip-{top,end,bottom,start}  placement (replaces Popper / data-bs-placement)
+// .bs-tooltip-auto[popover]        position-try-fallbacks (CSS fallback auto stays top)
+// :hover / :focus-within           CSS fallback trigger
+// interest-delay-start / -end      native delay (replaces data-bs-delay)
+
+
+.tooltip,
+[class*="bs-tooltip-"] {
+  // scss-docs-start tooltip-css-vars
+  --#{$prefix}tooltip-zindex: #{$zindex-tooltip};
+  --#{$prefix}tooltip-max-width: #{$tooltip-max-width};
+  --#{$prefix}tooltip-padding-x: #{$tooltip-padding-x};
+  --#{$prefix}tooltip-padding-y: #{$tooltip-padding-y};
+  --#{$prefix}tooltip-margin: #{$tooltip-margin};
+  @include rfs($tooltip-font-size, --#{$prefix}tooltip-font-size);
+  --#{$prefix}tooltip-color: #{$tooltip-color};
+  --#{$prefix}tooltip-bg: #{$tooltip-bg};
+  --#{$prefix}tooltip-border-radius: #{$tooltip-border-radius};
+  --#{$prefix}tooltip-opacity: #{$tooltip-opacity};
+  --#{$prefix}tooltip-arrow-width: #{$tooltip-arrow-width};
+  --#{$prefix}tooltip-arrow-height: #{$tooltip-arrow-height};
+  // scss-docs-end tooltip-css-vars
+}
+
+[class*="bs-tooltip-"] {
+  position: relative;
+
+  &:is(:hover, :focus-within) {
+    z-index: var(--#{$prefix}tooltip-zindex);
+  }
+}
+
+[class*="bs-tooltip-"][aria-description]:not([aria-description=""]) {
+  &::after {
+    position: absolute;
+    z-index: var(--#{$prefix}tooltip-zindex);
+    display: block;
+    width: max-content;
+    max-width: var(--#{$prefix}tooltip-max-width);
+    padding: var(--#{$prefix}tooltip-padding-y) var(--#{$prefix}tooltip-padding-x);
+    color: var(--#{$prefix}tooltip-color);
+    text-align: center;
+    text-decoration: none;
+    word-wrap: break-word;
+    white-space: normal;
+    pointer-events: none;
+    // Alternative text is empty so AT uses aria-description, not a second copy.
+    content: attr(aria-description) #{"/ \"\""};
+    background-color: var(--#{$prefix}tooltip-bg);
+    opacity: 0;
+    transition: opacity .15s linear;
+    @include reset-text();
+    @include font-size(var(--#{$prefix}tooltip-font-size));
+    @include border-radius(var(--#{$prefix}tooltip-border-radius));
+  }
+
+  &::before {
+    position: absolute;
+    z-index: var(--#{$prefix}tooltip-zindex);
+    display: block;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    content: "" #{"/ \"\""};
+    border-style: solid;
+    opacity: 0;
+    transition: opacity .15s linear;
+  }
+
+  &:is(:hover, :focus-within) {
+    &::before,
+    &::after {
+      opacity: var(--#{$prefix}tooltip-opacity);
+    }
+  }
+}
+
+@if $enable-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    [class*="bs-tooltip-"][aria-description] {
+      &::before,
+      &::after {
+        transition: none;
+      }
+    }
+  }
+}
+
+.bs-tooltip-top[aria-description]:not([aria-description=""]) {
+  &::after {
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: var(--#{$prefix}tooltip-arrow-height);
+    translate: -50% 0;
+  }
+
+  &::before {
+    bottom: 100%;
+    left: 50%;
+    border-color: var(--#{$prefix}tooltip-bg) transparent transparent;
+    border-width: var(--#{$prefix}tooltip-arrow-height) calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+    translate: -50% 0;
+  }
+}
+
+/* rtl:begin:ignore */
+.bs-tooltip-end[aria-description]:not([aria-description=""]) {
+  &::after {
+    top: 50%;
+    left: 100%;
+    margin-left: var(--#{$prefix}tooltip-arrow-height);
+    translate: 0 -50%;
+  }
+
+  &::before {
+    top: 50%;
+    left: 100%;
+    border-color: transparent var(--#{$prefix}tooltip-bg) transparent transparent;
+    border-width: calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height) calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+    translate: 0 -50%;
+  }
+}
+
+/* rtl:end:ignore */
+
+.bs-tooltip-bottom[aria-description]:not([aria-description=""]) {
+  &::after {
+    top: 100%;
+    left: 50%;
+    margin-top: var(--#{$prefix}tooltip-arrow-height);
+    translate: -50% 0;
+  }
+
+  &::before {
+    top: 100%;
+    left: 50%;
+    border-color: transparent transparent var(--#{$prefix}tooltip-bg);
+    border-width: 0 calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height); // stylelint-disable-line function-disallowed-list
+    translate: -50% 0;
+  }
+}
+
+/* rtl:begin:ignore */
+.bs-tooltip-start[aria-description]:not([aria-description=""]) {
+  &::after {
+    top: 50%;
+    right: 100%;
+    margin-right: var(--#{$prefix}tooltip-arrow-height);
+    translate: 0 -50%;
+  }
+
+  &::before {
+    top: 50%;
+    right: 100%;
+    border-color: transparent transparent transparent var(--#{$prefix}tooltip-bg);
+    border-width: calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0 calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height); // stylelint-disable-line function-disallowed-list
+    translate: 0 -50%;
+  }
+}
+
+/* rtl:end:ignore */
+
+// Hint popover: top-layer bubble. interestfor makes the trigger the implicit anchor.
+.tooltip {
+  z-index: var(--#{$prefix}tooltip-zindex);
+  @include reset-text();
+  @include font-size(var(--#{$prefix}tooltip-font-size));
+  word-wrap: break-word;
+
+  .tooltip-arrow {
+    position: absolute;
+    display: block;
+    width: var(--#{$prefix}tooltip-arrow-width);
+    height: var(--#{$prefix}tooltip-arrow-height);
+
+    &::before {
+      position: absolute;
+      content: "";
+      border-color: transparent;
+      border-style: solid;
+    }
+  }
+
+  // Popover API: UA sets position:fixed; inset:0; margin:auto. Reset here.
+  &[popover] {
+    position: fixed;
+    position-anchor: auto;
+    inset: unset;
+    width: max-content;
+    max-width: var(--#{$prefix}tooltip-max-width);
+    height: max-content;
+    max-height: none;
+    margin: 0;
+    overflow: visible;
+    color: var(--#{$prefix}tooltip-color);
+    background-color: transparent;
+    border-width: 0;
+    opacity: 0;
+    transition: $transition-fade, overlay .15s linear allow-discrete, display .15s linear allow-discrete;
+
+    &:popover-open {
+      display: block;
+      opacity: var(--#{$prefix}tooltip-opacity);
+    }
+  }
+}
+
+@starting-style {
+  .tooltip[popover]:popover-open {
+    opacity: 0;
+  }
+}
+
+@if $enable-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    .tooltip[popover] {
+      transition: none;
+    }
+  }
+}
+
+.tooltip-inner {
+  max-width: var(--#{$prefix}tooltip-max-width);
+  padding: var(--#{$prefix}tooltip-padding-y) var(--#{$prefix}tooltip-padding-x);
+  color: var(--#{$prefix}tooltip-color);
+  text-align: center;
+  background-color: var(--#{$prefix}tooltip-bg);
+  @include border-radius(var(--#{$prefix}tooltip-border-radius));
+}
+
+.bs-tooltip-top {
+  > .tooltip-arrow {
+    bottom: calc(-1 * var(--#{$prefix}tooltip-arrow-height)); // stylelint-disable-line function-disallowed-list
+    left: 50%;
+    translate: -50% 0;
+
+    &::before {
+      top: -1px;
+      border-width: var(--#{$prefix}tooltip-arrow-height) calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+      border-top-color: var(--#{$prefix}tooltip-bg);
+    }
+  }
+
+  &[popover] {
+    top: unset;
+    right: unset;
+    bottom: anchor(top);
+    left: anchor(center);
+    margin: 0;
+    margin-bottom: var(--#{$prefix}tooltip-arrow-height);
+    translate: -50% 0;
+  }
+}
+
+/* rtl:begin:ignore */
+.bs-tooltip-end {
+  > .tooltip-arrow {
+    top: 50%;
+    left: calc(-1 * var(--#{$prefix}tooltip-arrow-height)); // stylelint-disable-line function-disallowed-list
+    width: var(--#{$prefix}tooltip-arrow-height);
+    height: var(--#{$prefix}tooltip-arrow-width);
+    translate: 0 -50%;
+
+    &::before {
+      right: -1px;
+      border-width: calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height) calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0; // stylelint-disable-line function-disallowed-list
+      border-right-color: var(--#{$prefix}tooltip-bg);
+    }
+  }
+
+  &[popover] {
+    top: anchor(center);
+    right: unset;
+    bottom: unset;
+    left: anchor(right);
+    margin: 0;
+    margin-left: var(--#{$prefix}tooltip-arrow-height);
+    translate: 0 -50%;
+  }
+}
+
+/* rtl:end:ignore */
+
+.bs-tooltip-bottom {
+  > .tooltip-arrow {
+    top: calc(-1 * var(--#{$prefix}tooltip-arrow-height)); // stylelint-disable-line function-disallowed-list
+    left: 50%;
+    translate: -50% 0;
+
+    &::before {
+      bottom: -1px;
+      border-width: 0 calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height); // stylelint-disable-line function-disallowed-list
+      border-bottom-color: var(--#{$prefix}tooltip-bg);
+    }
+  }
+
+  &[popover] {
+    top: anchor(bottom);
+    right: unset;
+    bottom: unset;
+    left: anchor(center);
+    margin: 0;
+    margin-top: var(--#{$prefix}tooltip-arrow-height);
+    translate: -50% 0;
+  }
+}
+
+/* rtl:begin:ignore */
+.bs-tooltip-start {
+  > .tooltip-arrow {
+    top: 50%;
+    right: calc(-1 * var(--#{$prefix}tooltip-arrow-height)); // stylelint-disable-line function-disallowed-list
+    width: var(--#{$prefix}tooltip-arrow-height);
+    height: var(--#{$prefix}tooltip-arrow-width);
+    translate: 0 -50%;
+
+    &::before {
+      left: -1px;
+      border-width: calc(var(--#{$prefix}tooltip-arrow-width) * .5) 0 calc(var(--#{$prefix}tooltip-arrow-width) * .5) var(--#{$prefix}tooltip-arrow-height); // stylelint-disable-line function-disallowed-list
+      border-left-color: var(--#{$prefix}tooltip-bg);
+    }
+  }
+
+  &[popover] {
+    top: anchor(center);
+    right: anchor(left);
+    bottom: unset;
+    left: unset;
+    margin: 0;
+    margin-right: var(--#{$prefix}tooltip-arrow-height);
+    translate: 0 -50%;
+  }
+}
+
+/* rtl:end:ignore */
+
+// CSS fallback auto cannot reorient; it matches top. A hint popover with
+// .bs-tooltip-auto also gets that top placement, then try-fallbacks flips it.
+// Anchored container queries would restyle the arrow after a flip, but
+// lightningcss (Astro’s CSS minify) cannot parse `@container anchored()`.
+.bs-tooltip-auto {
+  @extend .bs-tooltip-top;
+}
+
+.tooltip[popover].bs-tooltip-auto {
+  position-try-fallbacks: #{"flip-block, flip-inline"};
+}
+
+// Default placement is top, matching Bootstrap, when no .bs-tooltip-* is set.
+.tooltip[popover]:not([class*="bs-tooltip-"]) {
+  top: unset;
+  right: unset;
+  bottom: anchor(top);
+  left: anchor(center);
+  margin: 0;
+  margin-bottom: var(--#{$prefix}tooltip-arrow-height);
+  translate: -50% 0;
+}
+
+// Bootstrap’s delay option is 0 by default. Native interestfor uses a UA delay;
+// zero these so hint tooltips match the CSS fallback unless the author sets
+// --bs-tooltip-delay-start / --bs-tooltip-delay-end on the trigger.
+[interestfor]:has(+ .tooltip[popover]),
+:has(> .tooltip[popover]) > [interestfor] {
+  // Native properties plus custom properties: the polyfill reads --interest-delay-*.
+  --interest-delay-start: var(--#{$prefix}tooltip-delay-start, 0s);
+  --interest-delay-end: var(--#{$prefix}tooltip-delay-end, 0s);
+  interest-delay-start: var(--#{$prefix}tooltip-delay-start, 0s); // stylelint-disable-line property-no-unknown
+  interest-delay-end: var(--#{$prefix}tooltip-delay-end, 0s); // stylelint-disable-line property-no-unknown
+}

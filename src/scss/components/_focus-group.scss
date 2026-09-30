@@ -1,0 +1,5 @@
+// The element is unknown until focus-group.js runs, and unknown elements
+// are inline. contents keeps the wrapper out of layout either way.
+pe-focus-group {
+  display: contents;
+}

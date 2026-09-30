@@ -1,0 +1,204 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const liveDemoCode = `<span class="d-inline-block">
+  <button type="button" class="btn btn-lg btn-danger" command="toggle-popover" commandfor="popoverLive">
+    Click to toggle popover
+  </button>
+  <div class="popover bs-popover-end" popover="auto" id="popoverLive">
+    <div class="popover-arrow"></div>
+    <h3 class="popover-header">Popover title</h3>
+    <div class="popover-body">And here’s some amazing content. It’s very engaging. Right?</div>
+  </div>
+</span>`;
+
+const directionsCode = `<div class="d-flex flex-wrap justify-content-center gap-2">
+  <span class="d-inline-block">
+    <button type="button" class="btn btn-secondary" command="toggle-popover" commandfor="popoverTop">
+      Popover on top
+    </button>
+    <div class="popover bs-popover-top" popover="auto" id="popoverTop">
+      <div class="popover-arrow"></div>
+      <div class="popover-body">Top popover</div>
+    </div>
+  </span>
+  <span class="d-inline-block">
+    <button type="button" class="btn btn-secondary" command="toggle-popover" commandfor="popoverEnd">
+      Popover on right
+    </button>
+    <div class="popover bs-popover-end" popover="auto" id="popoverEnd">
+      <div class="popover-arrow"></div>
+      <div class="popover-body">Right popover</div>
+    </div>
+  </span>
+  <span class="d-inline-block">
+    <button type="button" class="btn btn-secondary" command="toggle-popover" commandfor="popoverBottom">
+      Popover on bottom
+    </button>
+    <div class="popover bs-popover-bottom" popover="auto" id="popoverBottom">
+      <div class="popover-arrow"></div>
+      <div class="popover-body">Bottom popover</div>
+    </div>
+  </span>
+  <span class="d-inline-block">
+    <button type="button" class="btn btn-secondary" command="toggle-popover" commandfor="popoverStart">
+      Popover on left
+    </button>
+    <div class="popover bs-popover-start" popover="auto" id="popoverStart">
+      <div class="popover-arrow"></div>
+      <div class="popover-body">Left popover</div>
+    </div>
+  </span>
+</div>`;
+
+const customCode = `<span class="d-inline-block">
+  <button type="button" class="btn btn-secondary" command="toggle-popover" commandfor="popoverCustom">
+    Custom popover
+  </button>
+  <div class="popover bs-popover-end custom-popover" popover="auto" id="popoverCustom">
+    <div class="popover-arrow"></div>
+    <h3 class="popover-header">Custom popover</h3>
+    <div class="popover-body">This popover is themed via CSS variables.</div>
+  </div>
+</span>`;
+
+const dismissCode = `<span class="d-inline-block">
+  <button type="button" class="btn btn-lg btn-danger" command="toggle-popover" commandfor="popoverDismiss">
+    Dismissible popover
+  </button>
+  <div class="popover bs-popover-end" popover="auto" id="popoverDismiss">
+    <div class="popover-arrow"></div>
+    <h3 class="popover-header">Dismissible popover</h3>
+    <div class="popover-body">And here’s some amazing content. It’s very engaging. Right?</div>
+  </div>
+</span>`;
+
+const disabledCode = `<span class="d-inline-block">
+  <button type="button" class="border-0 bg-transparent p-0" command="toggle-popover" commandfor="popoverDisabled">
+    <span class="btn btn-primary disabled">Disabled button</span>
+  </button>
+  <div class="popover bs-popover-end" popover="auto" id="popoverDisabled">
+    <div class="popover-arrow"></div>
+    <div class="popover-body">Disabled popover</div>
+  </div>
+</span>`;
+---
+
+<BaseLayout
+  title="Popover · Bootstrap HTML"
+  description="Native HTML popovers using the Popover API and CSS Anchor Positioning, styled with Bootstrap 5.3.8."
+>
+  <h1>Popover</h1>
+  <p class="lead">
+    Contextual bubbles with the Popover API
+    (<code>popover=&quot;auto&quot;</code>) and CSS Anchor Positioning. The
+    browser handles stacking, light-dismiss, and placement — no Popover
+    plugin and no Popper.
+  </p>
+
+  <DocsMeta id="popover" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>command=&quot;toggle-popover&quot;</code> and
+      <code>commandfor</code> replace
+      <code>data-bs-toggle=&quot;popover&quot;</code>. There is no
+      initialize-with-JS step.
+    </li>
+    <li>
+      Title and body live in the markup as
+      <code>.popover-header</code> and <code>.popover-body</code>, not in
+      <code>data-bs-title</code> / <code>data-bs-content</code>.
+    </li>
+    <li>
+      The bubble is <code>.popover</code> with
+      <code>popover=&quot;auto&quot;</code>. The browser puts it in the top
+      layer and closes it on outside click or Escape.
+    </li>
+    <li>
+      CSS Anchor Positioning tethers the bubble to the trigger that opened
+      it (the popover invoker). Add
+      <code>.bs-popover-top</code>, <code>.bs-popover-end</code>,
+      <code>.bs-popover-bottom</code>, or <code>.bs-popover-start</code>
+      instead of <code>data-bs-placement</code>. Default placement is
+      right, matching Bootstrap.
+    </li>
+    <li>
+      Keep the trigger and the popover as siblings so the invoker
+      relationship is obvious in the markup.
+    </li>
+    <li>
+      <code>command</code> works on <code>&lt;button&gt;</code>, not
+      <code>&lt;a href&gt;</code>.
+    </li>
+    <li>
+      Only one <code>popover=&quot;auto&quot;</code> bubble is open at a
+      time.
+    </li>
+    <li>
+      Top-layer popovers are not clipped by overflow, so
+      <code>container: &apos;body&apos;</code> is not needed. Put the
+      popover markup inside a modal if it must participate in that
+      dialog’s focus.
+    </li>
+  </ul>
+
+  <Example
+    title="Live demo"
+    lead="Titles and body content are real HTML in .popover-header and .popover-body. Click the button to toggle."
+    code={liveDemoCode}
+  />
+
+  <Example
+    title="Four directions"
+    lead="Four options are available: top, right, bottom, and left. Directions are mirrored when using Bootstrap in RTL. Add .bs-popover-top, .bs-popover-end, .bs-popover-bottom, or .bs-popover-start."
+    code={directionsCode}
+  >
+    <div slot="alert" class="alert alert-info" role="alert">
+      Popper’s <code>fallbackPlacements</code> / auto-reorient would move
+      the arrow to a new side. Without JavaScript the
+      <code>.bs-popover-*</code> arrow stays on the class you set, so
+      pick an explicit placement instead of <code>auto</code>.
+    </div>
+  </Example>
+
+  <Example
+    title="Custom popovers"
+    lead="Customize appearance with CSS variables on a class on the .popover element (Bootstrap’s data-bs-custom-class injected that class from JS)."
+    code={customCode}
+  />
+
+  <Example
+    title="Dismiss on next click"
+    lead="popover=&quot;auto&quot; already light-dismisses on the next click outside the bubble (and on Escape)."
+    code={dismissCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Bootstrap’s <code>data-bs-trigger=&quot;focus&quot;</code> requires an
+      <code>&lt;a tabindex=&quot;0&quot;&gt;</code> and JavaScript.
+      Native light-dismiss is the same user-visible behavior on a
+      <code>&lt;button&gt;</code>. Hover and focus-only triggers are not
+      available without script.
+    </div>
+  </Example>
+
+  <Example
+    title="Disabled elements"
+    lead="A disabled control cannot be a command invoker. Wrap a .btn.disabled span in a button that toggles the popover."
+    code={disabledCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Bootstrap triggers the popover from a wrapper
+      <code>&lt;span tabindex=&quot;0&quot;&gt;</code>. Invoker Commands
+      require a <code>&lt;button&gt;</code>, so the wrapper is a
+      transparent button around a visually disabled
+      <code>.btn.disabled</code>. Hover/focus as the only trigger is not
+      native.
+    </div>
+  </Example>
+
+  <DocsMeta id="popover" at="end" />
+</BaseLayout>

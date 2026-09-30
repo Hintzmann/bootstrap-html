@@ -1,0 +1,331 @@
+// Native progress — Bootstrap 5.3.8 tokens on <progress class="progress">
+// appearance: none plus ::-webkit-progress-* / ::-moz-progress-bar so the
+// bar uses --bs-progress-* instead of an inner .progress-bar div.
+// :indeterminate (no value) is the animated stripe. <meter class="meter">
+// has no Bootstrap equivalent; it reuses the progress height and radius.
+//
+// Windows Chromium’s appearance: auto is a thin native gauge. appearance:
+// none plus host-painted fill layers (danger on the host, warning on
+// ::before, success on ::after) match Firefox’s full-height bar. ::after’s
+// box-shadow, clipped by overflow, is the unfilled track.
+//
+// Chromium does not animate or reposition backgrounds on
+// ::-webkit-progress-value. Determinate `.progress-bar-animated` paints the
+// moving stripe on the host; ::after covers the unfilled track, anchored to
+// the native fill.
+
+progress.progress {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: var(--#{$prefix}progress-bar-bg);
+  appearance: none;
+  accent-color: var(--#{$prefix}progress-bar-bg);
+  border: 0;
+
+  &::-webkit-progress-bar {
+    background-color: var(--#{$prefix}progress-bg);
+    @include border-radius(var(--#{$prefix}progress-border-radius));
+    @include box-shadow(var(--#{$prefix}progress-box-shadow));
+  }
+
+  &::-webkit-progress-value {
+    background-color: currentcolor;
+    @include transition(var(--#{$prefix}progress-bar-transition));
+  }
+
+  &::-moz-progress-bar {
+    background-color: currentcolor;
+    @include transition(var(--#{$prefix}progress-bar-transition));
+  }
+}
+
+// Bootstrap’s .progress-bar-striped would otherwise paint the whole track.
+// Chromium also ignores fill background-image, so the stripe lives on the host
+// and ::after covers the unfilled portion, scoped per instance.
+progress.progress.progress-bar-striped {
+  position: relative;
+  anchor-scope: --#{$prefix}progress-fill;
+  @include gradient-striped();
+  background-color: currentcolor;
+  background-size: var(--#{$prefix}progress-height) var(--#{$prefix}progress-height);
+
+  &::-webkit-progress-bar,
+  &::-webkit-progress-value {
+    background-color: transparent;
+    background-image: none;
+  }
+
+  &::-webkit-progress-value {
+    anchor-name: --#{$prefix}progress-fill;
+  }
+
+  &::after {
+    position: absolute;
+    position-anchor: --#{$prefix}progress-fill;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: anchor(right);
+    pointer-events: none;
+    content: "";
+    background-color: var(--#{$prefix}progress-bg);
+  }
+}
+
+// Firefox paints the fill on ::-moz-progress-bar.
+progress.progress.progress-bar-striped::-moz-progress-bar {
+  background-color: transparent;
+  background-image: linear-gradient(45deg, rgba($white, .15) 25%, transparent 25%, transparent 50%, rgba($white, .15) 50%, rgba($white, .15) 75%, transparent 75%, transparent), linear-gradient(currentcolor, currentcolor);
+  background-size: var(--#{$prefix}progress-height) var(--#{$prefix}progress-height);
+}
+
+@if $enable-transitions {
+  progress.progress.progress-bar-striped.progress-bar-animated {
+    animation: $progress-bar-animation-timing progress-bar-stripes;
+  }
+
+  progress.progress:indeterminate {
+    @include gradient-striped();
+    background-color: currentcolor;
+    background-size: var(--#{$prefix}progress-height) var(--#{$prefix}progress-height);
+    animation: $progress-bar-animation-timing progress-bar-stripes;
+  }
+
+  progress.progress:indeterminate::-webkit-progress-bar {
+    background-color: transparent;
+  }
+
+  progress.progress:indeterminate::-webkit-progress-value,
+  progress.progress:indeterminate::-moz-progress-bar {
+    background-color: transparent;
+  }
+
+  // Firefox paints the fill on ::-moz-progress-bar, which can animate.
+  @supports not selector(::-webkit-progress-value) {
+    progress.progress.progress-bar-striped {
+      background-color: var(--#{$prefix}progress-bg);
+      background-image: none;
+
+      &::after {
+        content: none;
+      }
+    }
+
+    progress.progress.progress-bar-striped.progress-bar-animated {
+      animation: none;
+    }
+
+    progress.progress.progress-bar-animated::-moz-progress-bar {
+      animation: $progress-bar-animation-timing progress-bar-stripes;
+    }
+  }
+
+  @if $enable-reduced-motion {
+    @media (prefers-reduced-motion: reduce) {
+      progress.progress.progress-bar-striped.progress-bar-animated,
+      progress.progress:indeterminate {
+        animation: none;
+      }
+    }
+  }
+}
+
+meter.meter {
+  // .progress defines these tokens. Meter is not that class.
+  --#{$prefix}progress-height: #{$progress-height};
+  --#{$prefix}progress-bg: #{$progress-bg};
+  --#{$prefix}progress-border-radius: #{$progress-border-radius};
+  --#{$prefix}progress-box-shadow: #{$progress-box-shadow};
+
+  display: block;
+  width: 100%;
+  height: var(--#{$prefix}progress-height);
+  overflow: hidden;
+  appearance: none;
+  background-color: var(--#{$prefix}progress-bg);
+  border: 0;
+  @include border-radius(var(--#{$prefix}progress-border-radius));
+  @include box-shadow(var(--#{$prefix}progress-box-shadow));
+
+  &::-webkit-meter-inner-element {
+    display: block;
+    width: 100%;
+    height: var(--#{$prefix}progress-height);
+    border: 0;
+  }
+
+  &::-webkit-meter-bar {
+    width: 100%;
+    height: var(--#{$prefix}progress-height);
+    background: var(--#{$prefix}progress-bg);
+    border: 0;
+    @include border-radius(var(--#{$prefix}progress-border-radius));
+  }
+
+  &::-webkit-meter-optimum-value,
+  &::-webkit-meter-suboptimum-value,
+  &::-webkit-meter-even-less-good-value {
+    height: var(--#{$prefix}progress-height);
+    border: 0;
+  }
+
+  &::-webkit-meter-optimum-value {
+    background: var(--#{$prefix}success);
+  }
+
+  &::-webkit-meter-suboptimum-value {
+    background: var(--#{$prefix}warning);
+  }
+
+  &::-webkit-meter-even-less-good-value {
+    background: var(--#{$prefix}danger);
+  }
+
+  // stylelint-disable selector-pseudo-class-no-unknown
+  &:-moz-meter-optimum::-moz-meter-bar {
+    background: var(--#{$prefix}success);
+  }
+
+  &:-moz-meter-sub-optimum::-moz-meter-bar {
+    background: var(--#{$prefix}warning);
+  }
+
+  &:-moz-meter-sub-sub-optimum::-moz-meter-bar {
+    background: var(--#{$prefix}danger);
+  }
+  // stylelint-enable selector-pseudo-class-no-unknown
+}
+
+// Chromium: native value is a thin box. Host is danger, ::before is warning,
+// ::after is success. Each fill is the native value’s width; overflow clips
+// a 100vmax box-shadow so the unfilled track is --bs-progress-bg.
+@supports selector(::-webkit-meter-optimum-value) {
+  meter.meter {
+    position: relative;
+    overflow: hidden;
+    anchor-scope: --#{$prefix}meter-fill, --#{$prefix}meter-opt, --#{$prefix}meter-sub;
+    background-color: var(--#{$prefix}danger);
+  }
+
+  meter.meter::-webkit-meter-bar {
+    background-color: transparent;
+  }
+
+  meter.meter::-webkit-meter-optimum-value {
+    anchor-name: --#{$prefix}meter-fill, --#{$prefix}meter-opt;
+    background-color: transparent;
+  }
+
+  meter.meter::-webkit-meter-suboptimum-value {
+    anchor-name: --#{$prefix}meter-fill, --#{$prefix}meter-sub;
+    background-color: transparent;
+  }
+
+  meter.meter::-webkit-meter-even-less-good-value {
+    anchor-name: --#{$prefix}meter-fill;
+    background-color: transparent;
+  }
+
+  meter.meter::before {
+    position: absolute;
+    position-anchor: --#{$prefix}meter-fill;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    width: anchor-size(--#{$prefix}meter-sub width, 0);
+    pointer-events: none;
+    content: "";
+    background-color: var(--#{$prefix}warning);
+  }
+
+  meter.meter::after {
+    position: absolute;
+    position-anchor: --#{$prefix}meter-fill;
+    top: 0;
+    bottom: 0;
+    left: anchor(--#{$prefix}meter-opt left, anchor(--#{$prefix}meter-fill right));
+    z-index: 2;
+    width: anchor-size(--#{$prefix}meter-opt width, 0);
+    pointer-events: none;
+    content: "";
+    background-color: var(--#{$prefix}success);
+    box-shadow: 50vmax 0 0 50vmax var(--#{$prefix}progress-bg);
+  }
+}
+
+// Circular determinate progress. Dual --bs-progress-value in markup covers
+// browsers that cannot read attr() into a custom property. Do not combine
+// with `.progress`; that class is the linear bar.
+//
+// Native Chromium fill covers a host conic-gradient. Hide those pseudos in
+// separate rules: a webkit+moz comma list is invalid in every engine.
+// `background-clip: border-area` is Chrome 150+, so an `@supports not`
+// mask never ran there and the native square bar showed. Always mask.
+@property --#{$prefix}progress-value {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.progress-ring-wrapper {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.progress-ring-content {
+  position: absolute;
+  font-weight: $font-weight-semibold;
+  pointer-events: none;
+}
+
+progress.progress-ring {
+  // .progress defines these tokens. The ring is not that class.
+  --#{$prefix}progress-bg: #{$progress-bg};
+  --#{$prefix}progress-bar-bg: #{$progress-bar-bg};
+  --#{$prefix}progress-ring-size: 8rem;
+  --#{$prefix}progress-ring-thickness: .75rem;
+  --#{$prefix}progress-value: #{"attr(value type(<number>), 0)"};
+
+  display: block;
+  width: var(--#{$prefix}progress-ring-size);
+  height: var(--#{$prefix}progress-ring-size);
+  overflow: hidden;
+  color: var(--#{$prefix}progress-bar-bg);
+  appearance: none;
+  background-color: transparent;
+  background-image: conic-gradient(currentcolor calc(var(--#{$prefix}progress-value) * 1%), var(--#{$prefix}progress-bg) 0);
+  border: 0;
+  border-radius: 50%;
+  mask-image: radial-gradient(transparent calc(50% - var(--#{$prefix}progress-ring-thickness)), #000 calc(50% - var(--#{$prefix}progress-ring-thickness) + .5px));
+  transition: --#{$prefix}progress-value 0s ease;
+}
+
+progress.progress-ring::-webkit-progress-inner-element,
+progress.progress-ring::-webkit-progress-bar,
+progress.progress-ring::-webkit-progress-value {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::-moz-progress-bar {
+  display: none;
+  background: none;
+}
+
+progress.progress-ring::slider-fill {
+  display: none;
+  background: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  progress.progress-ring {
+    transition-duration: .4s;
+  }
+}
+
+progress.progress-ring[value="100"] {
+  color: var(--#{$prefix}success);
+}

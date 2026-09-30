@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const textCode = `<label class="form-label" for="ice-cream">Flavor</label>
+<input class="form-control" list="ice-cream-flavors" id="ice-cream" name="ice-cream" placeholder="Type to filter">
+<datalist id="ice-cream-flavors">
+  <option value="Chocolate"></option>
+  <option value="Coconut"></option>
+  <option value="Mint"></option>
+  <option value="Strawberry"></option>
+  <option value="Vanilla"></option>
+</datalist>`;
+
+const searchCode = `<label class="form-label" for="docs-query">Search docs</label>
+<input class="form-control" type="search" list="docs-topics" id="docs-query" name="q" placeholder="Accordion, modal, …">
+<datalist id="docs-topics">
+  <option value="Accordion"></option>
+  <option value="Collapse"></option>
+  <option value="Datalist"></option>
+  <option value="Field sizing"></option>
+  <option value="Modal"></option>
+  <option value="Navbar"></option>
+  <option value="Validation"></option>
+</datalist>`;
+---
+
+<BaseLayout
+  title="Datalist · Bootstrap HTML"
+  description="Native typeahead with input list and datalist, styled with Bootstrap form controls."
+>
+  <h1>Datalist</h1>
+  <p class="lead">
+    Point an input’s <code>list</code> at a <code>&lt;datalist&gt;</code>
+    id. The browser draws a typeahead from the options. There is no
+    script and no extra class.
+  </p>
+
+  <DocsMeta id="datalist" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>list</code> on the input is the datalist’s
+      <code>id</code>, with no <code>#</code>. Suggestions filter as
+      you type. You can still submit a value that is not in the list.
+    </li>
+    <li>
+      Style the input with <code>.form-control</code>. The dropdown is
+      the browser’s; it does not use <code>.dropdown-menu</code>.
+    </li>
+    <li>
+      Pair with <code>type="search"</code> when the field is a query.
+      Text, search, email, tel, url, and number lists are the usual
+      cases.
+    </li>
+    <li>
+      Firefox on Android does not show the suggestion menu. The input
+      still accepts a typed value.
+    </li>
+  </ul>
+
+  <Example
+    title="Text"
+    lead="Type a letter. The list narrows to matching flavors. The value is still free text."
+    code={textCode}
+  />
+
+  <Example
+    title="Search"
+    lead="Same list pattern on type=search. Use this when the field is a query, including in a search landmark."
+    code={searchCode}
+  />
+
+  <DocsMeta id="datalist" at="end" />
+</BaseLayout>

@@ -1,0 +1,60 @@
+---
+import { costs } from "../data/components.js";
+import { bundleGzipKb, polyfillById } from "../data/js-cost.js";
+import { sitePath } from "../lib/path.js";
+
+interface Props {
+  id: keyof typeof costs;
+}
+
+const { id } = Astro.props;
+const cost = costs[id];
+const extra = (cost.polyfill ?? []).map((key) => polyfillById[key]);
+---
+
+<div class="mb-4">
+  <table class="table table-sm mb-0">
+    <caption>
+      Sizes are minified and gzip. A plugin figure includes the Bootstrap
+      runtime that plugin imports. Shipping every plugin is
+      <code>bootstrap.bundle.min.js</code> at {bundleGzipKb} KB gzip, not the
+      sum of these rows.
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">What runs it</th>
+        <th scope="col">JavaScript</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Bootstrap 5.3</th>
+        <td>{cost.bootstrap}</td>
+        <td>{cost.bootstrapJs}</td>
+      </tr>
+      <tr>
+        <th scope="row">This repo</th>
+        <td>{cost.native}</td>
+        <td>{cost.nativeJs}</td>
+      </tr>
+    </tbody>
+  </table>
+  {
+    extra.length > 0 && (
+      <p class="mb-0 mt-2">
+        When {extra.length === 1 ? "that API is" : "those APIs are"} missing,
+        this page also loads{" "}
+        {extra.map((item, index) => (
+          <Fragment>
+            {index > 0 && " and "}
+            <code>{item.file}</code>
+            {` (${item.kb} KB gzip)${index === extra.length - 1 ? "." : ""}`}
+          </Fragment>
+        ))}
+        {" "}
+        See <a href={sitePath("/polyfills")}>Polyfills</a>.
+      </p>
+    )
+  }
+</div>

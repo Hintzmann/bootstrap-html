@@ -1,0 +1,89 @@
+// Native toast — Bootstrap 5.3.8 styles on popover="manual"
+// :popover-open replaces .show. The container's corner utilities place
+// the open toast. Several open toasts share that corner until pe-toast
+// sets --pe-toast-index and --pe-toast-stack.
+
+.toast[popover] {
+  // pe-toast counts the open toasts before this one (--pe-toast-index) and
+  // sums their measured heights (--pe-toast-stack). The gap between them is
+  // resolved here from the Bootstrap token, so the behavior never has to
+  // convert a length in JavaScript.
+  --pe-toast-index: 0;
+  --pe-toast-stack: 0px;
+  --pe-toast-offset: calc(var(--pe-toast-stack) + var(--pe-toast-index) * var(--#{$prefix}toast-spacing, #{$toast-spacing}));
+
+  position: fixed;
+  inset: unset;
+  inset-inline-end: 1rem;
+  bottom: calc(1rem + var(--pe-toast-offset));
+  width: var(--#{$prefix}toast-max-width);
+  max-width: calc(100% - 2rem);
+  height: max-content;
+  max-height: none;
+  margin: 0;
+  overflow: visible;
+  color: var(--#{$prefix}toast-color);
+  background-color: var(--#{$prefix}toast-bg);
+  border: var(--#{$prefix}toast-border-width) solid var(--#{$prefix}toast-border-color);
+}
+
+.toast:popover-open {
+  display: block;
+}
+
+.toast-container.top-0:not(.bottom-0) > .toast[popover] {
+  top: calc(1rem + var(--pe-toast-offset));
+  bottom: auto;
+}
+
+.toast-container.bottom-0 > .toast[popover],
+.toast-container:not(.top-0) > .toast[popover] {
+  top: auto;
+  bottom: calc(1rem + var(--pe-toast-offset));
+}
+
+.toast-container.start-0 > .toast[popover] {
+  inset-inline-start: 1rem;
+  inset-inline-end: auto;
+}
+
+.toast-container.end-0 > .toast[popover] {
+  inset-inline-start: auto;
+  inset-inline-end: 1rem;
+}
+
+// Countdown bar. --pe-toast-delay is set by pe-toast from data-delay.
+// Hover/focus pause the JS timer and drop this animation; leaving starts
+// a full delay again, so the bar restarts from full.
+pe-toast.toast[data-delay]:not([data-delay="0"]):popover-open::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: .2rem;
+  pointer-events: none;
+  content: "";
+  background-color: var(--#{$prefix}primary);
+  border-bottom-right-radius: inherit;
+  border-bottom-left-radius: inherit;
+  transform: scaleX(1);
+  transform-origin: left center;
+  animation: pe-toast-delay var(--pe-toast-delay, 0ms) linear forwards;
+}
+
+pe-toast.toast[data-delay]:not([data-delay="0"]):popover-open:is(:hover, :focus-within)::after {
+  transform: scaleX(1);
+  animation: none;
+}
+
+@keyframes pe-toast-delay {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  pe-toast.toast[data-delay]:not([data-delay="0"]):popover-open::after {
+    animation: none;
+  }
+}

@@ -1,0 +1,194 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sitePath } from "../lib/path.js";
+import { inlineMarkup, joinList } from "../lib/markup.js";
+import { components, listed } from "../data/components.js";
+import { bundleGzipKb, polyfills } from "../data/js-cost.js";
+
+const loader = polyfills.find((item) => item.id === "loader");
+const optionalPolyfills = polyfills.filter((item) => item.id !== "loader");
+const optionalPolyfillKb = Math.round(
+  optionalPolyfills.reduce((sum, item) => sum + item.kb, 0) * 10,
+) / 10;
+
+const requiredScripts = components.filter((item) => item.behavior?.required);
+const requiredSentence = joinList(
+  requiredScripts.map(
+    (item) => `[${item.name.toLowerCase()}](${item.route}) (${item.cost.nativeJs})`,
+  ),
+);
+
+// One element can serve several components, so dedupe by element name.
+const optionalSentence = joinList([
+  ...new Set(
+    components
+      .filter((item) => item.behavior && !item.behavior.required)
+      .map((item) => `\`${item.behavior.element}\``),
+  ),
+]);
+
+// Catalog and matrix follow the sidebar: components A–Z, then recipes,
+// then forms, then polyfills. A new inventory row still shows up without
+// a second edit.
+const overview = [...listed("components"), ...listed("recipes"), ...listed("forms")];
+const catalog = [
+  ...overview.map((item) => ({
+    href: item.route,
+    name: item.name,
+    blurb: item.blurb,
+    status: item.status,
+  })),
+  {
+    href: "/polyfills",
+    name: "Polyfills",
+    blurb: "Feature-detected fallbacks. Native browsers download only the loader.",
+    status: "fallback",
+  },
+];
+
+const badge = {
+  native: { label: "Native", class: "text-bg-success" },
+  script: { label: "Script", class: "text-bg-secondary" },
+  fallback: { label: "Polyfill", class: "text-bg-info" },
+};
+---
+
+<BaseLayout
+  title="Bootstrap HTML"
+  description="Bootstrap 5.3.8 components rebuilt on native HTML. The 23.3 KB bootstrap.bundle.min.js is gone. Controls work before any script runs."
+>
+  <h1 class="mb-3">Bootstrap HTML</h1>
+  <p class="lead">
+    Bootstrap 5.3.8 look and tokens, driven by native HTML instead of
+    <code>bootstrap.js</code>. The widgets are usable as soon as the
+    HTML is parsed.
+  </p>
+
+  <h2 class="h4" id="what-you-get">What you get</h2>
+  <div class="row row-cols-1 row-cols-lg-3 g-3 mb-4">
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3 class="h5 card-title">{bundleGzipKb} KB not shipped</h3>
+          <p class="card-text">
+            <code>bootstrap.bundle.min.js</code> is {bundleGzipKb} KB gzip.
+            That one file is every plugin, including Popper. A native
+            widget on this site is 0 KB of component script. Per-plugin
+            figures on each page overlap, so they are not a sum.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3 class="h5 card-title">Ready before script</h3>
+          <p class="card-text">
+            A dialog, disclosure, or popover works when the parser reaches
+            it. Bootstrap’s plugins do nothing until <code>bootstrap.js</code>
+            has downloaded, parsed, and attached listeners. That main-thread
+            work is
+            <a href="https://web.dev/articles/tbt">Total Blocking Time</a>
+            (TBT): long tasks between first paint and interactive. These
+            controls add no such task, and a click does not wait for it.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card h-100">
+        <div class="card-body">
+          <h3 class="h5 card-title">
+            {loader.kb} KB, then only gaps
+          </h3>
+          <p class="card-text">
+            Every page loads the polyfill loader, {loader.kb} KB gzip. It
+            checks the APIs and stops. The other modules are {optionalPolyfillKb} KB
+            gzip together, and each one downloads only when that API is
+            missing and the page uses it. As browsers ship the features,
+            those files stop being requested.
+            <a href={sitePath("/polyfills")}>Sizes and conditions</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+    <Fragment
+      set:html={inlineMarkup(
+        `${requiredScripts.length} ${requiredScripts.length === 1 ? "widget" : "widgets"} still need a small script, and only on pages that use them: ${requiredSentence}. The optional behaviors — ${optionalSentence} — stay unloaded until you import them.`,
+      )}
+    />
+  </p>
+
+  <p class="d-flex flex-wrap column-gap-4 row-gap-2 mb-4">
+    <span class="d-inline-flex align-items-center gap-2">
+      <span class="badge rounded-pill text-bg-success">Native</span>
+      <span class="text-body-secondary">HTML and CSS in a current browser. No component script.</span>
+    </span>
+    <span class="d-inline-flex align-items-center gap-2">
+      <span class="badge rounded-pill text-bg-secondary">Script</span>
+      <span class="text-body-secondary">required for the behavior. Not a polyfill.</span>
+    </span>
+    <span class="d-inline-flex align-items-center gap-2">
+      <span class="badge rounded-pill text-bg-info">Polyfill</span>
+      <span class="text-body-secondary">loader and chunks for missing APIs</span>
+    </span>
+  </p>
+
+  <div class="list-group mb-5">
+    {
+      catalog.map((item) => (
+        <a
+          href={sitePath(item.href)}
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-start gap-3"
+        >
+          <div>
+            <div class="fw-semibold">{item.name}</div>
+            <div class="small text-body-secondary">{item.blurb}</div>
+          </div>
+          <span class:list={["badge", "rounded-pill", "flex-shrink-0", badge[item.status].class]}>
+            {badge[item.status].label}
+          </span>
+        </a>
+      ))
+    }
+  </div>
+
+  <h2 class="h4" id="support">Browser support</h2>
+  <p>
+    Three columns, not one baseline. Anchor positioning has no polyfill:
+    a dropdown or popover still opens, but it is not tethered to the button
+    in Firefox before 147 or Safari before 26.
+  </p>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <caption>Versions are the first release with the feature, not a test matrix.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Component</th>
+          <th scope="col">No script</th>
+          <th scope="col">Polyfill</th>
+          <th scope="col">No fallback</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          overview.map((item) => (
+            <tr>
+              <th scope="row">
+                <a href={sitePath(item.route)}>{item.name}</a>
+                {item.baseline === "experimental" && (
+                  <span class="badge rounded-pill text-bg-warning ms-1">Experimental</span>
+                )}
+              </th>
+              <td set:html={inlineMarkup(item.support.noScript)} />
+              <td set:html={inlineMarkup(item.support.polyfill)} />
+              <td set:html={inlineMarkup(item.support.noFallback)} />
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>

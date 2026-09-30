@@ -1,0 +1,244 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const componentsCode = `<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasLabel">Offcanvas</h5>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    Content for the offcanvas goes here. You can place just about any Bootstrap component or custom elements here.
+  </div>
+</div>`;
+
+const liveDemoCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="offcanvasExample">
+  Toggle offcanvas
+</button>
+
+<dialog class="offcanvas offcanvas-start" id="offcanvasExample" closedby="any" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+    <button type="button" class="btn-close" command="close" commandfor="offcanvasExample" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+  </div>
+</dialog>`;
+
+const bodyScrollingCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="offcanvasScrolling">
+  Enable body scrolling
+</button>
+
+<dialog popover="manual" class="offcanvas offcanvas-start" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+    <button type="button" class="btn-close" command="hide-popover" commandfor="offcanvasScrolling" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <p>Try scrolling the rest of the page to see this option in action.</p>
+  </div>
+</dialog>`;
+
+const bodyScrollingBackdropCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="offcanvasWithBothOptions">
+  Enable both scrolling & backdrop
+</button>
+
+<dialog popover="auto" class="offcanvas offcanvas-start" id="offcanvasWithBothOptions" aria-labelledby="offcanvasWithBothOptionsLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Backdrop with scrolling</h5>
+    <button type="button" class="btn-close" command="hide-popover" commandfor="offcanvasWithBothOptions" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <p>Try scrolling the rest of the page to see this option in action.</p>
+  </div>
+</dialog>`;
+
+const staticBackdropCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="staticBackdrop">
+  Toggle static offcanvas
+</button>
+
+<dialog class="offcanvas offcanvas-start" id="staticBackdrop" closedby="none" aria-labelledby="staticBackdropLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="staticBackdropLabel">Offcanvas</h5>
+    <button type="button" class="btn-close" command="close" commandfor="staticBackdrop" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    I will not close if you click outside of me.
+  </div>
+</dialog>`;
+
+const darkCode = `<div class="offcanvas offcanvas-start" data-bs-theme="dark" tabindex="-1" id="offcanvasDark" aria-labelledby="offcanvasDarkLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasDarkLabel">Offcanvas</h5>
+    <button type="button" class="btn-close" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <p>Place offcanvas content here.</p>
+  </div>
+</div>`;
+
+const responsiveCode = `<button type="button" class="btn btn-primary d-lg-none" command="show-modal" commandfor="offcanvasResponsive">
+  Toggle offcanvas
+</button>
+
+<div class="alert alert-info d-none d-lg-block">Resize your browser to show the responsive offcanvas toggle.</div>
+
+<dialog class="offcanvas-lg offcanvas-end" id="offcanvasResponsive" closedby="any" aria-labelledby="offcanvasResponsiveLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasResponsiveLabel">Responsive offcanvas</h5>
+    <button type="button" class="btn-close" command="close" commandfor="offcanvasResponsive" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <p class="mb-0">This is content within an <code>.offcanvas-lg</code>.</p>
+  </div>
+</dialog>`;
+
+const placementCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="offcanvasTop">Toggle top offcanvas</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="offcanvasEnd">Toggle right offcanvas</button>
+  <button type="button" class="btn btn-primary" command="show-modal" commandfor="offcanvasBottom">Toggle bottom offcanvas</button>
+</div>
+
+<dialog class="offcanvas offcanvas-top" id="offcanvasTop" closedby="any" aria-labelledby="offcanvasTopLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasTopLabel">Offcanvas top</h5>
+    <button type="button" class="btn-close" command="close" commandfor="offcanvasTop" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    ...
+  </div>
+</dialog>
+
+<dialog class="offcanvas offcanvas-end" id="offcanvasEnd" closedby="any" aria-labelledby="offcanvasEndLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasEndLabel">Offcanvas right</h5>
+    <button type="button" class="btn-close" command="close" commandfor="offcanvasEnd" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    ...
+  </div>
+</dialog>
+
+<dialog class="offcanvas offcanvas-bottom" id="offcanvasBottom" closedby="any" aria-labelledby="offcanvasBottomLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas bottom</h5>
+    <button type="button" class="btn-close" command="close" commandfor="offcanvasBottom" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    ...
+  </div>
+</dialog>`;
+---
+
+<BaseLayout
+  title="Offcanvas · Bootstrap HTML"
+  description="Native HTML offcanvas using dialog and command/commandfor, styled with Bootstrap 5.3.8."
+>
+  <h1>Offcanvas</h1>
+  <p class="lead">
+    Hidden sidebars using a native <code>&lt;dialog&gt;</code>. Open and close
+    with <code>command</code> / <code>commandfor</code> — no Offcanvas plugin.
+  </p>
+
+  <DocsMeta id="offcanvas" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>command="show-modal"</code> and <code>commandfor="id"</code> replace
+      <code>data-bs-toggle="offcanvas"</code>.
+    </li>
+    <li>
+      <code>command="close"</code> replaces
+      <code>data-bs-dismiss="offcanvas"</code>.
+    </li>
+    <li>
+      <code>command="show-popover"</code> opens a non-modal panel so the
+      page can still scroll.
+      <code>popover="manual"</code> has no backdrop
+      (<code>data-bs-scroll="true"</code> +
+      <code>data-bs-backdrop="false"</code>).
+      <code>popover="auto"</code> adds a dimmed <code>::backdrop</code> and
+      light-dismiss (<code>data-bs-scroll="true"</code> with backdrop).
+    </li>
+    <li>
+      The browser draws the backdrop as <code>::backdrop</code>. Slide
+      animation uses CSS transitions and <code>@starting-style</code> instead
+      of <code>.showing</code> / <code>.show</code> / <code>.hiding</code>.
+    </li>
+    <li>
+      Default modal offcanvas uses <code>closedby=&quot;any&quot;</code> so
+      backdrop click and Escape request close.
+      <code>closedby=&quot;none&quot;</code> replaces a static backdrop.
+    </li>
+    <li>
+      <code>command</code> works on <code>&lt;button&gt;</code>, not
+      <code>&lt;a href&gt;</code>.
+    </li>
+    <li>
+      Native events on the dialog are <code>close</code> and
+      <code>cancel</code> instead of <code>*.bs.offcanvas</code>.
+    </li>
+  </ul>
+
+  <Example
+    title="Offcanvas components"
+    lead="A static example of the offcanvas header and body. This preview is not a dialog — use the live demo to open one."
+    bg="body-tertiary"
+    code={componentsCode}
+  />
+
+  <Example
+    title="Live demo"
+    lead="Use the button to show and hide an offcanvas via command/commandfor on a dialog with the .offcanvas class."
+    code={liveDemoCode}
+  >
+    <div slot="alert" class="alert alert-info" role="alert">
+      <code>command</code> / <code>commandfor</code> work on
+      <code>&lt;button&gt;</code> only, so Bootstrap’s “Link with href”
+      trigger is not available. The dropdown in Bootstrap’s live demo also
+      needs the Dropdown plugin and is omitted here.
+    </div>
+  </Example>
+
+  <Example
+    title="Body scrolling"
+    lead="popover=&quot;manual&quot; with command=&quot;show-popover&quot; opens a non-modal panel, so the page can still scroll and there is no backdrop."
+    code={bodyScrollingCode}
+  />
+
+  <Example
+    title="Body scrolling and backdrop"
+    lead="popover=&quot;auto&quot; keeps page scrolling and paints a dimmed ::backdrop. Clicking the backdrop (light dismiss) closes the panel."
+    code={bodyScrollingBackdropCode}
+  />
+
+  <Example
+    title="Static backdrop"
+    lead="closedby=&quot;none&quot; prevents closing on backdrop click and Escape. Dismiss with the close control instead."
+    code={staticBackdropCode}
+  />
+
+  <Example
+    title="Dark offcanvas"
+    lead="Set data-bs-theme=&quot;dark&quot; on the component (or a parent) instead of the deprecated .text-bg-dark / .btn-close-white utilities."
+    bg="body-tertiary"
+    code={darkCode}
+  />
+
+  <Example
+    title="Responsive"
+    lead="Responsive offcanvas classes hide content outside the viewport from a specified breakpoint and down. Above that breakpoint, the contents behave as usual. For example, .offcanvas-lg hides content below lg and shows it above."
+    code={responsiveCode}
+  />
+
+  <Example
+    title="Placement"
+    lead="There’s no default placement, so you must add .offcanvas-start, .offcanvas-end, .offcanvas-top, or .offcanvas-bottom. Try top, right, and bottom below."
+    code={placementCode}
+  />
+
+  <DocsMeta id="offcanvas" at="end" />
+</BaseLayout>

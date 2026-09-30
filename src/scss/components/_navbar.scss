@@ -1,0 +1,132 @@
+// Native navbar — Bootstrap 5.3.8 styles on <details> / <summary>
+// summary.navbar-toggler     hamburger; must stay inside details
+// ::details-content          the collapsing panel (links, search form)
+// .navbar-expand-*           shows the panel from that breakpoint up
+// dialog.offcanvas           offcanvas navbar; command opens it below the breakpoint
+// search                     landmark around the search form; do not add role="search"
+
+.navbar {
+  > :is(.container, .container-fluid, [class^="container-"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+}
+
+.navbar-brand {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: start;
+  margin-top: .25rem;
+}
+
+details.navbar-collapse {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-row: 1;
+  grid-column: 1 / -1;
+  align-items: center;
+
+  > summary.navbar-toggler {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+    width: fit-content;
+    list-style: none;
+
+    &::-webkit-details-marker,
+    &::marker {
+      display: none;
+      content: none;
+    }
+  }
+
+  &::details-content {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  &:not([open])::details-content {
+    display: none;
+  }
+}
+
+// Popper/static rules in Bootstrap's navbar must not unpin a popover menu.
+.navbar-nav .dropdown-menu[popover] {
+  position: fixed;
+}
+
+.navbar search {
+  min-width: 0;
+}
+
+// scss-docs-start navbar-expand-loop
+.navbar-expand {
+  @each $breakpoint in map-keys($grid-breakpoints) {
+    $next: breakpoint-next($breakpoint, $grid-breakpoints);
+    $infix: breakpoint-infix($next, $grid-breakpoints);
+
+    &#{$infix} {
+      @include media-breakpoint-up($next) {
+        > :is(.container, .container-fluid, [class^="container-"]) {
+          display: flex;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: flex-start;
+        }
+
+        .navbar-brand {
+          margin-top: 0;
+        }
+
+        details.navbar-collapse {
+          display: flex;
+          flex-grow: 1;
+          flex-basis: auto;
+          align-items: center;
+
+          > summary.navbar-toggler {
+            display: none;
+          }
+
+          // Closed <details> hides the panel. Show it from this breakpoint.
+          &::details-content {
+            display: flex;
+            flex-grow: 1;
+            align-items: center;
+            content-visibility: visible;
+          }
+        }
+
+        dialog.offcanvas {
+          position: static;
+          display: flex;
+          width: auto;
+          height: auto;
+          visibility: visible;
+          background-color: transparent;
+          border: 0;
+          box-shadow: none;
+          transform: none;
+
+          &::backdrop {
+            display: none;
+          }
+
+          .offcanvas-header {
+            display: none;
+          }
+
+          .offcanvas-body {
+            display: flex;
+            flex-grow: 1;
+            padding: 0;
+            overflow: visible;
+          }
+        }
+      }
+    }
+  }
+}
+// scss-docs-end navbar-expand-loop

@@ -1,0 +1,36 @@
+---
+interface Props {
+  title: string;
+  lead?: string;
+  code: string;
+  bg?: string;
+}
+
+const { title, lead, code, bg } = Astro.props;
+
+// Component attributes keep entity text as-is; decode so &quot; becomes ".
+const leadText = lead
+  ?.replace(/&quot;/gi, '"')
+  .replace(/&#34;/g, '"')
+  .replace(/&apos;/gi, "'")
+  .replace(/&#39;/g, "'")
+  .replace(/&lt;/gi, "<")
+  .replace(/&gt;/gi, ">")
+  .replace(/&amp;/gi, "&");
+
+// The code sample may show a package script URL. That path is for the
+// reader's project, not this docs page, so keep it out of the preview.
+const preview = code.replace(/<script\b[^>]*>[\s\S]*?<\/script>\s*/gi, "");
+---
+
+<section class="docs-example mb-5">
+  <h3>{title}</h3>
+  {leadText && <p>{leadText}</p>}
+  <slot name="intro" />
+  <slot name="alert" />
+  <figure class="example-figure mb-0">
+    <div class:list={["example-preview", bg && `bg-${bg}`]} set:html={preview} />
+    <figcaption class="visually-hidden">HTML</figcaption>
+    <pre class="example-code"><code>{code}</code></pre>
+  </figure>
+</section>

@@ -1,0 +1,99 @@
+// Native scrollspy — CSS Overflow 5 scroll markers
+// data-polyfill-scrollspy    opt-in on any fragment-link group (replaces data-bs-spy / data-bs-target)
+// scroll-target-group: auto  applied from that attribute for native browsers
+// :target-current            supplements .active on the current fragment link
+// :has(:target-current)      keeps a parent nav-link/dropdown-toggle highlighted
+// .\:target-current          polyfill class; :is() keeps rules valid without the pseudo-class
+
+[data-polyfill-scrollspy] {
+  scroll-target-group: auto;
+}
+
+.nav-pills {
+  // UA button chrome — only when the pill is not the current/open item.
+  // Must not follow the active rules: same-element `background-color`
+  // would otherwise keep a dropdown-toggle from looking `.active`.
+  .nav-item:not(:has(.active, :is(:target-current, .\:target-current), .dropdown-menu:popover-open)) > button.nav-link {
+    background-color: transparent;
+    border: 0;
+  }
+
+  .nav-link.active,
+  .nav-link:is(:target-current, .\:target-current),
+  .nav-link:has(+ .nav .active),
+  .nav-link:has(+ .nav :is(:target-current, .\:target-current)),
+  .nav-item:has(.active) > .nav-link,
+  .nav-item:has(:is(:target-current, .\:target-current)) > .nav-link,
+  .nav-item:has(> .dropdown-menu:popover-open) > .nav-link,
+  .nav-item.dropdown:has(.dropdown-item.active, .dropdown-item:is(:target-current, .\:target-current)) > .dropdown-toggle {
+    color: var(--#{$prefix}nav-pills-link-active-color);
+    @include gradient-bg(var(--#{$prefix}nav-pills-link-active-bg));
+
+    &:hover,
+    &:focus {
+      color: var(--#{$prefix}nav-pills-link-active-color);
+    }
+  }
+}
+
+.nav-tabs {
+  .nav-link.active,
+  .nav-link:is(:target-current, .\:target-current),
+  .nav-item:has(.active) > .nav-link,
+  .nav-item:has(:is(:target-current, .\:target-current)) > .nav-link {
+    color: var(--#{$prefix}nav-tabs-link-active-color);
+    background-color: var(--#{$prefix}nav-tabs-link-active-bg);
+    border-color: var(--#{$prefix}nav-tabs-link-active-border-color);
+  }
+}
+
+.nav-underline {
+  .nav-link.active,
+  .nav-link:is(:target-current, .\:target-current),
+  .nav-item:has(.active) > .nav-link,
+  .nav-item:has(:is(:target-current, .\:target-current)) > .nav-link {
+    font-weight: $font-weight-bold;
+    color: var(--#{$prefix}nav-underline-link-active-color);
+    border-bottom-color: currentcolor;
+  }
+}
+
+.list-group-item {
+  &.active,
+  &:is(:target-current, .\:target-current) {
+    z-index: 2;
+    color: var(--#{$prefix}list-group-active-color);
+    background-color: var(--#{$prefix}list-group-active-bg);
+    border-color: var(--#{$prefix}list-group-active-border-color);
+  }
+
+  & + &.active,
+  & + &:is(:target-current, .\:target-current) {
+    margin-top: calc(-1 * var(--#{$prefix}list-group-border-width)); // stylelint-disable-line function-disallowed-list
+    border-top-width: var(--#{$prefix}list-group-border-width);
+  }
+}
+
+.dropdown-item.active,
+.dropdown-item:is(:target-current, .\:target-current) {
+  color: var(--#{$prefix}dropdown-link-active-color);
+  text-decoration: none;
+  @include gradient-bg(var(--#{$prefix}dropdown-link-active-bg));
+}
+
+// Closed [popover] menus are display:none, so their fragment links are
+// not scroll markers. Keep an in-tree copy next to the toggle.
+.scroll-marker-alias {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .01;
+}
+
+// While the menu is open the real dropdown-items participate; hide the copies
+// so :target-current lands on the visible item.
+.nav-item:has(> .dropdown-menu:popover-open) > .scroll-marker-alias {
+  display: none;
+}

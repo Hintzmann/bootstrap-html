@@ -1,0 +1,216 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const labelsCode = `<label class="form-label" for="file">File progress</label>
+<progress id="file" class="progress" value="70" max="100">70%</progress>`;
+
+const valuesCode = `<label class="form-label" for="progress-25">25%</label>
+<progress id="progress-25" class="progress mb-3" value="25" max="100">25%</progress>
+<label class="form-label" for="progress-50">50%</label>
+<progress id="progress-50" class="progress mb-3" value="50" max="100">50%</progress>
+<label class="form-label" for="progress-75">75%</label>
+<progress id="progress-75" class="progress mb-3" value="75" max="100">75%</progress>
+<label class="form-label" for="progress-100">100%</label>
+<progress id="progress-100" class="progress" value="100" max="100">100%</progress>`;
+
+const heightCode = `<label class="form-label" for="progress-thin">1px</label>
+<progress id="progress-thin" class="progress mb-3" style="--bs-progress-height: 1px" value="25" max="100">25%</progress>
+<label class="form-label" for="progress-tall">2rem</label>
+<progress id="progress-tall" class="progress" style="--bs-progress-height: 2rem" value="25" max="100">25%</progress>`;
+
+const colorsCode = `<label class="form-label" for="progress-success">Success</label>
+<progress id="progress-success" class="progress text-success mb-3" value="25" max="100">25%</progress>
+<label class="form-label" for="progress-info">Info</label>
+<progress id="progress-info" class="progress text-info mb-3" value="50" max="100">50%</progress>
+<label class="form-label" for="progress-warning">Warning</label>
+<progress id="progress-warning" class="progress text-warning mb-3" value="75" max="100">75%</progress>
+<label class="form-label" for="progress-danger">Danger</label>
+<progress id="progress-danger" class="progress text-danger" value="100" max="100">100%</progress>`;
+
+const stripedCode = `<label class="form-label" for="progress-striped">Striped</label>
+<progress id="progress-striped" class="progress progress-bar-striped" value="40" max="100">40%</progress>`;
+
+const animatedCode = `<label class="form-label" for="progress-animated">Animated stripe</label>
+<progress id="progress-animated" class="progress progress-bar-striped progress-bar-animated" value="75" max="100">75%</progress>`;
+
+const indeterminateCode = `<label class="form-label" for="progress-busy">Loading</label>
+<progress id="progress-busy" class="progress">Loading…</progress>`;
+
+const meterCode = `<label class="form-label" for="fuel">Fuel</label>
+<meter id="fuel" class="meter" min="0" max="100" low="33" high="66" optimum="80" value="50">50/100</meter>`;
+
+const meterRangeCode = `<label class="form-label" for="disk-low">Low (20, optimum is high)</label>
+<meter id="disk-low" class="meter mb-3" min="0" max="100" low="33" high="66" optimum="80" value="20">20/100</meter>
+<label class="form-label" for="disk-mid">Suboptimum (50)</label>
+<meter id="disk-mid" class="meter mb-3" min="0" max="100" low="33" high="66" optimum="80" value="50">50/100</meter>
+<label class="form-label" for="disk-high">Optimum (90)</label>
+<meter id="disk-high" class="meter" min="0" max="100" low="33" high="66" optimum="80" value="90">90/100</meter>`;
+---
+
+<BaseLayout
+  title="Progress · Bootstrap HTML"
+  description="Native HTML progress and meter, styled with Bootstrap 5.3.8 tokens."
+>
+  <h1>Progress</h1>
+  <p class="lead">
+    A completion bar is a <code>&lt;progress class=&quot;progress&quot;&gt;</code>.
+    Omit <code>value</code> for the indeterminate stripe. A gauge is
+    <code>&lt;meter class=&quot;meter&quot;&gt;</code>. No Progress plugin,
+    no inner <code>.progress-bar</code>.
+  </p>
+
+  <DocsMeta id="progress" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>value</code> and <code>max</code> replace
+      <code>style=&quot;width: …%&quot;</code> on an inner bar.
+      The default <code>max</code> is <code>1</code>.
+    </li>
+    <li>
+      The fill is <code>currentcolor</code>, so Bootstrap
+      <code>.text-*</code> utilities recolor it. The track stays
+      <code>--bs-progress-bg</code>.
+    </li>
+    <li>
+      <code>.progress-bar-striped</code> and
+      <code>.progress-bar-animated</code> sit on the
+      <code>&lt;progress&gt;</code>, not on a child.
+    </li>
+    <li>
+      No <code>value</code> means <code>:indeterminate</code>. That is
+      Bootstrap’s animated stripe for an unknown duration. A circular
+      busy state on a host is
+      <code>aria-busy</code>
+      on
+      <a href={sitePath("/components/spinner")}>Spinner</a>.
+    </li>
+    <li>
+      Height still comes from <code>--bs-progress-height</code> on
+      <code>.progress</code>.
+    </li>
+  </ul>
+
+  <Example
+    title="Labels"
+    lead="Associate a label with for/id, or wrap the control. The text inside the tags is only a fallback for old browsers."
+    code={labelsCode}
+  />
+
+  <Example
+    title="Values"
+    lead="value and max set the fill. There is no inner width style."
+    code={valuesCode}
+  />
+
+  <Example
+    title="Height"
+    lead="Override --bs-progress-height. The native control uses that token for its box."
+    code={heightCode}
+  />
+
+  <Example
+    title="Backgrounds"
+    lead="The fill follows currentcolor. Use a text color utility, not .bg-* on a child bar."
+    code={colorsCode}
+  />
+
+  <Example
+    title="Striped"
+    lead="Add .progress-bar-striped on the progress element."
+    code={stripedCode}
+  />
+
+  <Example
+    title="Animated stripes"
+    lead="Add .progress-bar-animated as well. prefers-reduced-motion turns the motion off."
+    code={animatedCode}
+  />
+
+  <Example
+    title="Indeterminate"
+    lead="Leave value off. Assistive technology announces busy, not a percent."
+    code={indeterminateCode}
+  />
+
+  <DocsMeta id="progress" at="end" />
+
+  <h2 class="h4">Meter</h2>
+  <p>
+    <code>&lt;meter&gt;</code> is a gauge, not a task. It has
+    <code>min</code>, <code>max</code>, <code>low</code>,
+    <code>high</code>, and <code>optimum</code>. The browser colors the
+    bar from those bounds: success when the value sits on the optimum
+    side of the range, warning in the middle band, danger on the far
+    side. Bootstrap has no meter component.
+  </p>
+
+  <Example
+    title="Fuel"
+    lead="low, high, and optimum tell the browser which band the value is in."
+    code={meterCode}
+  />
+
+  <Example
+    title="Bands"
+    lead="The same scale, three values. Green is nearest optimum, yellow is the middle band, red is the far side."
+    code={meterRangeCode}
+  />
+
+  <h3>Playground</h3>
+  <p>
+    Drag the range to change <code>meter.value</code>. This is a docs demo,
+    not required markup.
+  </p>
+  <figure class="example-figure mb-0">
+    <div class="example-preview">
+      <label class="form-label" for="meter-playground">
+        Gauge
+        <output class="ms-1" id="meter-playground-out" for="meter-playground-range">50</output>
+      </label>
+      <meter
+        id="meter-playground"
+        class="meter mb-3"
+        min="0"
+        max="100"
+        low="33"
+        high="66"
+        optimum="80"
+        value="50"
+      >
+        50/100
+      </meter>
+      <label class="form-label" for="meter-playground-range">Value</label>
+      <input
+        type="range"
+        class="form-range"
+        id="meter-playground-range"
+        min="0"
+        max="100"
+        value="50"
+      />
+      <p class="small text-body-secondary mb-0">
+        <code>low=33</code>, <code>high=66</code>, <code>optimum=80</code>.
+        Red below low, yellow in the middle band, green near optimum.
+      </p>
+    </div>
+  </figure>
+
+  <script is:inline>
+    const range = document.getElementById("meter-playground-range");
+    const meter = document.getElementById("meter-playground");
+    const out = document.getElementById("meter-playground-out");
+    if (range && meter && out) {
+      const sync = () => {
+        const value = range.valueAsNumber;
+        meter.value = value;
+        out.textContent = String(value);
+      };
+      range.addEventListener("input", sync);
+    }
+  </script>
+</BaseLayout>

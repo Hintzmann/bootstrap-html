@@ -1,0 +1,85 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const countScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
+
+`;
+
+const fieldsetCode = `${countScript}<fieldset>
+  <legend>
+    Notify me
+    <output id="output-notify-count" class="ms-1 badge rounded-pill text-bg-secondary" data-controls="output-notify" for="output-notify-email output-notify-sms">1<span class="visually-hidden"> selected</span></output>
+  </legend>
+  <div id="output-notify">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="email" id="output-notify-email" checked>
+      <label class="form-check-label" for="output-notify-email">Email</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="sms" id="output-notify-sms">
+      <label class="form-check-label" for="output-notify-sms">SMS</label>
+    </div>
+  </div>
+</fieldset>`;
+---
+
+<BaseLayout
+  title="Output · Bootstrap HTML"
+  description="Native output for a calculated result. Optional count.js writes how many checkboxes are checked."
+>
+  <h1>Output</h1>
+  <p class="lead">
+    <code>&lt;output&gt;</code> is the result of a user action. Optional
+    <code>src/behaviors/count.js</code> fills
+    <code>&lt;output data-controls&gt;</code> with how many checkboxes
+    in that container are checked. It is not a <code>pe-*</code>
+    element. A dropdown recipe that uses the same contract lives on
+    <a href={sitePath("/components/composed")}>Composed examples</a>.
+  </p>
+
+  <DocsMeta id="output" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>data-controls</code> is a container id, with no
+      <code>#</code> — the same shape as <code>commandfor</code>. The
+      script queries <code>input[type=checkbox]</code> inside that node.
+    </li>
+    <li>
+      <code>for</code> lists the contributing control ids. That is the
+      accessible association. The live group is
+      <code>data-controls</code>.
+    </li>
+    <li>
+      The module listens to <code>change</code>, not a
+      MutationObserver. Observer sees the <code>checked</code>
+      attribute, so a click and <code>el.checked = true</code> would
+      miss.
+    </li>
+    <li>
+      Visible checkboxes can use a CSS <code>counter</code> instead. A
+      closed <code>popover</code> is <code>display: none</code>, so
+      that path fails there — load the module for that case.
+    </li>
+    <li>
+      Without the script the controls still work. The output stays at
+      whatever was in the markup.
+    </li>
+  </ul>
+
+  <Example
+    title="On a fieldset"
+    lead="Toggle the boxes. The number in the legend updates. There is no dropdown."
+    code={fieldsetCode}
+  />
+
+  <DocsMeta id="output" at="end" />
+</BaseLayout>
+
+<script>
+  import "../../behaviors/count.js";
+</script>

@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const staticCode = `<div class="alert alert-primary" role="alert">
+  A simple primary alert — check it out!
+</div>`;
+
+const dismissCode = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/alert.js"></script>
+
+<pe-alert class="alert alert-warning alert-dismissible fade show" id="dismiss-alert" role="alert">
+  <div><strong>Holy guacamole!</strong> You should check in on some of those fields below.</div>
+  <button type="button" class="btn-close" command="--dismiss" commandfor="dismiss-alert" aria-label="Close"></button>
+</pe-alert>`;
+---
+
+<BaseLayout
+  title="Alerts · Bootstrap HTML"
+  description="Bootstrap alerts. Static ones are HTML. Dismiss uses pe-alert and command=--dismiss."
+>
+  <h1>Alerts</h1>
+  <p class="lead">
+    Bootstrap’s
+    <a href="https://getbootstrap.com/docs/5.3/components/alerts/#javascript-behavior">
+      alert plugin
+    </a>
+    removes a dismissible alert from the page. A static alert needs no
+    script. Closing one does, so this page uses
+    <code>&lt;pe-alert&gt;</code> instead of <code>data-bs-dismiss</code>.
+  </p>
+
+  <DocsMeta id="alerts" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <p>
+    The element is the alert. Put <code>class=&quot;alert&quot;</code> on
+    it. The close button uses <code>command=&quot;--dismiss&quot;</code>
+    and <code>commandfor</code> set to the alert’s id, with no
+    <code>#</code>. The command event does not bubble, so
+    <code>&lt;pe-alert&gt;</code> listens on itself. Load
+    <code>src/behaviors/alert.js</code> only when a page has a close
+    button. Without that module the alert stays.
+  </p>
+  <p>
+    <code>.fade.show</code> fades out before the node is removed.
+    Without <code>.fade</code>, or when the user prefers reduced motion,
+    it is removed at once. The listener, the transition handler, and the
+    fallback timer are dropped in <code>disconnectedCallback</code>.
+  </p>
+
+  <Example
+    title="Static"
+    lead="Color and role=alert. Nothing to close, so no script."
+    code={staticCode}
+  />
+
+  <Example
+    title="Dismissible"
+    lead="Close fades the alert out, then removes it. commandfor is the id, without a hash."
+    code={dismissCode}
+  />
+
+  <DocsMeta id="alerts" at="end" />
+
+  <script>
+    import "../../behaviors/alert.js";
+  </script>
+</BaseLayout>

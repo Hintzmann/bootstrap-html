@@ -1,0 +1,41 @@
+// The element is unknown until tabs.js runs, and unknown elements
+// are inline. contents keeps the wrapper out of layout either way.
+pe-tabs {
+  display: contents;
+}
+
+// Sliding underline on the selected tab. The tab is the anchor; the
+// tablist paints one ::after. Without anchor positioning the active
+// tab keeps Bootstrap’s own border.
+pe-tabs .nav-tabs {
+  position: relative;
+}
+
+pe-tabs .nav-tabs .nav-link[aria-selected="true"] {
+  anchor-name: --#{$prefix}tab;
+}
+
+pe-tabs .nav-tabs::after {
+  position: absolute;
+  position-anchor: --#{$prefix}tab;
+  inset: auto;
+  inset-block-end: 0;
+  inset-inline: anchor(left) anchor(right);
+  z-index: 1;
+  block-size: .125rem;
+  pointer-events: none;
+  content: "";
+  background-color: var(--#{$prefix}primary);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  pe-tabs .nav-tabs::after {
+    transition: inset .2s ease;
+  }
+}
+
+@supports not (position-anchor: auto) {
+  pe-tabs .nav-tabs::after {
+    content: none;
+  }
+}

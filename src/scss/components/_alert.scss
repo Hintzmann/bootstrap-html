@@ -1,0 +1,5 @@
+// Unknown elements are inline. An alert is a block, and .alert does not
+// set display.
+pe-alert {
+  display: block;
+}

@@ -1,0 +1,310 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const hint = (
+  id: string,
+  placement: string,
+  inner: string,
+  label: string,
+  options: { btnClass?: string; tipClass?: string; btnAttrs?: string } = {},
+) => {
+  const btnClass = options.btnClass ?? "";
+  const tipClass = options.tipClass ?? "";
+  const btnAttrs = options.btnAttrs ? ` ${options.btnAttrs}` : "";
+  return `<span class="d-inline-block">
+  <button type="button" class="btn btn-secondary${btnClass}"${btnAttrs} interestfor="${id}">
+    ${label}
+  </button>
+  <div class="tooltip ${placement}${tipClass}" popover="hint" id="${id}">
+    <div class="tooltip-arrow"></div>
+    <div class="tooltip-inner">${inner}</div>
+  </div>
+</span>`;
+};
+
+const linksCode = `<p class="text-body-secondary mb-0">Placeholder text to demonstrate some <a href="#" class="bs-tooltip-top text-nowrap" aria-description="Default tooltip">inline links</a> with tooltips. Content placed here just to mimic the presence of <a href="#" class="bs-tooltip-top text-nowrap" aria-description="Another tooltip">real text</a>. The same pattern works for <a href="#" class="bs-tooltip-top text-nowrap" aria-description="Another one here too">further links</a> once the class and description sit on <a href="#" class="bs-tooltip-top text-nowrap" aria-description="The last tip">the trigger</a>.</p>`;
+
+const customCode = `<button type="button" class="btn btn-secondary bs-tooltip-top custom-tooltip" aria-description="This top tooltip is themed via CSS variables.">
+  Custom tooltip
+</button>`;
+
+const directionsCode = `<div class="d-flex flex-wrap justify-content-center gap-2 py-4">
+  <button type="button" class="btn btn-secondary bs-tooltip-top" aria-description="Tooltip on top">
+    Tooltip on top
+  </button>
+  <button type="button" class="btn btn-secondary bs-tooltip-end" aria-description="Tooltip on right">
+    Tooltip on right
+  </button>
+  <button type="button" class="btn btn-secondary bs-tooltip-bottom" aria-description="Tooltip on bottom">
+    Tooltip on bottom
+  </button>
+  <button type="button" class="btn btn-secondary bs-tooltip-start" aria-description="Tooltip on left">
+    Tooltip on left
+  </button>
+</div>`;
+
+const htmlCode = `<button type="button" class="btn btn-secondary bs-tooltip-top" aria-description="Tooltip with HTML">
+  Tooltip with HTML
+</button>`;
+
+const disabledCode = `<span class="d-inline-block bs-tooltip-top" tabindex="0" aria-description="Disabled tooltip">
+  <button class="btn btn-primary" type="button" disabled>Disabled button</button>
+</span>`;
+
+const hintDirectionsCode = `<div class="d-flex flex-wrap justify-content-center gap-2 py-4">
+  ${hint("tipHintTop", "bs-tooltip-top", "Tooltip on top", "Tooltip on top")}
+  ${hint("tipHintEnd", "bs-tooltip-end", "Tooltip on right", "Tooltip on right")}
+  ${hint("tipHintBottom", "bs-tooltip-bottom", "Tooltip on bottom", "Tooltip on bottom")}
+  ${hint("tipHintStart", "bs-tooltip-start", "Tooltip on left", "Tooltip on left")}
+</div>`;
+
+const hintAutoCode = hint(
+  "tipHintAuto",
+  "bs-tooltip-auto",
+  "Auto tooltip. It flips when there is no room.",
+  "Tooltip auto",
+);
+
+const hintCustomCode = hint(
+  "tipHintCustom",
+  "bs-tooltip-top",
+  "This top tooltip is themed via CSS variables.",
+  "Custom tooltip",
+  { tipClass: " custom-tooltip" },
+);
+
+const hintHtmlCode = hint(
+  "tipHintHtml",
+  "bs-tooltip-top",
+  "<em>Tooltip</em> <u>with</u> <b>HTML</b>",
+  "Tooltip with HTML",
+);
+
+const hintDelayCode = hint(
+  "tipHintDelay",
+  "bs-tooltip-top",
+  "Shows after 500 ms, hides after 150 ms.",
+  "Delayed tooltip",
+  {
+    btnAttrs:
+      'style="--bs-tooltip-delay-start: .5s; --bs-tooltip-delay-end: .15s"',
+  },
+);
+
+const hintDisabledCode = `<span class="d-inline-block">
+  <button type="button" class="border-0 bg-transparent p-0" interestfor="tipHintDisabled">
+    <span class="btn btn-primary disabled">Disabled button</span>
+  </button>
+  <div class="tooltip bs-tooltip-top" popover="hint" id="tipHintDisabled">
+    <div class="tooltip-arrow"></div>
+    <div class="tooltip-inner">Disabled tooltip</div>
+  </div>
+</span>`;
+
+const hintLinksCode = `<p class="text-body-secondary mb-0">Placeholder text to demonstrate some <a href="#" interestfor="tipHintLink1">inline links</a> with hint tooltips. Content placed here just to mimic the presence of <a href="#" interestfor="tipHintLink2">real text</a>.
+  <span class="tooltip bs-tooltip-top" popover="hint" id="tipHintLink1">
+    <span class="tooltip-arrow"></span>
+    <span class="tooltip-inner">Default tooltip</span>
+  </span>
+  <span class="tooltip bs-tooltip-top" popover="hint" id="tipHintLink2">
+    <span class="tooltip-arrow"></span>
+    <span class="tooltip-inner">Another tooltip</span>
+  </span>
+</p>`;
+---
+
+<BaseLayout
+  title="Tooltip · Bootstrap HTML"
+  description="Native HTML tooltips: aria-description as the no-script fallback, and popover=hint with interestfor in supporting browsers."
+>
+  <h1>Tooltip</h1>
+  <p class="lead">
+    Hover and focus tips. <code>aria-description</code> is the no-script
+    fallback. <code>popover=&quot;hint&quot;</code> puts the bubble in the
+    top layer; <code>interestfor</code> opens it on hover, focus, or
+    long-press — no Tooltip plugin and no Popper.
+  </p>
+
+  <DocsMeta id="tooltip" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      Two markup paths. Use one per trigger: either
+      <code>aria-description</code> plus a
+      <code>.bs-tooltip-*</code> class on the control, or
+      <code>interestfor</code> pointing at a
+      <code>.tooltip</code> with <code>popover=&quot;hint&quot;</code>.
+      Do not put both on the same control — Chromium would announce the
+      description twice.
+    </li>
+    <li>
+      Add <code>.bs-tooltip-top</code>, <code>.bs-tooltip-end</code>,
+      <code>.bs-tooltip-bottom</code>, or <code>.bs-tooltip-start</code>
+      instead of <code>data-bs-placement</code>. Default placement is
+      top, matching Bootstrap.
+    </li>
+    <li>
+      A hint popover is a separate hint stack: it does not close an open
+      <code>popover=&quot;auto&quot;</code> dropdown. Escape dismisses
+      interest.
+    </li>
+    <li>
+      Keep tooltips on keyboard-focusable, interactive elements (links
+      and form controls), as Bootstrap’s docs recommend.
+      <code>interestfor</code> is valid on <code>&lt;a&gt;</code>,
+      <code>&lt;button&gt;</code>, and <code>&lt;area&gt;</code> only.
+    </li>
+    <li>
+      Do not set <code>role=&quot;tooltip&quot;</code> or
+      <code>aria-describedby</code> on an <code>interestfor</code>
+      trigger. The browser associates the hint target itself.
+    </li>
+  </ul>
+
+  <h2 class="h4" id="no-script-fallback">No-script fallback</h2>
+  <p>
+    <code>aria-description</code> replaces
+    <code>data-bs-title</code> / <code>title</code>. The bubble is
+    <code>::after</code> (<code>content: attr(aria-description)</code>)
+    and the arrow is <code>::before</code>, positioned against the
+    trigger. Hover and keyboard focus (<code>:hover</code> /
+    <code>:focus-within</code>) replace Bootstrap’s default
+    <code>trigger: 'hover focus'</code>. Empty
+    <code>aria-description</code> values never display. The bubble is
+    not in the top layer, so a transformed or
+    <code>overflow</code>-clipped ancestor can still cover it.
+  </p>
+
+  <Example
+    title="Tooltips on links"
+    lead="Hover over the links below to see tooltips."
+    code={linksCode}
+  />
+
+  <Example
+    title="Custom tooltips"
+    lead="Customize appearance with CSS variables on a class on the trigger (Bootstrap’s data-bs-custom-class injected that class from JS)."
+    code={customCode}
+  />
+
+  <Example
+    title="Directions"
+    lead="Four options are available: top, right, bottom, and left. Directions are mirrored when using Bootstrap in RTL. Add .bs-tooltip-top, .bs-tooltip-end, .bs-tooltip-bottom, or .bs-tooltip-start."
+    code={directionsCode}
+  >
+    <div slot="alert" class="alert alert-info" role="alert">
+      On this CSS fallback, <code>.bs-tooltip-auto</code> matches
+      <code>.bs-tooltip-top</code> and does not reorient. Use a hint
+      popover with <code>.bs-tooltip-auto</code> when you need
+      <code>position-try-fallbacks</code>.
+    </div>
+  </Example>
+
+  <Example
+    title="Tooltip with HTML"
+    lead="Bootstrap’s data-bs-html can put markup in the bubble. The CSS fallback cannot."
+    code={htmlCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Tooltip text comes from <code>aria-description</code> via CSS
+      <code>content: attr(aria-description)</code>. That value is a
+      string, so the bubble is <strong>plain text only</strong> — no
+      <code>&lt;em&gt;</code>, <code>&lt;u&gt;</code>,
+      <code>&lt;b&gt;</code>, or other HTML. Use a
+      <a href="#hint-popover">hint popover</a> or a
+      <a href={sitePath("/components/popover")}>popover</a> when the
+      content needs markup.
+    </div>
+  </Example>
+
+  <Example
+    title="Disabled elements"
+    lead="Elements with the disabled attribute aren’t interactive, so the tooltip lives on a keyboard-focusable wrapper."
+    code={disabledCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Same wrapper pattern as Bootstrap: a
+      <code>&lt;span tabindex=&quot;0&quot;&gt;</code> around the
+      disabled control. Put <code>.bs-tooltip-*</code> and
+      <code>aria-description</code> on that wrapper, not on the
+      disabled button.
+    </div>
+  </Example>
+
+  <h2 class="h4" id="hint-popover">Hint popover</h2>
+  <div class="alert alert-warning" role="alert">
+    <strong>Experimental technology.</strong>
+    <code>interestfor</code> is Chrome 142+ and is not native in Firefox
+    or Safari. <code>popover=&quot;hint&quot;</code> is Chrome 151+,
+    Firefox 153+, and Safari preview. The
+    <a href={sitePath("/polyfills#interestfor")}>interestfor polyfill</a>
+    loads when that API is missing and the page has
+    <code>[interestfor]</code>. It does not polyfill
+    <code>popover=&quot;hint&quot;</code>, so Safari and Firefox before
+    153 still need the
+    <a href="#no-script-fallback">no-script fallback</a>.
+  </div>
+  <p>
+    The bubble is a <code>.tooltip</code> with
+    <code>popover=&quot;hint&quot;</code> and real
+    <code>.tooltip-inner</code> markup. Put
+    <code>interestfor</code> on the trigger, matching the bubble’s
+    <code>id</code>. CSS Anchor Positioning tethers it to that
+    invoker. Hover, keyboard focus, and long-press replace Bootstrap’s
+    <code>trigger: 'hover focus'</code>.
+  </p>
+
+  <Example
+    title="Four directions"
+    lead="Same four placements as the CSS fallback, now in the top layer. Hover or focus the buttons."
+    code={hintDirectionsCode}
+  />
+
+  <Example
+    title="Auto placement"
+    lead=".bs-tooltip-auto still defaults to top. On a hint popover, position-try-fallbacks flips the bubble when it would overflow. The arrow stays in the top orientation after a flip."
+    code={hintAutoCode}
+  />
+
+  <Example
+    title="Custom hint tooltips"
+    lead="Put the custom class on the .tooltip element so the CSS variables apply to the bubble."
+    code={hintCustomCode}
+  />
+
+  <Example
+    title="Hint tooltip with HTML"
+    lead="The inner is markup, so em, u, and b work. That replaces data-bs-html."
+    code={hintHtmlCode}
+  />
+
+  <Example
+    title="Delay"
+    lead="interest-delay-start and interest-delay-end on the trigger replace data-bs-delay. Hint triggers default to 0s so they match Bootstrap’s delay: 0. The polyfill reads --interest-delay-start / --interest-delay-end; hint CSS sets both. Override --bs-tooltip-delay-start / --bs-tooltip-delay-end on the trigger."
+    code={hintDelayCode}
+  />
+
+  <Example
+    title="Hint on links"
+    lead="interestfor is valid on a, not only button."
+    code={hintLinksCode}
+  />
+
+  <Example
+    title="Disabled hint trigger"
+    lead="interestfor needs a button or a link. Wrap a visually disabled .btn.disabled in a transparent button."
+    code={hintDisabledCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Nested <code>&lt;button&gt;</code> is invalid, so the inner
+      control is a <code>&lt;span class=&quot;btn disabled&quot;&gt;</code>,
+      the same wrapper as a disabled popover.
+    </div>
+  </Example>
+
+  <DocsMeta id="tooltip" at="end" />
+</BaseLayout>

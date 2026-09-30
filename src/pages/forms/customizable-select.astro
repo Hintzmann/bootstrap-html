@@ -1,0 +1,155 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const basicCode = `<label class="form-label" for="plan">Plan</label>
+<select class="form-select" id="plan" name="plan">
+  <option value="free">Free</option>
+  <option value="pro" selected>Pro</option>
+  <option value="team">Team</option>
+</select>`;
+
+const sizesCode = `<div class="mb-3">
+  <label class="form-label" for="city-sm">Small</label>
+  <select class="form-select form-select-sm" id="city-sm" name="city-sm">
+    <option>Copenhagen</option>
+    <option selected>Aarhus</option>
+    <option>Odense</option>
+  </select>
+</div>
+<div>
+  <label class="form-label" for="city-lg">Large</label>
+  <select class="form-select form-select-lg" id="city-lg" name="city-lg">
+    <option>Copenhagen</option>
+    <option selected>Aarhus</option>
+    <option>Odense</option>
+  </select>
+</div>`;
+
+const richCode = `<label class="form-label" for="shipping">Shipping</label>
+<select class="form-select" id="shipping" name="shipping">
+  <button>
+    <selectedcontent></selectedcontent>
+  </button>
+  <option value="standard" aria-label="Standard, 5 to 7 days">
+    <span aria-hidden="true">📦</span>
+    <span>
+      <span>Standard</span>
+      <span class="form-select-desc">5–7 days</span>
+    </span>
+  </option>
+  <option value="express" selected aria-label="Express, 1 to 2 days">
+    <span aria-hidden="true">⚡</span>
+    <span>
+      <span>Express</span>
+      <span class="form-select-desc">1–2 days</span>
+    </span>
+  </option>
+  <option value="overnight" aria-label="Overnight, next morning">
+    <span aria-hidden="true">🌙</span>
+    <span>
+      <span>Overnight</span>
+      <span class="form-select-desc">Next morning</span>
+    </span>
+  </option>
+</select>`;
+
+const groupCode = `<label class="form-label" for="animal">Animal</label>
+<select class="form-select" id="animal" name="animal">
+  <optgroup>
+    <legend>Domestic</legend>
+    <option value="cat" selected>Cat</option>
+    <option value="dog">Dog</option>
+  </optgroup>
+  <optgroup>
+    <legend>Farm</legend>
+    <option value="chicken">Chicken</option>
+    <option value="cow">Cow</option>
+  </optgroup>
+</select>`;
+---
+
+<BaseLayout
+  title="Customizable select · Bootstrap HTML"
+  description="Native appearance: base-select on Bootstrap form-select. The picker, caret, and checkmark use the same tokens as the closed field."
+>
+  <h1>Customizable select</h1>
+  <p class="lead">
+    <code>.form-select</code> already restyles the closed field. Where the
+    browser implements
+    <code>appearance: base-select</code>, the open list, caret, and
+    checkmark use the same tokens — no dropdown script and no third-party
+    select.
+  </p>
+
+  <DocsMeta id="customizable-select" at="start" />
+
+  <div class="alert alert-warning" role="alert">
+    <strong>Experimental technology.</strong>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/appearance#base-select">
+      <code>appearance: base-select</code>
+    </a>
+    is Chrome 135+ and Safari 27+. Firefox 149 needs
+    <code>dom.select.customizable_select.enabled</code> and
+    <code>layout.css.appearance-base.enabled</code>. Without those, this
+    page is still a labelled <code>.form-select</code> with the OS menu.
+    Opting in replaces the native mobile wheel picker with a web-rendered
+    top-layer list.
+  </div>
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      Both the <code>&lt;select&gt;</code> and
+      <code>::picker(select)</code> set <code>appearance: base-select</code>.
+      The closed field keeps Bootstrap’s padding, radius, and colors. The
+      open list reuses <code>.dropdown-menu</code> tokens.
+    </li>
+    <li>
+      <code>::picker-icon</code> draws the caret from
+      <code>--bs-form-select-bg-img</code>, including dark mode. The SVG
+      background on the closed field is removed so the two do not stack.
+    </li>
+    <li>
+      <code>option:checked</code> uses the dropdown active background and
+      bold text. <code>::checkmark</code> is extra decoration; it is not
+      exposed to assistive technology.
+    </li>
+    <li>
+      Optional <code>&lt;button&gt;&lt;selectedcontent&gt;</code> mirrors
+      the selected option’s markup in the closed field. Browsers that
+      ignore those tags still show the option text.
+    </li>
+    <li>
+      <code>&lt;select multiple&gt;</code> and <code>size</code> other than
+      <code>1</code> are left on the OS listbox.
+    </li>
+  </ul>
+
+  <Example
+    title="Basic"
+    lead="A labelled .form-select. Open it to see the token-styled picker."
+    code={basicCode}
+  />
+
+  <Example
+    title="Sizing"
+    lead=".form-select-sm and .form-select-lg still change the closed field. The picker inherits the control’s font size."
+    code={sizesCode}
+  />
+
+  <Example
+    title="Rich options"
+    lead="Icons and a second line in the list. selectedcontent hides .form-select-desc in the closed field. Each option keeps readable text for browsers that strip the markup."
+    code={richCode}
+  />
+
+  <Example
+    title="Option groups"
+    lead="optgroup with a legend, styled like a dropdown header. The label attribute still works when legend is missing."
+    code={groupCode}
+  />
+
+  <DocsMeta id="customizable-select" at="end" />
+</BaseLayout>

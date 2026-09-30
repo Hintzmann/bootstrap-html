@@ -1,0 +1,236 @@
+// stylelint-disable function-disallowed-list
+
+// Native carousel — Bootstrap 5.3.8 styles on CSS scroll snap
+// .carousel-inner                 scroll-snap container (replaces JS transforms)
+// ::scroll-button()               previous/next (CSS Overflow 5)
+// pe-carousel                     HTML buttons + mouse pan only without ::scroll-button
+// ::scroll-marker / :target-current  indicators
+// .carousel                       anchor-scope so each instance keeps its own name
+
+.carousel {
+  // Reuse one anchor name per instance; each carousel is its own scope.
+  anchor-scope: --#{$prefix}carousel;
+}
+
+.carousel-inner {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  anchor-name: --#{$prefix}carousel;
+  scroll-marker-group: after;
+
+  &::-webkit-scrollbar {
+    height: .5rem;
+  }
+}
+
+.carousel-item {
+  position: relative;
+  display: block;
+  flex: 0 0 100%;
+  float: none;
+  width: 100%;
+  margin-right: 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  backface-visibility: hidden;
+  transform: none;
+  @include transition(none);
+}
+
+// Bootstrap fade is a JS stacking animation. Keep slides visible in the snap row.
+.carousel-fade .carousel-item {
+  z-index: auto;
+  opacity: 1;
+  transform: none;
+}
+
+// Previous / next — generated on the scroller; no .carousel-control-* markup.
+.carousel-inner::scroll-button(*) {
+  position: absolute;
+  top: anchor(top);
+  bottom: anchor(bottom);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: $carousel-control-width;
+  padding: 0;
+  color: $carousel-control-color;
+  text-align: center;
+  cursor: pointer;
+  background-color: transparent;
+  filter: var(--#{$prefix}carousel-control-icon-filter);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: $carousel-control-icon-width $carousel-control-icon-width;
+  border: 0;
+  opacity: $carousel-control-opacity;
+  position-anchor: --#{$prefix}carousel;
+  @include transition($carousel-control-transition);
+
+  &:hover,
+  &:focus {
+    color: $carousel-control-color;
+    text-decoration: none;
+    outline: 0;
+    opacity: $carousel-control-hover-opacity;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: .25;
+  }
+}
+
+.carousel-inner::scroll-button(inline-start) {
+  left: anchor(left);
+  content: "" / "Previous";
+  background-image: escape-svg($carousel-control-prev-icon-bg) #{"/*rtl:" + escape-svg($carousel-control-next-icon-bg) + "*/"};
+}
+
+.carousel-inner::scroll-button(inline-end) {
+  right: anchor(right);
+  content: "" / "Next";
+  background-image: escape-svg($carousel-control-next-icon-bg) #{"/*rtl:" + escape-svg($carousel-control-prev-icon-bg) + "*/"};
+}
+
+@if $enable-gradients {
+  .carousel-inner::scroll-button(inline-start) {
+    background-image: escape-svg($carousel-control-prev-icon-bg), linear-gradient(90deg, rgba($black, .25), rgba($black, .001));
+    background-repeat: no-repeat, no-repeat;
+    background-position: 50%, 50%;
+    background-size: $carousel-control-icon-width $carousel-control-icon-width, auto;
+  }
+
+  .carousel-inner::scroll-button(inline-end) {
+    background-image: escape-svg($carousel-control-next-icon-bg), linear-gradient(270deg, rgba($black, .25), rgba($black, .001));
+    background-repeat: no-repeat, no-repeat;
+    background-position: 50%, 50%;
+    background-size: $carousel-control-icon-width $carousel-control-icon-width, auto;
+  }
+}
+
+// Indicators — generated from each .carousel-item (data-label is the accessible name).
+.carousel-inner::scroll-marker-group {
+  position: absolute;
+  top: calc(anchor(bottom) - 1.5rem);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  justify-self: anchor-center;
+  padding: 0;
+  position-anchor: --#{$prefix}carousel;
+}
+
+.carousel-item::scroll-marker {
+  box-sizing: content-box;
+  flex: 0 1 auto;
+  width: $carousel-indicator-width;
+  height: $carousel-indicator-height;
+  padding: 0;
+  margin-right: $carousel-indicator-spacer;
+  margin-left: $carousel-indicator-spacer;
+  overflow: hidden;
+  text-indent: -999px;
+  cursor: pointer;
+
+  content: attr(data-label);
+  background-color: var(--#{$prefix}carousel-indicator-active-bg);
+  background-clip: padding-box;
+  border: 0;
+  border-top: $carousel-indicator-hit-area-height solid transparent;
+  border-bottom: $carousel-indicator-hit-area-height solid transparent;
+  opacity: $carousel-indicator-opacity;
+  @include transition($carousel-indicator-transition);
+}
+
+.carousel-item::scroll-marker:hover,
+.carousel-item::scroll-marker:focus {
+  opacity: $carousel-indicator-active-opacity;
+}
+
+.carousel-item::scroll-marker:target-current {
+  opacity: $carousel-indicator-active-opacity;
+}
+
+@supports selector(::scroll-button(inline-start)) {
+  .carousel-inner {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+// Fallback controls live on <pe-carousel>. Native .carousel is unchanged.
+pe-carousel.carousel {
+  display: block;
+}
+
+@supports not selector(::scroll-button(inline-start)) {
+  pe-carousel {
+    .carousel-control-prev:disabled,
+    .carousel-control-next:disabled {
+      cursor: default;
+      opacity: .25;
+    }
+
+    .carousel-indicators > button {
+      box-sizing: content-box;
+      flex: 0 1 auto;
+      width: $carousel-indicator-width;
+      height: $carousel-indicator-height;
+      padding: 0;
+      margin-right: $carousel-indicator-spacer;
+      margin-left: $carousel-indicator-spacer;
+      text-indent: -999px;
+      cursor: pointer;
+      background-color: var(--#{$prefix}carousel-indicator-active-bg);
+      background-clip: padding-box;
+      border: 0;
+      border-top: $carousel-indicator-hit-area-height solid transparent;
+      border-bottom: $carousel-indicator-hit-area-height solid transparent;
+      opacity: $carousel-indicator-opacity;
+      @include transition($carousel-indicator-transition);
+
+      &:hover,
+      &:focus,
+      &[aria-current="true"] {
+        opacity: $carousel-indicator-active-opacity;
+      }
+    }
+
+    .carousel-inner {
+      cursor: grab;
+
+      &[panning] {
+        cursor: grabbing;
+        scroll-snap-type: none;
+        user-select: none;
+        scroll-behavior: auto;
+      }
+    }
+  }
+}
+
+@supports selector(::scroll-button(inline-start)) {
+  pe-carousel .carousel-control-prev,
+  pe-carousel .carousel-control-next,
+  pe-carousel .carousel-indicators {
+    display: none;
+  }
+}
+
+@if $enable-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    .carousel-inner {
+      scroll-behavior: auto;
+    }
+  }
+}

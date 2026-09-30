@@ -1,0 +1,191 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+import { sitePath } from "../../lib/path.js";
+
+const navLinks = `<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+      <li class="nav-item dropdown">
+        <button class="nav-link dropdown-toggle" type="button" command="toggle-popover" commandfor="navbarDropdown">
+          Dropdown
+        </button>
+        <ul class="dropdown-menu" popover="auto" id="navbarDropdown">
+          <li><a class="dropdown-item" href="#">Action</a></li>
+          <li><a class="dropdown-item" href="#">Another action</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Something else here</a></li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
+    <search>
+      <form class="d-flex">
+        <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </search>`;
+
+const supportedCode = `<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <details class="navbar-collapse">
+      <summary class="navbar-toggler" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </summary>
+      ${navLinks}
+    </details>
+  </div>
+</nav>`;
+
+const colorCode = `<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <details class="navbar-collapse">
+      <summary class="navbar-toggler" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </summary>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+      </ul>
+    </details>
+  </div>
+</nav>
+
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <details class="navbar-collapse">
+      <summary class="navbar-toggler" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </summary>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+      </ul>
+    </details>
+  </div>
+</nav>`;
+
+const offcanvasCode = `<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Offcanvas navbar</a>
+    <button class="navbar-toggler" type="button" command="show-modal" commandfor="offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <dialog class="offcanvas offcanvas-end" id="offcanvasNavbar" closedby="any" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
+        <button type="button" class="btn-close" command="close" commandfor="offcanvasNavbar" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <button class="nav-link dropdown-toggle" type="button" command="toggle-popover" commandfor="offcanvasNavbarDropdown">
+              Dropdown
+            </button>
+            <ul class="dropdown-menu" popover="auto" id="offcanvasNavbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+        </ul>
+        <search class="d-flex mt-3 mt-lg-0">
+          <form class="d-flex flex-grow-1">
+            <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+          </form>
+        </search>
+      </div>
+    </dialog>
+  </div>
+</nav>`;
+---
+
+<BaseLayout
+  title="Navbar · Bootstrap HTML"
+  description="Bootstrap navbar on details/summary, with an offcanvas variant on dialog."
+>
+  <h1>Navbar</h1>
+  <p class="lead">
+    A responsive bar with Bootstrap’s
+    <a href="https://getbootstrap.com/docs/5.3/components/navbar/">navbar</a>
+    classes. The collapsing menu is <code>&lt;details&gt;</code> /
+    <code>&lt;summary&gt;</code>. The offcanvas variant is the existing
+    <code>&lt;dialog class="offcanvas"&gt;</code>. No Collapse plugin.
+  </p>
+
+  <DocsMeta id="navbar" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      Put <code>details.navbar-collapse</code> in the navbar. The
+      hamburger is <code>summary.navbar-toggler</code> inside that
+      <code>&lt;details&gt;</code>. The brand stays a sibling, outside
+      the panel, so it stays visible when the menu is closed.
+    </li>
+    <li>
+      <code>.navbar-expand-*</code> shows the links from that breakpoint
+      up and hides the toggler. Below it, the summary opens the panel.
+    </li>
+    <li>
+      A toggler outside the panel cannot point at a distant collapse.
+      Trigger and content have to be parent and child. Use the
+      offcanvas navbar when the button must sit outside the menu.
+    </li>
+    <li>
+      Dropdowns in the bar are the same
+      <code>command="toggle-popover"</code> menus as elsewhere.
+    </li>
+    <li>
+      Wrap the search form in <code>&lt;search&gt;</code>. That element
+      is the search landmark; do not also set
+      <code>role="search"</code> on the form.
+    </li>
+  </ul>
+
+  <Example
+    title="Supported content"
+    lead="Nav links, a dropdown, and a search landmark. Resize below lg to use the toggler."
+    code={supportedCode}
+  />
+
+  <Example
+    title="Color schemes"
+    lead="Set data-bs-theme=&quot;dark&quot; on the navbar (or a parent) for light text on a dark or colored bar. .navbar-light and .navbar-dark are deprecated in Bootstrap 5.3."
+    code={colorCode}
+  />
+
+  <Example
+    title="Offcanvas"
+    lead="command=&quot;show-modal&quot; opens a dialog.offcanvas. From the navbar-expand breakpoint the dialog sits in the bar instead of the top layer."
+    code={offcanvasCode}
+  >
+    <div slot="alert" class="alert alert-info" role="alert">
+      <code>command</code> / <code>commandfor</code> and
+      <code>closedby</code> are polyfilled when the browser is missing
+      them. See <a href={sitePath("/polyfills")}>Polyfills</a>.
+    </div>
+  </Example>
+
+  <DocsMeta id="navbar" at="end" />
+</BaseLayout>

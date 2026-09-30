@@ -1,0 +1,107 @@
+// Busy spinner — Bootstrap 5.3.8 spinner tokens on [aria-busy="true"].
+// The attribute is the state. No extra .spinner-border child, no pe-*.
+// A block host hides its children visually and centers the disc. A button
+// or inline host keeps its text and shows a ::before disc.
+// prefers-reduced-motion slows the turn so the busy state stays visible.
+
+@mixin busy-spinner-disc() {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: var(--#{$prefix}spinner-width);
+  height: var(--#{$prefix}spinner-height);
+  pointer-events: none;
+  content: "";
+  border: var(--#{$prefix}spinner-border-width) solid currentcolor;
+  border-right-color: transparent;
+  animation: var(--#{$prefix}spinner-animation-speed) linear infinite var(--#{$prefix}spinner-animation-name);
+  @include border-radius(50%);
+}
+
+[aria-busy="true"] {
+  --#{$prefix}spinner-width: #{$spinner-width};
+  --#{$prefix}spinner-height: #{$spinner-height};
+  --#{$prefix}spinner-border-width: #{$spinner-border-width};
+  --#{$prefix}spinner-vertical-align: #{$spinner-vertical-align};
+  --#{$prefix}spinner-animation-speed: #{$spinner-animation-speed};
+  --#{$prefix}spinner-animation-name: spinner-border;
+
+  position: relative;
+  pointer-events: none;
+
+  > * {
+    visibility: hidden;
+  }
+
+  &::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    display: block;
+    translate: -50% -50%;
+    @include busy-spinner-disc();
+  }
+
+  &:where(div, p, section, article):not(:has(> *)) {
+    display: block;
+    min-block-size: calc(var(--#{$prefix}spinner-height) * 2.5);
+  }
+}
+
+:is(button, .btn, [type="button"], [type="submit"], [type="reset"])[aria-busy="true"] {
+  --#{$prefix}spinner-width: #{$spinner-width-sm};
+  --#{$prefix}spinner-height: #{$spinner-height-sm};
+  --#{$prefix}spinner-border-width: #{$spinner-border-width-sm};
+
+  > * {
+    visibility: visible;
+  }
+
+  &::after {
+    display: none;
+    content: none;
+    animation: none;
+  }
+
+  &::before {
+    display: inline-block;
+    margin-inline-end: .5em;
+    vertical-align: var(--#{$prefix}spinner-vertical-align);
+    @include busy-spinner-disc();
+  }
+}
+
+:is(span, small)[aria-busy="true"] {
+  --#{$prefix}spinner-width: #{$spinner-width-sm};
+  --#{$prefix}spinner-height: #{$spinner-height-sm};
+  --#{$prefix}spinner-border-width: #{$spinner-border-width-sm};
+
+  display: inline-flex;
+  column-gap: .5em;
+  align-items: center;
+  min-block-size: 0;
+  pointer-events: auto;
+
+  > * {
+    visibility: visible;
+  }
+
+  &::after {
+    display: none;
+    content: none;
+    animation: none;
+  }
+
+  &::before {
+    display: block;
+    @include busy-spinner-disc();
+  }
+}
+
+@if $enable-reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    [aria-busy="true"] {
+      --#{$prefix}spinner-animation-speed: 6s;
+    }
+  }
+}

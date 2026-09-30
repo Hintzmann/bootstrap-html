@@ -1,0 +1,259 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { sitePath } from "../../lib/path.js";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const copy = `This is some placeholder content for the scrollspy page. As the area scrolls, the matching navigation link is highlighted. The same paragraph is repeated so the scroller is long enough to move the highlight from heading to heading.`;
+
+const nestedNote = `Keep in mind that the browser picks one current scroll marker. Multiple visible targets at the same time may still look busy.`;
+
+const navbarCode = `<nav id="navbar-example2" class="navbar bg-body-tertiary px-3 mb-3" data-polyfill-scrollspy>
+  <a class="navbar-brand" href="#">Navbar</a>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading1">First</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#scrollspyHeading2">Second</a>
+    </li>
+    <li class="nav-item dropdown">
+      <button class="nav-link dropdown-toggle" type="button" command="toggle-popover" commandfor="scrollspyDropdown">Dropdown</button>
+      <ul class="dropdown-menu" popover="auto" id="scrollspyDropdown">
+        <li><a class="dropdown-item" href="#scrollspyHeading3">Third</a></li>
+        <li><a class="dropdown-item" href="#scrollspyHeading4">Fourth</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="#scrollspyHeading5">Fifth</a></li>
+      </ul>
+      <span class="scroll-marker-alias" aria-hidden="true">
+        <a href="#scrollspyHeading3" tabindex="-1">Third</a>
+        <a href="#scrollspyHeading4" tabindex="-1">Fourth</a>
+        <a href="#scrollspyHeading5" tabindex="-1">Fifth</a>
+      </span>
+    </li>
+  </ul>
+</nav>
+<div class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+  <h4 id="scrollspyHeading1">First heading</h4>
+  <p>${copy}</p>
+  <h4 id="scrollspyHeading2">Second heading</h4>
+  <p>${copy}</p>
+  <h4 id="scrollspyHeading3">Third heading</h4>
+  <p>${copy}</p>
+  <h4 id="scrollspyHeading4">Fourth heading</h4>
+  <p>${copy}</p>
+  <h4 id="scrollspyHeading5">Fifth heading</h4>
+  <p>${copy}</p>
+</div>`;
+
+const nestedCode = `<div class="row">
+  <div class="col-4">
+    <nav id="navbar-example3" class="h-100 flex-column align-items-stretch pe-4 border-end">
+      <nav class="nav nav-pills flex-column" data-polyfill-scrollspy>
+        <a class="nav-link" href="#item-1">Item 1</a>
+        <nav class="nav nav-pills flex-column">
+          <a class="nav-link ms-3 my-1" href="#item-1-1">Item 1-1</a>
+          <a class="nav-link ms-3 my-1" href="#item-1-2">Item 1-2</a>
+        </nav>
+        <a class="nav-link" href="#item-2">Item 2</a>
+        <a class="nav-link" href="#item-3">Item 3</a>
+        <nav class="nav nav-pills flex-column">
+          <a class="nav-link ms-3 my-1" href="#item-3-1">Item 3-1</a>
+          <a class="nav-link ms-3 my-1" href="#item-3-2">Item 3-2</a>
+        </nav>
+      </nav>
+    </nav>
+  </div>
+  <div class="col-8">
+    <div class="scrollspy-example-2" tabindex="0">
+      <div id="item-1">
+        <h4>Item 1</h4>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-1-1">
+        <h5>Item 1-1</h5>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-1-2">
+        <h5>Item 1-2</h5>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-2">
+        <h4>Item 2</h4>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-3">
+        <h4>Item 3</h4>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-3-1">
+        <h5>Item 3-1</h5>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+      <div id="item-3-2">
+        <h5>Item 3-2</h5>
+        <p>${copy}</p>
+        <p>${nestedNote}</p>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const listGroupCode = `<div class="row">
+  <div class="col-4">
+    <div id="list-example" class="list-group" data-polyfill-scrollspy>
+      <a class="list-group-item list-group-item-action" href="#list-item-1">Item 1</a>
+      <a class="list-group-item list-group-item-action" href="#list-item-2">Item 2</a>
+      <a class="list-group-item list-group-item-action" href="#list-item-3">Item 3</a>
+      <a class="list-group-item list-group-item-action" href="#list-item-4">Item 4</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="scrollspy-example" tabindex="0">
+      <h4 id="list-item-1">Item 1</h4>
+      <p>${copy}</p>
+      <h4 id="list-item-2">Item 2</h4>
+      <p>${copy}</p>
+      <h4 id="list-item-3">Item 3</h4>
+      <p>${copy}</p>
+      <h4 id="list-item-4">Item 4</h4>
+      <p>${copy}</p>
+    </div>
+  </div>
+</div>`;
+
+const simpleCode = `<div class="row">
+  <div class="col-4">
+    <div id="simple-list-example" class="d-flex flex-column gap-2 simple-list-example-scrollspy text-center" data-polyfill-scrollspy>
+      <a class="p-1 rounded" href="#simple-list-item-1">Item 1</a>
+      <a class="p-1 rounded" href="#simple-list-item-2">Item 2</a>
+      <a class="p-1 rounded" href="#simple-list-item-3">Item 3</a>
+      <a class="p-1 rounded" href="#simple-list-item-4">Item 4</a>
+      <a class="p-1 rounded" href="#simple-list-item-5">Item 5</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="scrollspy-example" tabindex="0">
+      <h4 id="simple-list-item-1">Item 1</h4>
+      <p>${copy}</p>
+      <h4 id="simple-list-item-2">Item 2</h4>
+      <p>${copy}</p>
+      <h4 id="simple-list-item-3">Item 3</h4>
+      <p>${copy}</p>
+      <h4 id="simple-list-item-4">Item 4</h4>
+      <p>${copy}</p>
+      <h4 id="simple-list-item-5">Item 5</h4>
+      <p>${copy}</p>
+    </div>
+  </div>
+</div>`;
+---
+
+<BaseLayout
+  title="Scrollspy · Bootstrap HTML"
+  description="Native CSS scrollspy using scroll-target-group and :target-current, styled with Bootstrap 5.3.8."
+>
+  <h1>Scrollspy</h1>
+  <p class="lead">
+    Highlight the in-page link that matches the section in view. CSS
+    <code>scroll-target-group</code> and <code>:target-current</code>
+    replace the ScrollSpy plugin — no JavaScript.
+  </p>
+
+  <DocsMeta id="scrollspy" at="start" />
+
+  <div class="alert alert-warning" role="alert">
+    <strong>Experimental technology.</strong>
+    <code>scroll-target-group</code> and <code>:target-current</code>
+    are experimental CSS (Chrome 140+, not native in Firefox or Safari).
+    This site loads an IntersectionObserver polyfill only when
+    <code>CSS.supports('scroll-target-group: auto')</code> is false.
+    Check the
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-target-group">
+      MDN page for <code>scroll-target-group</code>
+    </a>
+    and the
+    <a href={sitePath("/polyfills#scroll-target-group")}>polyfill notes</a>
+    before using this in production.
+  </div>
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      Put in-page links (<code>href=&quot;#id&quot;</code>) in a nav,
+      list group, or any group of anchors. Mark that group with
+      <code>data-polyfill-scrollspy</code>. That sets
+      <code>scroll-target-group: auto</code> for native CSS and is
+      what the polyfill looks for (replaces
+      <code>data-bs-spy=&quot;scroll&quot;</code> /
+      <code>data-bs-target</code>). An optional selector value points
+      at the scroller; otherwise the overflow ancestor of the targets
+      is used.
+    </li>
+    <li>
+      Give each section an <code>id</code> that matches a link. The
+      scrollable box can be the page or an element with a height and
+      <code>overflow: auto</code>.
+    </li>
+    <li>
+      <code>:target-current</code> styles the marker whose target is in
+      view. It supplements <code>.active</code> with the same look, so
+      either class or the CSS scroll marker can highlight a link.
+    </li>
+    <li>
+      A parent <code>.nav-link</code> or dropdown toggle stays
+      highlighted with <code>:has(:target-current)</code> when a nested
+      marker is current.
+    </li>
+    <li>
+      <code>scroll-behavior: smooth</code> on the scroller replaces
+      <code>data-bs-smooth-scroll</code>.
+    </li>
+  </ul>
+
+  <Example
+    title="Navbar"
+    lead="Scroll the area below the navbar and watch the current link change. Open the dropdown to see its items highlighted too."
+    code={navbarCode}
+  >
+    <div slot="alert" class="alert alert-warning" role="alert">
+      Closed <code>[popover]</code> menus use
+      <code>display: none</code>, so <code>.dropdown-item</code>
+      fragment links are not scroll markers and the toggle never sees
+      <code>:target-current</code>. Copy each <code>href</code> into a
+      <code>.scroll-marker-alias</code> next to the toggle
+      (<code>aria-hidden=&quot;true&quot;</code>,
+      <code>tabindex=&quot;-1&quot;</code>) so the browser can still
+      pick a current marker and
+      <code>:has(:target-current)</code> can style the dropdown as
+      active. While the menu is open, CSS hides the alias so the
+      visible item becomes <code>:target-current</code> instead.
+    </div>
+  </Example>
+
+  <Example
+    title="Nested nav"
+    lead="Scrollspy also works with nested .navs. If a nested link is current, its parent nav-link is highlighted as well."
+    code={nestedCode}
+  />
+
+  <Example
+    title="List group"
+    lead="Scrollspy also works with .list-groups. Scroll the area next to the list group and watch the current item change."
+    code={listGroupCode}
+  />
+
+  <Example
+    title="Simple anchors"
+    lead="Scrollspy is not limited to nav components and list groups. Any fragment link in a data-polyfill-scrollspy group works."
+    code={simpleCode}
+  />
+
+  <DocsMeta id="scrollspy" at="end" />
+</BaseLayout>

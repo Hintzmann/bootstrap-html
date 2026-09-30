@@ -1,0 +1,206 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const liveCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="liveToast">
+  Show live toast
+</button>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div class="toast" id="liveToast" popover="manual" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <small>11 mins ago</small>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="liveToast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Hello, world! This is a toast message.
+    </div>
+  </div>
+</div>`;
+
+const stackCode = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/toast.js"></script>
+
+<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-popover" commandfor="stackToastOne">Show first</button>
+  <button type="button" class="btn btn-secondary" command="show-popover" commandfor="stackToastTwo">Show second</button>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <pe-toast class="toast" id="stackToastOne" popover="manual" data-delay="5000" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <small>just now</small>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="stackToastOne" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">See? Just like this.</div>
+  </pe-toast>
+  <pe-toast class="toast" id="stackToastTwo" popover="manual" data-delay="5000" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <small>2 seconds ago</small>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="stackToastTwo" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Heads up, toasts will stack automatically.</div>
+  </pe-toast>
+</div>`;
+
+const customCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="customToast">Show custom toast</button>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div class="toast" id="customToast" popover="manual" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="customToast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Hello, world! This is a toast message.
+      <div class="mt-2 pt-2 border-top">
+        <button type="button" class="btn btn-primary btn-sm" command="hide-popover" commandfor="customToast">Take action</button>
+        <button type="button" class="btn btn-secondary btn-sm" command="hide-popover" commandfor="customToast">Close</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+
+const colorCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="colorToast">Show color toast</button>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div class="toast align-items-center text-bg-primary border-0" id="colorToast" popover="manual" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">Hello, world! This is a toast message.</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" command="hide-popover" commandfor="colorToast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>`;
+
+const placementCode = `<div class="d-flex flex-wrap gap-2">
+  <button type="button" class="btn btn-primary" command="show-popover" commandfor="toastTopStart">Top start</button>
+  <button type="button" class="btn btn-primary" command="show-popover" commandfor="toastBottomEnd">Bottom end</button>
+</div>
+
+<div class="toast-container position-fixed top-0 start-0 p-3">
+  <div class="toast" id="toastTopStart" popover="manual" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="toastTopStart" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Hello, world! This is a toast message.</div>
+  </div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div class="toast" id="toastBottomEnd" popover="manual" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Bootstrap</strong>
+      <button type="button" class="btn-close" command="hide-popover" commandfor="toastBottomEnd" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Hello, world! This is a toast message.</div>
+  </div>
+</div>`;
+---
+
+<BaseLayout
+  title="Toasts · Bootstrap HTML"
+  description="Bootstrap toasts on popover=manual. Close with command. Optional pe-toast adds data-delay and stacking."
+>
+  <h1>Toasts</h1>
+  <p class="lead">
+    A lightweight status message in the top layer, using
+    <code>popover=&quot;manual&quot;</code> and
+    <code>command</code> / <code>commandfor</code>. Optional
+    <code>&lt;pe-toast&gt;</code> adds <code>data-delay</code> and stacking.
+    No Toast plugin.
+  </p>
+
+  <DocsMeta id="toasts" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>popover=&quot;manual&quot;</code> puts the toast in the top
+      layer and keeps it open until something hides it. There is no
+      light-dismiss.
+    </li>
+    <li>
+      <code>command=&quot;show-popover&quot;</code> and
+      <code>command=&quot;hide-popover&quot;</code> show and close it.
+      That needs no extra script.
+    </li>
+    <li>
+      <code>:popover-open</code> replaces <code>.show</code>. The
+      container’s <code>top-0</code>, <code>bottom-0</code>,
+      <code>start-0</code>, and <code>end-0</code> choose the corner.
+    </li>
+  </ul>
+
+  <Example
+    title="Live example"
+    lead="A status toast. Show opens it. Close hides it. It stays until you close it."
+    code={liveCode}
+  />
+
+  <Example
+    title="Custom content"
+    lead="A toast can carry actions. Those buttons hide the same popover."
+    code={customCode}
+  />
+
+  <Example
+    title="Color schemes"
+    lead="An important toast uses role=alert and aria-live=assertive. Color utilities sit on the toast."
+    code={colorCode}
+  />
+
+  <Example
+    title="Placement"
+    lead="top-0 start-0 and bottom-0 end-0 on the container place the open toast."
+    code={placementCode}
+  />
+
+  <DocsMeta id="toasts" at="end" />
+
+  <h2 class="h4" id="autohide">Autohide and stacking</h2>
+  <p>
+    <code>&lt;pe-toast&gt;</code> is the toast itself, with
+    <code>class=&quot;toast&quot;</code>. Load
+    <code>src/behaviors/toast.js</code> when you want it.
+    <code>data-delay</code> is milliseconds. Omit it and the toast stays
+    open. Hovering or focusing the toast pauses the timer and starts a
+    full delay again when the pointer and focus have both left. Open
+    siblings in the same <code>.toast-container</code> are offset so
+    they stack. Without the module, one toast still sits in the corner,
+    and a second one shares that corner.
+  </p>
+  <p>
+    Stacking is the one place this package measures an element. The
+    behavior sets <code>--pe-toast-index</code>, the number of open toasts
+    before this one, and <code>--pe-toast-stack</code>, the sum of their
+    heights. CSS adds one <code>--bs-toast-spacing</code> per toast, so
+    the gap is a token and not a number from JavaScript. Toasts in the top
+    layer do not share a layout box, so a container cannot space them the
+    way <code>.toast-container</code> spaces in-flow children.
+  </p>
+  <p>
+    When every toast in a corner is the same height, you can drop the
+    measurement. Percentages in <code>translate</code> resolve against the
+    element’s own size, so the index alone places the stack and
+    <code>--pe-toast-stack</code> goes unused. The element still supplies
+    the index, because only open toasts count toward it:
+  </p>
+  <pre class="example-code"><code>{`.toast[popover] {
+  bottom: 1rem;
+  translate: 0 calc(var(--pe-toast-index, 0) * -1 * (100% + var(--bs-toast-spacing)));
+}`}</code></pre>
+
+  <Example
+    title="Stacking"
+    lead="Both toasts hide after 5 seconds unless the pointer or focus is inside them. Show both to see the stack."
+    code={stackCode}
+  />
+
+  <script>
+    import "../../behaviors/toast.js";
+  </script>
+</BaseLayout>

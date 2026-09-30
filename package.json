@@ -1,0 +1,66 @@
+{
+  "name": "bootstrap-html",
+  "description": "Bootstrap 5.3.8 look on native HTML. No bootstrap.js. A polyfill loads only when a browser API is missing.",
+  "type": "module",
+  "version": "0.3.0",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "style": "dist/css/bootstrap-html.css",
+  "sass": "src/scss/bootstrap-html.scss",
+  "files": [
+    "dist/css",
+    "src/scss",
+    "src/polyfills",
+    "src/behaviors",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "exports": {
+    ".": {
+      "sass": "./src/scss/bootstrap-html.scss",
+      "style": "./dist/css/bootstrap-html.css",
+      "default": "./dist/css/bootstrap-html.css"
+    },
+    "./css/bootstrap-html.css": "./dist/css/bootstrap-html.css",
+    "./css/bootstrap-html.min.css": "./dist/css/bootstrap-html.min.css",
+    "./scss/bootstrap-html": "./src/scss/bootstrap-html.scss",
+    "./polyfills": "./src/polyfills/index.js",
+    "./polyfills/*": "./src/polyfills/*",
+    "./behaviors/focus-group": "./src/behaviors/focus-group.js",
+    "./behaviors/toast": "./src/behaviors/toast.js",
+    "./behaviors/tabs": "./src/behaviors/tabs.js",
+    "./behaviors/alert": "./src/behaviors/alert.js",
+    "./behaviors/carousel": "./src/behaviors/carousel.js",
+    "./behaviors/count": "./src/behaviors/count.js",
+    "./behaviors/*": "./src/behaviors/*"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && npm run css",
+    "css": "sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=expanded src/scss/bootstrap-html.scss dist/css/bootstrap-html.css && sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=compressed src/scss/bootstrap-html.scss dist/css/bootstrap-html.min.css",
+    "check:banner": "node scripts/check-banner.js",
+    "lint": "npm run lint:css",
+    "lint:css": "stylelint \"src/scss/**/*.scss\"",
+    "test": "vitest run",
+    "prepublishOnly": "npm run css",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.3.3",
+    "happy-dom": "^20.14.5",
+    "sass": "^1.104.1",
+    "stylelint": "^16.26.1",
+    "stylelint-config-twbs-bootstrap": "^16.1.0",
+    "vitest": "^5.0.2"
+  },
+  "allowScripts": {
+    "esbuild": true
+  }
+}

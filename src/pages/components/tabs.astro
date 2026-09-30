@@ -1,0 +1,241 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+
+const script = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/tabs.js"></script>
+
+`;
+
+const basicCode = `${script}<pe-tabs>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="home-tab" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="profile-tab" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false" tabindex="-1">Profile</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="contact-tab" type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false" tabindex="-1">Contact</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active show" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the home pane. Arrow keys in the field below stay in the field.</p>
+      <input class="form-control mt-3" type="text" value="Edit me" aria-label="Note">
+    </div>
+    <div class="tab-pane" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the profile pane.</p>
+    </div>
+    <div class="tab-pane" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the contact pane.</p>
+    </div>
+  </div>
+</pe-tabs>`;
+
+const fadeCode = `${script}<pe-tabs>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="fade-home-tab" type="button" role="tab" aria-controls="fade-home-tab-pane" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="fade-profile-tab" type="button" role="tab" aria-controls="fade-profile-tab-pane" aria-selected="false" tabindex="-1">Profile</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="fade-contact-tab" type="button" role="tab" aria-controls="fade-contact-tab-pane" aria-selected="false" tabindex="-1">Contact</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="fade-home-tab-pane" role="tabpanel" aria-labelledby="fade-home-tab" tabindex="0">
+      <p class="mt-3 mb-0">The home pane fades.</p>
+    </div>
+    <div class="tab-pane fade" id="fade-profile-tab-pane" role="tabpanel" aria-labelledby="fade-profile-tab" tabindex="0">
+      <p class="mt-3 mb-0">The profile pane fades.</p>
+    </div>
+    <div class="tab-pane fade" id="fade-contact-tab-pane" role="tabpanel" aria-labelledby="fade-contact-tab" tabindex="0">
+      <p class="mt-3 mb-0">The contact pane fades.</p>
+    </div>
+  </div>
+</pe-tabs>`;
+
+const pillsCode = `${script}<pe-tabs>
+  <ul class="nav nav-pills" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pills-home-tab" type="button" role="tab" aria-controls="pills-home-tab-pane" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-profile-tab" type="button" role="tab" aria-controls="pills-profile-tab-pane" aria-selected="false" tabindex="-1">Profile</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="pills-contact-tab" type="button" role="tab" aria-controls="pills-contact-tab-pane" aria-selected="false" tabindex="-1">Contact</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active show" id="pills-home-tab-pane" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+      <p class="mt-3 mb-0">Pills use the same widget. Only the nav class changes.</p>
+    </div>
+    <div class="tab-pane" id="pills-profile-tab-pane" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the profile pane.</p>
+    </div>
+    <div class="tab-pane" id="pills-contact-tab-pane" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the contact pane.</p>
+    </div>
+  </div>
+</pe-tabs>`;
+
+const verticalCode = `${script}<pe-tabs>
+  <div class="d-flex align-items-start">
+    <div class="nav flex-column nav-pills me-3" role="tablist" aria-orientation="vertical">
+      <button class="nav-link active" id="vert-home-tab" type="button" role="tab" aria-controls="vert-home-tab-pane" aria-selected="true">Home</button>
+      <button class="nav-link" id="vert-profile-tab" type="button" role="tab" aria-controls="vert-profile-tab-pane" aria-selected="false" tabindex="-1">Profile</button>
+      <button class="nav-link" id="vert-contact-tab" type="button" role="tab" aria-controls="vert-contact-tab-pane" aria-selected="false" tabindex="-1">Messages</button>
+    </div>
+    <div class="tab-content">
+      <div class="tab-pane active show" id="vert-home-tab-pane" role="tabpanel" aria-labelledby="vert-home-tab" tabindex="0">
+        <p class="mb-0">Up and Down move between these tabs. Left and Right do not.</p>
+      </div>
+      <div class="tab-pane" id="vert-profile-tab-pane" role="tabpanel" aria-labelledby="vert-profile-tab" tabindex="0">
+        <p class="mb-0">This is the profile pane.</p>
+      </div>
+      <div class="tab-pane" id="vert-contact-tab-pane" role="tabpanel" aria-labelledby="vert-contact-tab" tabindex="0">
+        <p class="mb-0">This is the messages pane.</p>
+      </div>
+    </div>
+  </div>
+</pe-tabs>`;
+
+const disabledCode = `${script}<pe-tabs>
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="dis-home-tab" type="button" role="tab" aria-controls="dis-home-tab-pane" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link disabled" id="dis-profile-tab" type="button" role="tab" aria-controls="dis-profile-tab-pane" aria-selected="false" aria-disabled="true" tabindex="-1">Disabled</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="dis-contact-tab" type="button" role="tab" aria-controls="dis-contact-tab-pane" aria-selected="false" tabindex="-1">Contact</button>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active show" id="dis-home-tab-pane" role="tabpanel" aria-labelledby="dis-home-tab" tabindex="0">
+      <p class="mt-3 mb-0">Arrow keys skip the disabled tab.</p>
+    </div>
+    <div class="tab-pane" id="dis-profile-tab-pane" role="tabpanel" aria-labelledby="dis-profile-tab" tabindex="0">
+      <p class="mt-3 mb-0">This pane is not reachable.</p>
+    </div>
+    <div class="tab-pane" id="dis-contact-tab-pane" role="tabpanel" aria-labelledby="dis-contact-tab" tabindex="0">
+      <p class="mt-3 mb-0">This is the contact pane.</p>
+    </div>
+  </div>
+</pe-tabs>`;
+---
+
+<BaseLayout
+  title="Tabs · Bootstrap HTML"
+  description="Bootstrap tab panes switched by a small pe-tabs element. Roles replace data-bs-toggle and data-bs-target."
+>
+  <h1>Tabs</h1>
+  <p class="lead">
+    Bootstrap’s
+    <a href="https://getbootstrap.com/docs/5.3/components/navs-tabs/#javascript-behavior">
+      JavaScript tabs
+    </a>
+    switch layered panes from a tab list. There is still no native HTML
+    control for that, so this page ships a small
+    <code>&lt;pe-tabs&gt;</code> behavior instead of the Tab plugin.
+  </p>
+
+  <DocsMeta id="tabs" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <p>
+    Wrap the tab list and the panes in <code>&lt;pe-tabs&gt;</code> and
+    load <code>src/behaviors/tabs.js</code>. The element reads
+    <code>role="tab"</code> and opens the pane whose id is
+    <code>aria-controls</code>. Do not add
+    <code>data-bs-toggle</code> or <code>data-bs-target</code>.
+    <code>role="tablist"</code> and <code>role="tabpanel"</code> stay in
+    the markup you write.
+  </p>
+  <p>
+    The selected tab has <code>aria-selected="true"</code> and
+    <code>tabindex="0"</code>. The others have
+    <code>tabindex="-1"</code>. Left and Right move in a horizontal
+    list. <code>aria-orientation="vertical"</code> on the tab list uses
+    Up and Down instead. Home and End jump to the ends. Choosing a tab
+    also selects it. One pane stays open.
+  </p>
+  <p>
+    Bootstrap’s CSS still shows the pane:
+    <code>.tab-pane.active</code> is visible, and
+    <code>.fade</code> also needs <code>.show</code>. The element keeps
+    those classes in step with the selection. Without the module, the
+    pane that already has <code>.active</code> stays on screen and the
+    other tabs do nothing. Do not also wrap the tabs in
+    <code>&lt;pe-focus-group&gt;</code>. This element already owns the
+    arrow keys.
+  </p>
+
+  <Example
+    title="Tabs"
+    lead="Click or press Left and Right. The note field keeps its own arrow keys."
+    code={basicCode}
+  />
+
+  <Example
+    title="Fade"
+    lead="A pane with the fade class fades out before the next one fades in."
+    code={fadeCode}
+  />
+
+  <Example
+    title="Pills"
+    lead="nav-pills is only a class. The roles are the same."
+    code={pillsCode}
+  />
+
+  <Example
+    title="Vertical"
+    lead="aria-orientation=vertical on the tab list. Up and Down select. Left and Right do not."
+    code={verticalCode}
+  />
+
+  <Example
+    title="Disabled"
+    lead="A tab with the disabled class and aria-disabled=true is skipped."
+    code={disabledCode}
+  />
+
+  <DocsMeta id="tabs" at="end" />
+
+  <h2 class="h4">Why this is not native HTML</h2>
+  <p>
+    <a href="https://open-ui.org/components/tabs/">Open UI’s tabs draft</a>
+    is not in browsers. Until it is, the
+    <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">
+      WAI-ARIA tabs pattern
+    </a>
+    needs script: roving <code>tabindex</code>, arrow keys, and
+    <code>aria-selected</code>.
+  </p>
+  <ul>
+    <li>
+      <code>&lt;details name&gt;</code> is a disclosure, not a tab.
+      Every summary can still collapse, including the last one, and
+      the trigger has to wrap the panel.
+    </li>
+    <li>
+      A hidden checkbox or radio can show a pane, but the control is
+      announced as a form field, and the focus ring sits on the hidden
+      input.
+    </li>
+  </ul>
+  <p>
+    A <code>.nav-tabs</code> list used as page links is a different
+    thing. Those links do not need tab roles or this element.
+  </p>
+
+  <script>
+    import "../../behaviors/tabs.js";
+  </script>
+</BaseLayout>

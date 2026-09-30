@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sitePath } from "../lib/path.js";
+import { inlineMarkup } from "../lib/markup.js";
+import { components, sharedMigration } from "../data/components.js";
+
+// Every `removed` entry from the inventory, plus the rows that belong to no
+// single component. A component cannot ship without appearing here.
+const migration = [
+  ...components.flatMap((item) =>
+    item.removed.map((row) => ({ ...row, component: item })),
+  ),
+  ...sharedMigration.map((row) => ({ ...row, component: null })),
+];
+---
+
+<BaseLayout
+  title="Getting started · Bootstrap HTML"
+  description="Install Bootstrap HTML with a stylesheet or Sass, then migrate off data-bs-* attributes."
+>
+  <h1>Getting started</h1>
+  <p class="lead">
+    Bootstrap 5.3.8 look on native HTML. One stylesheet, and a polyfill
+    module that stays idle when the browser already has the API.
+  </p>
+
+  <h2 class="h4">Stylesheet</h2>
+  <p>
+    Install <code>bootstrap-html</code> and point a link at the compiled CSS.
+    The polyfill script is a module URL so it can still fetch a fallback
+    next to itself. A bundler that inlines that file will break the
+    feature checks.
+  </p>
+  <pre class="example-code mb-4"><code>{`<link rel="stylesheet" href="./node_modules/bootstrap-html/dist/css/bootstrap-html.min.css">
+<script type="module" src="./node_modules/bootstrap-html/src/polyfills/index.js"></script>`}</code></pre>
+  <p>
+    The loader checks <code>commandForElement</code>, <code>closedBy</code>,
+    <code>scroll-target-group</code>, and <code>interestForElement</code>.
+    It downloads a module only when that API is missing and the page has
+    matching markup. See
+    <a href={sitePath("/polyfills")}>Polyfills</a>.
+  </p>
+
+  <h2 class="h4">Sass</h2>
+  <p>
+    <code>bootstrap</code> stays installed. Set variables after Bootstrap’s
+    functions and before this entry. Those variables are
+    <code>!default</code>, so a value you set first is the one that ships.
+  </p>
+  <pre class="example-code mb-4"><code>{`@import "bootstrap/scss/functions";
+
+$primary: #6610f2;
+
+@import "bootstrap-html/scss/bootstrap-html";`}</code></pre>
+  <p>
+    On the compiled CSS, skip Sass and set <code>--bs-*</code> custom
+    properties on a parent.
+  </p>
+
+  <h2 class="h4">Migration</h2>
+  <p>
+    Triggers are <code>&lt;button&gt;</code> elements.
+    <code>command</code> does not work on <code>&lt;a href&gt;</code>.
+  </p>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <caption>
+        What replaces Bootstrap’s JavaScript hooks. Plugin options this
+        package never shipped are unchanged: keep your own script.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Bootstrap JS</th>
+          <th scope="col">Bootstrap HTML</th>
+          <th scope="col">Component</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          migration.map((row) => (
+            <tr>
+              <td set:html={inlineMarkup(row.from)} />
+              <td set:html={inlineMarkup(row.to)} />
+              <td>
+                {row.component ? (
+                  <a href={sitePath(row.component.route)}>{row.component.name}</a>
+                ) : (
+                  <span class="text-body-secondary">All</span>
+                )}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>
