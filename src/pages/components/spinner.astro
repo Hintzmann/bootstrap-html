@@ -3,13 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const buttonsCode = `<div class="d-flex flex-wrap gap-2">
-  <button type="button" class="btn btn-primary">Publish</button>
-  <button type="button" class="btn btn-primary" aria-busy="true" disabled>Publish</button>
-  <button type="button" class="btn btn-outline-secondary" aria-busy="true" disabled>Export CSS</button>
-  <button type="button" class="btn btn-sm btn-primary" aria-busy="true" disabled>Publish</button>
-</div>`;
+import { examples } from "../../data/examples.js";
 
 const cardCode = `<div class="row g-3">
   <div class="col-md-6">
@@ -128,7 +122,7 @@ const standaloneCode = `<div role="status" aria-busy="true" aria-label="Loading 
   <Example
     title="Buttons"
     lead="The idle control and the busy one share a name. disabled blocks a second press."
-    code={buttonsCode}
+    code={examples.spinner}
   >
     <button slot="intro" type="button" class="btn btn-sm btn-outline-secondary mb-3" data-busy-toggle aria-pressed="true">
       Toggle busy

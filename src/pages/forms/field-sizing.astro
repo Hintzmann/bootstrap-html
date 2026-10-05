@@ -2,12 +2,10 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
 const inputCode = `<label class="form-label" for="tag">Tag</label>
 <input type="text" class="form-control field-sizing" id="tag" name="tag" value="css">`;
-
-const textareaCode = `<label class="form-label" for="note">Note</label>
-<textarea class="form-control field-sizing" id="note" name="note">Type more lines to grow the box.</textarea>`;
 
 const selectCode = `<label class="form-label" for="size">Size</label>
 <select class="form-select field-sizing" id="size" name="size">
@@ -66,7 +64,7 @@ const selectCode = `<label class="form-label" for="size">Size</label>
   <Example
     title="Textarea"
     lead="Add lines. The height follows the text until the max block size."
-    code={textareaCode}
+    code={examples["field-sizing"]}
   />
 
   <Example

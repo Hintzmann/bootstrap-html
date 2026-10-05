@@ -2,16 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const textCode = `<label class="form-label" for="ice-cream">Flavor</label>
-<input class="form-control" list="ice-cream-flavors" id="ice-cream" name="ice-cream" placeholder="Type to filter">
-<datalist id="ice-cream-flavors">
-  <option value="Chocolate"></option>
-  <option value="Coconut"></option>
-  <option value="Mint"></option>
-  <option value="Strawberry"></option>
-  <option value="Vanilla"></option>
-</datalist>`;
+import { examples } from "../../data/examples.js";
 
 const searchCode = `<label class="form-label" for="docs-query">Search docs</label>
 <input class="form-control" type="search" list="docs-topics" id="docs-query" name="q" placeholder="Accordion, modal, …">
@@ -64,7 +55,7 @@ const searchCode = `<label class="form-label" for="docs-query">Search docs</labe
   <Example
     title="Text"
     lead="Type a letter. The list narrows to matching flavors. The value is still free text."
-    code={textCode}
+    code={examples.datalist}
   />
 
   <Example

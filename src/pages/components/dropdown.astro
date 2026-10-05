@@ -2,30 +2,18 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples, dropdownMenuLinks } from "../../data/examples.js";
 
-const menuLinks = `    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>`;
-
-const menuLinksDivided = `${menuLinks}
+const menuLinksDivided = `${dropdownMenuLinks}
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="#">Separated link</a></li>`;
-
-const singleButtonCode = `<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="dropdownMenuButton">
-    Dropdown button
-  </button>
-  <ul class="dropdown-menu" popover="auto" id="dropdownMenuButton">
-${menuLinks}
-  </ul>
-</div>`;
 
 const linkButtonCode = `<div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="dropdownMenuLink">
     Dropdown link
   </button>
   <ul class="dropdown-menu" popover="auto" id="dropdownMenuLink">
-${menuLinks}
+${dropdownMenuLinks}
   </ul>
 </div>`;
 
@@ -390,7 +378,7 @@ const offsetCode = `<div class="d-flex">
       Offset
     </button>
     <ul class="dropdown-menu" popover="auto" id="ddOffset">
-${menuLinks}
+${dropdownMenuLinks}
     </ul>
   </div>
   <div class="btn-group">
@@ -517,7 +505,7 @@ const autoCloseCode = `<div class="d-flex flex-wrap gap-2">
   <Example
     title="Single button"
     lead="Any single .btn can be turned into a dropdown toggle. command/commandfor opens a popover menu."
-    code={singleButtonCode}
+    code={examples.dropdown}
   />
 
   <Example

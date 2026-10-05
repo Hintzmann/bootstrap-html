@@ -2,17 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const liveDemoCode = `<span class="d-inline-block">
-  <button type="button" class="btn btn-lg btn-danger" command="toggle-popover" commandfor="popoverLive">
-    Click to toggle popover
-  </button>
-  <div class="popover bs-popover-end" popover="auto" id="popoverLive">
-    <div class="popover-arrow"></div>
-    <h3 class="popover-header">Popover title</h3>
-    <div class="popover-body">And here’s some amazing content. It’s very engaging. Right?</div>
-  </div>
-</span>`;
+import { examples } from "../../data/examples.js";
 
 const directionsCode = `<div class="d-flex flex-wrap justify-content-center gap-2">
   <span class="d-inline-block">
@@ -149,7 +139,7 @@ const disabledCode = `<span class="d-inline-block">
   <Example
     title="Live demo"
     lead="Titles and body content are real HTML in .popover-header and .popover-body. Click the button to toggle."
-    code={liveDemoCode}
+    code={examples.popover}
   />
 
   <Example

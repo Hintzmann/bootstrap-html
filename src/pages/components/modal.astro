@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
 const componentsCode = `<div class="modal-dialog">
   <div class="modal-content">
@@ -18,28 +19,6 @@ const componentsCode = `<div class="modal-dialog">
     </div>
   </div>
 </div>`;
-
-const liveDemoCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="exampleModal">
-  Launch demo modal
-</button>
-
-<dialog class="modal" closedby="any" id="exampleModal" aria-labelledby="exampleModalLabel">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" command="close" commandfor="exampleModal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Woohoo, you’re reading this text in a modal!
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" command="close" commandfor="exampleModal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</dialog>`;
 
 const staticBackdropCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="staticBackdrop">
   Launch static backdrop modal
@@ -477,7 +456,7 @@ const fullscreenCode = `<div class="d-flex flex-wrap gap-2">
     code={componentsCode}
   />
 
-  <Example title="Live demo" code={liveDemoCode} />
+  <Example title="Live demo" code={examples.modal} />
 
   <Example
     title="Static backdrop"

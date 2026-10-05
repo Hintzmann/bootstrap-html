@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
 const tabsScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/tabs.js"></script>
 
@@ -15,24 +16,6 @@ const toastScript = `<script type="module" src="./node_modules/bootstrap-html/sr
 const countScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
 
 `;
-
-const contextHostCode = `<div
-  class="card context-host"
-  oncontextmenu="event.preventDefault(); this.querySelector('[popover]').showPopover({source: event.target})"
->
-  <div class="card-body">
-    <p class="mb-2">Right-click this card. Actions is a separate left-click control.</p>
-    <button type="button" class="btn btn-sm btn-secondary" command="toggle-popover" commandfor="composed-context-host">
-      Actions
-    </button>
-  </div>
-  <ul class="dropdown-menu dropdown-menu-context" popover="auto" id="composed-context-host">
-    <li><button type="button" class="dropdown-item">Edit</button></li>
-    <li><button type="button" class="dropdown-item">Duplicate</button></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><button type="button" class="dropdown-item text-danger">Delete</button></li>
-  </ul>
-</div>`;
 
 const contextButtonCode = `<div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" command="toggle-popover" commandfor="composed-context-btn">
@@ -405,7 +388,7 @@ const multiselectCode = `${countScript}<div class="dropdown dropdown-multiselect
   <Example
     title="On a host"
     lead="Right-click the card (or the paragraph). Left-click Actions to open the same menu from that button."
-    code={contextHostCode}
+    code={examples.composed}
   />
 
   <Example

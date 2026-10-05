@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
 const componentsCode = `<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
   <div class="offcanvas-header">
@@ -12,20 +13,6 @@ const componentsCode = `<div class="offcanvas offcanvas-start" tabindex="-1" id=
     Content for the offcanvas goes here. You can place just about any Bootstrap component or custom elements here.
   </div>
 </div>`;
-
-const liveDemoCode = `<button type="button" class="btn btn-primary" command="show-modal" commandfor="offcanvasExample">
-  Toggle offcanvas
-</button>
-
-<dialog class="offcanvas offcanvas-start" id="offcanvasExample" closedby="any" aria-labelledby="offcanvasExampleLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
-    <button type="button" class="btn-close" command="close" commandfor="offcanvasExample" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-    Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
-  </div>
-</dialog>`;
 
 const bodyScrollingCode = `<button type="button" class="btn btn-primary" command="show-popover" commandfor="offcanvasScrolling">
   Enable body scrolling
@@ -193,7 +180,7 @@ const placementCode = `<div class="d-flex flex-wrap gap-2">
   <Example
     title="Live demo"
     lead="Use the button to show and hide an offcanvas via command/commandfor on a dialog with the .offcanvas class."
-    code={liveDemoCode}
+    code={examples.offcanvas}
   >
     <div slot="alert" class="alert alert-info" role="alert">
       <code>command</code> / <code>commandfor</code> work on

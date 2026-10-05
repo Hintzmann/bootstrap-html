@@ -3,13 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const exampleCode = `<details class="collapse">
-  <summary class="btn btn-primary mb-2">Toggle collapse</summary>
-  <div class="card card-body">
-    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger. Find in page can still match it: the token is <strong>archaeopteryx</strong>.
-  </div>
-</details>`;
+import { examples } from "../../data/examples.js";
 
 const horizontalCode = `<div style="min-height: 120px;">
   <details class="collapse collapse-horizontal">
@@ -113,7 +107,7 @@ const untilFoundCode = `<p>Search this page for <strong>coelacanth</strong>.</p>
   <Example
     title="Example"
     lead="Click the summary to show and hide the panel. .collapse hides content; [open] shows it; ::details-content handles the transition."
-    code={exampleCode}
+    code={examples.collapse}
   >
     <div slot="alert" class="alert alert-warning" role="alert">
       Bootstrap’s example uses a link and a button that both target one

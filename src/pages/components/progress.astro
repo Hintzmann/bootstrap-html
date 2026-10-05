@@ -3,9 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const labelsCode = `<label class="form-label" for="file">File progress</label>
-<progress id="file" class="progress" value="70" max="100">70%</progress>`;
+import { examples } from "../../data/examples.js";
 
 const valuesCode = `<label class="form-label" for="progress-25">25%</label>
 <progress id="progress-25" class="progress mb-3" value="25" max="100">25%</progress>
@@ -98,7 +96,7 @@ const meterRangeCode = `<label class="form-label" for="disk-low">Low (20, optimu
   <Example
     title="Labels"
     lead="Associate a label with for/id, or wrap the control. The text inside the tags is only a fallback for old browsers."
-    code={labelsCode}
+    code={examples.progress}
   />
 
   <Example
