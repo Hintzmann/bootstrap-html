@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { components, listed } from "../src/data/components.js";
 import { examples } from "../src/data/examples.js";
 import { buildContract } from "../src/lib/contract.js";
-import { buildLlms } from "../src/lib/llms.js";
+import { buildLlms, buildLlmsFull } from "../src/lib/llms.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readRepo = (rel) => readFileSync(join(root, rel), "utf8");
@@ -72,11 +72,28 @@ describe("component inventory", () => {
     const text = buildLlms({ packageJson, site: "https://example.org", base: "/bootstrap-html/" });
     expect(text.startsWith("# Bootstrap HTML\n\n> ")).toBe(true);
     expect(text).toContain("(https://example.org/bootstrap-html/components.json)");
+    expect(text).toContain("(https://example.org/bootstrap-html/llms-full.txt)");
     for (const item of components) {
       expect(text, item.id).toContain(`[${item.name}](https://example.org/bootstrap-html${item.route}/)`);
       if (item.behavior?.required) expect(text, item.id).toContain(`Requires \`<${item.behavior.element}>\``);
     }
     expect(text).not.toMatch(/\]\(\//);
+  });
+
+  it("puts every example in its own html fence in llms-full.txt", () => {
+    const packageJson = JSON.parse(readRepo("package.json"));
+    const text = buildLlmsFull({ packageJson, site: "https://example.org", base: "/bootstrap-html/" });
+    for (const item of components) {
+      expect(examples[item.id], item.id).not.toContain("```");
+      expect(text, item.id).toContain(`### ${item.name}\n`);
+      expect(text, item.id).toContain(`\`\`\`html\n${examples[item.id]}\n\`\`\``);
+      for (const line of item.avoid) expect(text, item.id).toContain(`- ${line}`);
+    }
+    expect(text.match(/^```/gm)).toHaveLength(components.length * 2);
+    expect(text).not.toMatch(/\]\(\//);
+    expect(packageJson.files).toContain("dist/llms-full.txt");
+    expect(packageJson.exports["./llms-full.txt"]).toBe("./dist/llms-full.txt");
+    expect(new URL(packageJson.homepage).pathname).toBe("/bootstrap-html/");
   });
 
   it("lists components alphabetically for the docs nav and catalog", () => {
@@ -99,7 +116,7 @@ describe("component inventory", () => {
     for (const item of components) {
       expect(readme, item.route).toContain(item.route);
     }
-    for (const route of ["/getting-started/", "/", "/polyfills/", "/components.json", "/llms.txt"]) {
+    for (const route of ["/getting-started/", "/", "/polyfills/", "/components.json", "/llms.txt", "/llms-full.txt"]) {
       expect(readme, route).toContain(route);
     }
   });

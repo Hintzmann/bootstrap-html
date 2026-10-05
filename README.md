@@ -46,7 +46,7 @@ The package is not on the npm registry yet. Install it from GitHub:
 npm install github:Hintzmann/bootstrap-html
 ```
 
-`prepare` compiles `dist/css` and writes `dist/components.json` during that install. Plain HTML with the compiled CSS needs no install once the package is on a CDN. Sass customization and bundlers need it in `node_modules`. `bootstrap` is only used by the Sass entry.
+`prepare` compiles `dist/css` and writes `dist/components.json` and `dist/llms-full.txt` during that install. Plain HTML with the compiled CSS needs no install once the package is on a CDN. Sass customization and bundlers need it in `node_modules`. `bootstrap` is only used by the Sass entry.
 
 CSS:
 
@@ -143,6 +143,7 @@ Routes on the deployed site (GitHub Pages: `https://<owner>.github.io/<repo>/`):
 | `/polyfills/` | [src/pages/polyfills.astro](src/pages/polyfills.astro) |
 | `/components.json` | [src/data/components.js](src/data/components.js) |
 | `/llms.txt` | [src/lib/llms.js](src/lib/llms.js) |
+| `/llms-full.txt` | [src/lib/llms.js](src/lib/llms.js) |
 
 ## Component contracts
 
@@ -154,12 +155,12 @@ The same data, plus one canonical markup `example` per component from [src/data/
 curl https://<owner>.github.io/<repo>/components.json
 ```
 
-An agent that only has the docs URL can start from `/llms.txt`: the markup rules and a link to every component page and to `/components.json`, generated from the same inventory.
+An agent that only has the docs URL can start from `/llms.txt`: the markup rules and a link to every component page. `/llms-full.txt` is the Markdown an agent reads as text: each example in an `html` code block, followed by its `avoid` list. Both are generated from the same inventory.
 
-The package ships `components.json` as `node_modules/bootstrap-html/dist/components.json` (export `bootstrap-html/components.json`), matching the installed version. In a project that uses this package, point the agent at it from that project’s `AGENTS.md`:
+The package ships `dist/components.json` (export `bootstrap-html/components.json`) and `dist/llms-full.txt` (export `bootstrap-html/llms-full.txt`), matching the installed version. In a project that uses this package, point the agent at them from that project’s `AGENTS.md`:
 
 ```markdown
-UI uses bootstrap-html. Before writing component markup, read `node_modules/bootstrap-html/dist/components.json`: start from `example`, follow `avoid`, and load the `element.module` it names.
+UI uses bootstrap-html. Before writing component markup, read `node_modules/bootstrap-html/dist/llms-full.txt`: start from the component’s example, follow its avoid list, and load the `pe-*` module it names. `dist/components.json` has the same data plus browser support and accessibility notes.
 No bootstrap.js and no `data-bs-*`. `command` / `commandfor` triggers are `<button>`, not `<a href>`.
 Load `bootstrap-html/src/polyfills/index.js` once per page as a module.
 ```
