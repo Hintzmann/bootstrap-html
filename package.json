@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.3.0",
   "license": "MIT",
+  "homepage": "https://hintzmann.github.io/bootstrap-html/",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -12,6 +13,7 @@
   "files": [
     "dist/css",
     "dist/components.json",
+    "dist/llms-full.txt",
     "src/scss",
     "src/polyfills",
     "src/behaviors",
@@ -28,6 +30,7 @@
     "./css/bootstrap-html.min.css": "./dist/css/bootstrap-html.min.css",
     "./scss/bootstrap-html": "./src/scss/bootstrap-html.scss",
     "./components.json": "./dist/components.json",
+    "./llms-full.txt": "./dist/llms-full.txt",
     "./polyfills": "./src/polyfills/index.js",
     "./polyfills/*": "./src/polyfills/*",
     "./behaviors/focus-group": "./src/behaviors/focus-group.js",
