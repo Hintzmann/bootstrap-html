@@ -3,6 +3,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { components, listed } from "../src/data/components.js";
+import { examples } from "../src/data/examples.js";
+import { buildContract } from "../src/lib/contract.js";
+import { buildLlms } from "../src/lib/llms.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readRepo = (rel) => readFileSync(join(root, rel), "utf8");
@@ -42,6 +45,40 @@ describe("component inventory", () => {
     }
   });
 
+  it("renders each canonical example on its component page", () => {
+    expect(Object.keys(examples).sort()).toEqual(components.map((item) => item.id).sort());
+    for (const item of components) {
+      const key = /^[a-z]+$/.test(item.id) ? `examples.${item.id}` : `examples["${item.id}"]`;
+      expect(readRepo(`src/pages${item.route}.astro`), item.id).toContain(`code={${key}}`);
+      expect(examples[item.id], item.id).not.toMatch(/data-bs-|bootstrap\.js|pep-/);
+      if (item.behavior?.required) {
+        expect(examples[item.id], item.id).toContain(`<${item.behavior.element}`);
+        expect(examples[item.id], item.id).toContain(item.behavior.module);
+      }
+    }
+  });
+
+  it("ships the example in the package contract", () => {
+    const packageJson = JSON.parse(readRepo("package.json"));
+    const contract = buildContract(packageJson);
+    expect(contract.components.map((item) => item.id)).toEqual(components.map((item) => item.id));
+    expect(contract.components.every((item) => item.example)).toBe(true);
+    expect(packageJson.files).toContain("dist/components.json");
+    expect(packageJson.exports["./components.json"]).toBe("./dist/components.json");
+  });
+
+  it("links every component from llms.txt with absolute URLs under base", () => {
+    const packageJson = JSON.parse(readRepo("package.json"));
+    const text = buildLlms({ packageJson, site: "https://example.org", base: "/bootstrap-html/" });
+    expect(text.startsWith("# Bootstrap HTML\n\n> ")).toBe(true);
+    expect(text).toContain("(https://example.org/bootstrap-html/components.json)");
+    for (const item of components) {
+      expect(text, item.id).toContain(`[${item.name}](https://example.org/bootstrap-html${item.route}/)`);
+      if (item.behavior?.required) expect(text, item.id).toContain(`Requires \`<${item.behavior.element}>\``);
+    }
+    expect(text).not.toMatch(/\]\(\//);
+  });
+
   it("lists components alphabetically for the docs nav and catalog", () => {
     const names = listed("components").map((item) => item.name);
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, "en")));
@@ -62,7 +99,7 @@ describe("component inventory", () => {
     for (const item of components) {
       expect(readme, item.route).toContain(item.route);
     }
-    for (const route of ["/getting-started/", "/", "/polyfills/", "/components.json"]) {
+    for (const route of ["/getting-started/", "/", "/polyfills/", "/components.json", "/llms.txt"]) {
       expect(readme, route).toContain(route);
     }
   });

@@ -2,45 +2,32 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const slide = (label: string, bg: string) =>
-  `<div class="d-flex w-100 align-items-center justify-content-center ${bg}" style="min-height: 16rem">${label}</div>`;
-
-const slides = (prefix: string) =>
-  `<div class="carousel-item" data-label="Slide 1">
-    ${slide(`${prefix} first slide`, "bg-secondary text-white")}
-  </div>
-  <div class="carousel-item" data-label="Slide 2">
-    ${slide(`${prefix} second slide`, "bg-dark text-white")}
-  </div>
-  <div class="carousel-item" data-label="Slide 3">
-    ${slide(`${prefix} third slide`, "bg-secondary text-white")}
-  </div>`;
+import { examples, carouselSlide, carouselSlides } from "../../data/examples.js";
 
 const basicCode = `<div class="carousel slide">
   <div class="carousel-inner">
-    ${slides("Basic")}
+    ${carouselSlides("Basic")}
   </div>
 </div>`;
 
 const captionsCode = `<div class="carousel slide">
   <div class="carousel-inner">
     <div class="carousel-item" data-label="First slide">
-      ${slide("First slide", "bg-secondary text-white")}
+      ${carouselSlide("First slide", "bg-secondary text-white")}
       <div class="carousel-caption d-none d-md-block">
         <h5>First slide label</h5>
         <p>Some representative placeholder content for the first slide.</p>
       </div>
     </div>
     <div class="carousel-item" data-label="Second slide">
-      ${slide("Second slide", "bg-dark text-white")}
+      ${carouselSlide("Second slide", "bg-dark text-white")}
       <div class="carousel-caption d-none d-md-block">
         <h5>Second slide label</h5>
         <p>Some representative placeholder content for the second slide.</p>
       </div>
     </div>
     <div class="carousel-item" data-label="Third slide">
-      ${slide("Third slide", "bg-secondary text-white")}
+      ${carouselSlide("Third slide", "bg-secondary text-white")}
       <div class="carousel-caption d-none d-md-block">
         <h5>Third slide label</h5>
         <p>Some representative placeholder content for the third slide.</p>
@@ -49,45 +36,24 @@ const captionsCode = `<div class="carousel slide">
   </div>
 </div>`;
 
-const fallbackCode = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/carousel.js"></script>
-
-<pe-carousel class="carousel slide">
-  <button type="button" class="carousel-control-prev" command="--prev" commandfor="fallback-carousel">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <div class="carousel-inner" id="fallback-carousel">
-    ${slides("Fallback")}
-  </div>
-  <button type="button" class="carousel-control-next" command="--next" commandfor="fallback-carousel">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-  <div class="carousel-indicators">
-    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 1"></button>
-    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 2"></button>
-    <button type="button" command="--slide" commandfor="fallback-carousel" aria-label="Slide 3"></button>
-  </div>
-</pe-carousel>`;
-
 const darkCode = `<div class="carousel slide" data-bs-theme="dark">
   <div class="carousel-inner">
     <div class="carousel-item" data-label="First slide">
-      ${slide("First slide", "bg-body-secondary")}
+      ${carouselSlide("First slide", "bg-body-secondary")}
       <div class="carousel-caption d-none d-md-block">
         <h5>First slide label</h5>
         <p>Some representative placeholder content for the first slide.</p>
       </div>
     </div>
     <div class="carousel-item" data-label="Second slide">
-      ${slide("Second slide", "bg-secondary text-white")}
+      ${carouselSlide("Second slide", "bg-secondary text-white")}
       <div class="carousel-caption d-none d-md-block">
         <h5>Second slide label</h5>
         <p>Some representative placeholder content for the second slide.</p>
       </div>
     </div>
     <div class="carousel-item" data-label="Third slide">
-      ${slide("Third slide", "bg-dark text-white")}
+      ${carouselSlide("Third slide", "bg-dark text-white")}
       <div class="carousel-caption d-none d-md-block">
         <h5>Third slide label</h5>
         <p>Some representative placeholder content for the third slide.</p>
@@ -213,7 +179,7 @@ const darkCode = `<div class="carousel slide" data-bs-theme="dark">
   <Example
     title="Fallback controls"
     lead="In Chrome the HTML buttons and pips are hidden and the generated controls remain. In Firefox and Safari the buttons move one slide, the pips jump to a slide, and dragging with the mouse pans."
-    code={fallbackCode}
+    code={examples.carousel}
   />
 
   <script>

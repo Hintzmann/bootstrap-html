@@ -3,14 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const checkboxCode = `<fieldset>
-  <legend class="visually-hidden">Notifications</legend>
-  <input type="checkbox" class="btn-check" id="buttons-email" autocomplete="off" checked>
-  <label class="btn btn-outline-primary" for="buttons-email">Email</label>
-  <input type="checkbox" class="btn-check" id="buttons-sms" autocomplete="off">
-  <label class="btn btn-outline-primary" for="buttons-sms">SMS</label>
-</fieldset>`;
+import { examples } from "../../data/examples.js";
 
 const radioCode = `<fieldset>
   <legend class="visually-hidden">Plan</legend>
@@ -64,7 +57,7 @@ const radioCode = `<fieldset>
   <Example
     title="Checkbox"
     lead="Each label is a toggle. Both can stay on."
-    code={checkboxCode}
+    code={examples.buttons}
   />
 
   <Example

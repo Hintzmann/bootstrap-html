@@ -2,13 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const basicCode = `<label class="form-label" for="plan">Plan</label>
-<select class="form-select" id="plan" name="plan">
-  <option value="free">Free</option>
-  <option value="pro" selected>Pro</option>
-  <option value="team">Team</option>
-</select>`;
+import { examples } from "../../data/examples.js";
 
 const sizesCode = `<div class="mb-3">
   <label class="form-label" for="city-sm">Small</label>
@@ -130,7 +124,7 @@ const groupCode = `<label class="form-label" for="animal">Animal</label>
   <Example
     title="Basic"
     lead="A labelled .form-select. Open it to see the token-styled picker."
-    code={basicCode}
+    code={examples["customizable-select"]}
   />
 
   <Example

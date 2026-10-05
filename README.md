@@ -40,7 +40,15 @@ See the [browser matrix](src/pages/index.astro) on the docs homepage.
 
 ## Install
 
-CSS, after `npm install bootstrap-html`:
+The package is not on the npm registry yet. Install it from GitHub:
+
+```sh
+npm install github:Hintzmann/bootstrap-html
+```
+
+`prepare` compiles `dist/css` and writes `dist/components.json` during that install. Plain HTML with the compiled CSS needs no install once the package is on a CDN. Sass customization and bundlers need it in `node_modules`. `bootstrap` is only used by the Sass entry.
+
+CSS:
 
 ```html
 <link rel="stylesheet" href="./node_modules/bootstrap-html/dist/css/bootstrap-html.min.css">
@@ -134,15 +142,26 @@ Routes on the deployed site (GitHub Pages: `https://<owner>.github.io/<repo>/`):
 | `/forms/validation/` | [src/pages/forms/validation.astro](src/pages/forms/validation.astro) |
 | `/polyfills/` | [src/pages/polyfills.astro](src/pages/polyfills.astro) |
 | `/components.json` | [src/data/components.js](src/data/components.js) |
+| `/llms.txt` | [src/lib/llms.js](src/lib/llms.js) |
 
 ## Component contracts
 
 [src/data/components.js](src/data/components.js) is the inventory: per component, the required or optional `pe-*` element, the polyfills it may pull, its Baseline status, the Bootstrap JavaScript hooks it replaces, and the markup that is not supported. The catalog, the browser matrix, the migration table, the sidebar, and the JS cost table on each page all read it, so those cannot drift apart.
 
-The same data is served as JSON at `/components.json` for tooling and agents:
+The same data, plus one canonical markup `example` per component from [src/data/examples.js](src/data/examples.js), is served as JSON at `/components.json` for tooling and agents:
 
 ```sh
 curl https://<owner>.github.io/<repo>/components.json
+```
+
+An agent that only has the docs URL can start from `/llms.txt`: the markup rules and a link to every component page and to `/components.json`, generated from the same inventory.
+
+The package ships `components.json` as `node_modules/bootstrap-html/dist/components.json` (export `bootstrap-html/components.json`), matching the installed version. In a project that uses this package, point the agent at it from that project’s `AGENTS.md`:
+
+```markdown
+UI uses bootstrap-html. Before writing component markup, read `node_modules/bootstrap-html/dist/components.json`: start from `example`, follow `avoid`, and load the `element.module` it names.
+No bootstrap.js and no `data-bs-*`. `command` / `commandfor` triggers are `<button>`, not `<a href>`.
+Load `bootstrap-html/src/polyfills/index.js` once per page as a module.
 ```
 
 ```sh

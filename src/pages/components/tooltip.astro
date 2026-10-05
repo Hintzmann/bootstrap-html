@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
 const hint = (
   id: string,
@@ -30,21 +31,6 @@ const linksCode = `<p class="text-body-secondary mb-0">Placeholder text to demon
 const customCode = `<button type="button" class="btn btn-secondary bs-tooltip-top custom-tooltip" aria-description="This top tooltip is themed via CSS variables.">
   Custom tooltip
 </button>`;
-
-const directionsCode = `<div class="d-flex flex-wrap justify-content-center gap-2 py-4">
-  <button type="button" class="btn btn-secondary bs-tooltip-top" aria-description="Tooltip on top">
-    Tooltip on top
-  </button>
-  <button type="button" class="btn btn-secondary bs-tooltip-end" aria-description="Tooltip on right">
-    Tooltip on right
-  </button>
-  <button type="button" class="btn btn-secondary bs-tooltip-bottom" aria-description="Tooltip on bottom">
-    Tooltip on bottom
-  </button>
-  <button type="button" class="btn btn-secondary bs-tooltip-start" aria-description="Tooltip on left">
-    Tooltip on left
-  </button>
-</div>`;
 
 const htmlCode = `<button type="button" class="btn btn-secondary bs-tooltip-top" aria-description="Tooltip with HTML">
   Tooltip with HTML
@@ -194,7 +180,7 @@ const hintLinksCode = `<p class="text-body-secondary mb-0">Placeholder text to d
   <Example
     title="Directions"
     lead="Four options are available: top, right, bottom, and left. Directions are mirrored when using Bootstrap in RTL. Add .bs-tooltip-top, .bs-tooltip-end, .bs-tooltip-bottom, or .bs-tooltip-start."
-    code={directionsCode}
+    code={examples.tooltip}
   >
     <div slot="alert" class="alert alert-info" role="alert">
       On this CSS fallback, <code>.bs-tooltip-auto</code> matches

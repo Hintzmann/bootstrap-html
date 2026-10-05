@@ -3,27 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { sitePath } from "../../lib/path.js";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
 
-const countScript = `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
-
-`;
-
-const fieldsetCode = `${countScript}<fieldset>
-  <legend>
-    Notify me
-    <output id="output-notify-count" class="ms-1 badge rounded-pill text-bg-secondary" data-controls="output-notify" for="output-notify-email output-notify-sms">1<span class="visually-hidden"> selected</span></output>
-  </legend>
-  <div id="output-notify">
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="email" id="output-notify-email" checked>
-      <label class="form-check-label" for="output-notify-email">Email</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="sms" id="output-notify-sms">
-      <label class="form-check-label" for="output-notify-sms">SMS</label>
-    </div>
-  </div>
-</fieldset>`;
 ---
 
 <BaseLayout
@@ -74,7 +55,7 @@ const fieldsetCode = `${countScript}<fieldset>
   <Example
     title="On a fieldset"
     lead="Toggle the boxes. The number in the legend updates. There is no dropdown."
-    code={fieldsetCode}
+    code={examples.output}
   />
 
   <DocsMeta id="output" at="end" />

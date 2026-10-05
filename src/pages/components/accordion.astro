@@ -2,27 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
-
-const exampleCode = `<div class="accordion">
-  <details class="accordion-item" name="accordionExample" open>
-    <summary class="accordion-button">Accordion Item #1</summary>
-    <div class="accordion-body">
-      <strong>This is the first item’s accordion body.</strong> It is shown by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-    </div>
-  </details>
-  <details class="accordion-item" name="accordionExample">
-    <summary class="accordion-button">Accordion Item #2</summary>
-    <div class="accordion-body">
-      <strong>This is the second item’s accordion body.</strong> It is hidden by default. Find in page can still match this panel: the token is <strong>quetzalcoatlus</strong>.
-    </div>
-  </details>
-  <details class="accordion-item" name="accordionExample">
-    <summary class="accordion-button">Accordion Item #3</summary>
-    <div class="accordion-body">
-      <strong>This is the third item’s accordion body.</strong> It is hidden by default. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-    </div>
-  </details>
-</div>`;
+import { examples } from "../../data/examples.js";
 
 const flushCode = `<div class="accordion accordion-flush">
   <details class="accordion-item" name="accordionFlushExample">
@@ -164,7 +144,7 @@ const focusGroupCode = `<script type="module" src="./node_modules/bootstrap-html
   <Example
     title="Example"
     lead="Click the accordions below to expand/collapse the accordion content."
-    code={exampleCode}
+    code={examples.accordion}
   >
     <p slot="intro">
       To render an accordion that’s expanded by default, add the
