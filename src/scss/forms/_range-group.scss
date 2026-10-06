@@ -8,11 +8,11 @@ $form-range-group-thumb-size: 1.5rem !default;
 $form-range-group-thumb-hit: .25rem !default;
 
 @mixin form-range-group-thumb {
-  pointer-events: auto;
   width: $form-range-group-thumb-size;
   height: $form-range-group-thumb-size;
-  border: $form-range-group-thumb-hit solid transparent;
+  pointer-events: auto;
   background-clip: padding-box;
+  border: $form-range-group-thumb-hit solid transparent;
 }
 
 @mixin form-range-group-fill {
@@ -20,12 +20,13 @@ $form-range-group-thumb-hit: .25rem !default;
   $lower: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-lower) / 100);
   $upper: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-upper) / 100);
 
-  background-image: linear-gradient(
-    var(--#{$prefix}range-fill-dir, to right),
-    transparent $lower,
-    var(--#{$prefix}primary) $lower $upper,
-    transparent $upper
-  );
+  background-image:
+    linear-gradient(
+      var(--#{$prefix}range-fill-dir, to right),
+      transparent $lower,
+      var(--#{$prefix}primary) $lower $upper,
+      transparent $upper
+    );
 }
 
 .form-range-group {
@@ -45,8 +46,8 @@ $form-range-group-thumb-hit: .25rem !default;
 
 .form-range-track {
   display: grid;
-  isolation: isolate;
   width: 100%;
+  isolation: isolate;
 }
 
 .form-range-track > .form-range {
@@ -55,12 +56,12 @@ $form-range-group-thumb-hit: .25rem !default;
   pointer-events: none;
 
   &::-webkit-slider-thumb {
-    @include form-range-group-thumb;
+    @include form-range-group-thumb();
     margin-top: ($form-range-track-height - $form-range-group-thumb-size) * .5;
   }
 
   &::-moz-range-thumb {
-    @include form-range-group-thumb;
+    @include form-range-group-thumb();
   }
 }
 
@@ -68,11 +69,11 @@ $form-range-group-thumb-hit: .25rem !default;
   z-index: 0;
 
   &::-webkit-slider-runnable-track {
-    @include form-range-group-fill;
+    @include form-range-group-fill();
   }
 
   &::-moz-range-track {
-    @include form-range-group-fill;
+    @include form-range-group-fill();
   }
 }
 

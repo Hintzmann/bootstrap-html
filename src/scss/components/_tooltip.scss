@@ -63,8 +63,8 @@
   &::before {
     position: absolute;
     z-index: var(--#{$prefix}tooltip-zindex);
-    display: block;
     box-sizing: content-box;
+    display: block;
     width: 0;
     height: 0;
     font-size: 0;
@@ -200,8 +200,8 @@
     max-width: var(--#{$prefix}tooltip-max-width);
     height: max-content;
     max-height: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
     overflow: visible;
     color: var(--#{$prefix}tooltip-color);
     background-color: transparent;
