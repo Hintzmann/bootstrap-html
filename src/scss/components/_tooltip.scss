@@ -64,8 +64,11 @@
     position: absolute;
     z-index: var(--#{$prefix}tooltip-zindex);
     display: block;
+    box-sizing: content-box;
     width: 0;
     height: 0;
+    font-size: 0;
+    line-height: 0;
     pointer-events: none;
     content: "" #{"/ \"\""};
     border-style: solid;
@@ -96,7 +99,7 @@
   &::after {
     bottom: 100%;
     left: 50%;
-    margin-bottom: var(--#{$prefix}tooltip-arrow-height);
+    margin-bottom: calc(var(--#{$prefix}tooltip-arrow-height) - 1px); // stylelint-disable-line function-disallowed-list
     translate: -50% 0;
   }
 
@@ -114,7 +117,7 @@
   &::after {
     top: 50%;
     left: 100%;
-    margin-left: var(--#{$prefix}tooltip-arrow-height);
+    margin-left: calc(var(--#{$prefix}tooltip-arrow-height) - 1px); // stylelint-disable-line function-disallowed-list
     translate: 0 -50%;
   }
 
@@ -133,7 +136,7 @@
   &::after {
     top: 100%;
     left: 50%;
-    margin-top: var(--#{$prefix}tooltip-arrow-height);
+    margin-top: calc(var(--#{$prefix}tooltip-arrow-height) - 1px); // stylelint-disable-line function-disallowed-list
     translate: -50% 0;
   }
 
@@ -151,7 +154,7 @@
   &::after {
     top: 50%;
     right: 100%;
-    margin-right: var(--#{$prefix}tooltip-arrow-height);
+    margin-right: calc(var(--#{$prefix}tooltip-arrow-height) - 1px); // stylelint-disable-line function-disallowed-list
     translate: 0 -50%;
   }
 
@@ -187,7 +190,8 @@
     }
   }
 
-  // Popover API: UA sets position:fixed; inset:0; margin:auto. Reset here.
+  // Popover API: UA sets position:fixed; inset:0; margin:auto; padding:.25em.
+  // Reset here. Leftover padding sits between .tooltip-inner and the arrow.
   &[popover] {
     position: fixed;
     position-anchor: auto;
@@ -197,6 +201,7 @@
     height: max-content;
     max-height: none;
     margin: 0;
+    padding: 0;
     overflow: visible;
     color: var(--#{$prefix}tooltip-color);
     background-color: transparent;
