@@ -1,0 +1,95 @@
+// Two native range inputs on one track. Thumbs stay the only pointer
+// target (`pointer-events: none` on the input), so the hit area is 1.5rem
+// (24px) with a transparent border. Fill between thumbs needs
+// --bs-range-lower / --bs-range-upper from range-group.js; without those
+// the first track looks like a plain .form-range.
+
+$form-range-group-thumb-size: 1.5rem !default;
+$form-range-group-thumb-hit: .25rem !default;
+
+@mixin form-range-group-thumb {
+  pointer-events: auto;
+  width: $form-range-group-thumb-size;
+  height: $form-range-group-thumb-size;
+  border: $form-range-group-thumb-hit solid transparent;
+  background-clip: padding-box;
+}
+
+@mixin form-range-group-fill {
+  $thumb: var(--#{$prefix}range-thumb-size);
+  $lower: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-lower) / 100);
+  $upper: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-upper) / 100);
+
+  background-image: linear-gradient(
+    var(--#{$prefix}range-fill-dir, to right),
+    transparent $lower,
+    var(--#{$prefix}primary) $lower $upper,
+    transparent $upper
+  );
+}
+
+.form-range-group {
+  --#{$prefix}range-lower: 0;
+  --#{$prefix}range-upper: 0;
+  --#{$prefix}range-thumb-size: #{$form-range-group-thumb-size};
+
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+
+  &:dir(rtl) {
+    --#{$prefix}range-fill-dir: to left;
+  }
+}
+
+.form-range-track {
+  display: grid;
+  isolation: isolate;
+  width: 100%;
+}
+
+.form-range-track > .form-range {
+  grid-area: 1 / 1;
+  height: add($form-range-group-thumb-size, $form-range-thumb-focus-box-shadow-width * 2);
+  pointer-events: none;
+
+  &::-webkit-slider-thumb {
+    @include form-range-group-thumb;
+    margin-top: ($form-range-track-height - $form-range-group-thumb-size) * .5;
+  }
+
+  &::-moz-range-thumb {
+    @include form-range-group-thumb;
+  }
+}
+
+.form-range-track > .form-range:first-of-type {
+  z-index: 0;
+
+  &::-webkit-slider-runnable-track {
+    @include form-range-group-fill;
+  }
+
+  &::-moz-range-track {
+    @include form-range-group-fill;
+  }
+}
+
+.form-range-track > .form-range:not(:first-of-type) {
+  z-index: 1;
+
+  &:focus {
+    z-index: 2;
+  }
+
+  &::-webkit-slider-runnable-track {
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  &::-moz-range-track {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}

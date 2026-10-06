@@ -34,6 +34,7 @@ describe("component inventory", () => {
       "datalist",
       "output",
       "spin-button",
+      "range-group",
       "customizable-select",
       "composed",
     ]);
@@ -108,6 +109,7 @@ describe("component inventory", () => {
       "datalist",
       "field-sizing",
       "output",
+      "range-group",
       "spin-button",
       "validation",
     ]);
@@ -133,6 +135,7 @@ describe("component inventory", () => {
       ),
       "src/behaviors/count.js",
       "src/behaviors/step.js",
+      "src/behaviors/range-group.js",
     ];
     for (const module of modules) {
       expect(agents, module).toContain(module);

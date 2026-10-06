@@ -21,6 +21,7 @@ Bootstrap 5.3.8 look and tokens on native HTML.
 - **Datalist** — `list` on an input pointing at a `<datalist>` id. Native typeahead.
 - **Output** — `<output data-controls>` plus optional `count.js` for checked boxes.
 - **Spin button** — plus/minus buttons with `command="--step-up"` / `--step-down` and `commandfor` set to a native input id. Optional `step.js`.
+- **Range group** — two native `type="range"` inputs stacked on one track. Optional `range-group.js` clamps thumbs and paints the fill.
 - **Customizable select** — `.form-select` opts into `appearance: base-select` where supported. The picker, caret, and checkmark use Bootstrap tokens.
 - **Toast** — `popover="manual"` and `command` / `commandfor`. Optional `pe-toast` for `data-delay` and stacking
 - **Progress** — `<progress class="progress">`. Omit `value` for the indeterminate stripe. `<meter class="meter">` has no Bootstrap equivalent
@@ -100,6 +101,12 @@ Stepping an input from plus/minus buttons is optional. Load `src/behaviors/step.
 <script type="module" src="./node_modules/bootstrap-html/src/behaviors/step.js"></script>
 ```
 
+A dual-thumb range is optional the same way. Load `src/behaviors/range-group.js` on pages that use `.form-range-group`. `data-range-group="off"` on a group skips clamp and fill. Without that module the two inputs still work; thumbs can cross and there is no fill.
+
+```html
+<script type="module" src="./node_modules/bootstrap-html/src/behaviors/range-group.js"></script>
+```
+
 Sass. Set variables after Bootstrap’s functions and before this entry. Bootstrap’s variables are `!default`, so yours win. `bootstrap` stays a dependency.
 
 ```scss
@@ -146,6 +153,7 @@ Routes on the deployed site (GitHub Pages: `https://<owner>.github.io/<repo>/`):
 | `/forms/datalist/` | [src/pages/forms/datalist.astro](src/pages/forms/datalist.astro) |
 | `/forms/field-sizing/` | [src/pages/forms/field-sizing.astro](src/pages/forms/field-sizing.astro) |
 | `/forms/output/` | [src/pages/forms/output.astro](src/pages/forms/output.astro) |
+| `/forms/range-group/` | [src/pages/forms/range-group.astro](src/pages/forms/range-group.astro) |
 | `/forms/spin-button/` | [src/pages/forms/spin-button.astro](src/pages/forms/spin-button.astro) |
 | `/forms/validation/` | [src/pages/forms/validation.astro](src/pages/forms/validation.astro) |
 | `/polyfills/` | [src/pages/polyfills.astro](src/pages/polyfills.astro) |

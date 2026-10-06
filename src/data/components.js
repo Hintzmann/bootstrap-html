@@ -910,6 +910,55 @@ export const components = [
     ],
   },
   {
+    id: "range-group",
+    route: "/forms/range-group",
+    name: "Range group",
+    nav: "forms",
+    status: "native",
+    baseline: "newly",
+    blurb: "Two native range inputs stacked on one track. Optional range-group.js clamps and paints the fill.",
+    behavior: null,
+    cost: {
+      bootstrap: "No range-group plugin. Dual sliders are a third-party widget or custom ARIA sliders.",
+      bootstrapJs: "Not in bootstrap.min.js",
+      native:
+        "Two `.form-range` in `.form-range-group`. Optional `src/behaviors/range-group.js` for clamp and fill.",
+      nativeJs: "0 KB. Optional src/behaviors/range-group.js",
+    },
+    support: {
+      noScript:
+        "Two native `type=\"range\"` on one track. Keyboard, submit, and focus work. Without `range-group.js` thumbs can cross and there is no fill. `data-range-group=\"off\"` skips the module when it is loaded.",
+      polyfill: "None",
+      noFallback:
+        "The track is not a click target: `pointer-events: none` on the inputs, so only the thumbs receive pointer events. The later thumb in the DOM wins when they overlap. Fill needs `range-group.js`.",
+    },
+    removed: [
+      {
+        from: "noUiSlider, or a custom `role=\"slider\"` multi-thumb widget",
+        to: "Two `<input type=\"range\" class=\"form-range\">` in `.form-range-track`, inside `<fieldset class=\"form-range-group\">`",
+      },
+      {
+        from: "`aria-valuemin` / `aria-valuemax` updated as the other thumb moves",
+        to: "Value clamp in `src/behaviors/range-group.js`. Do not rewrite `min` / `max` on the inputs; that breaks the shared track.",
+      },
+    ],
+    avoid: [
+      "Do not point `aria-labelledby` at an `<output>`. That replaces the label and the slider is named by its value.",
+      "Do not put `role=\"tooltip\"` on the `<output>`. It is a readout, not a tooltip.",
+      "Do not add a `pe-range-group` element. The fieldset is already the group.",
+      "`data-range-group=\"off\"` skips clamp and fill. Omit it when you load the module and want that behavior.",
+      "Give both inputs the same `min`, `max`, and `step`. Different bounds break the shared geometry.",
+      "Do not add `role=\"slider\"` or `aria-valuemin` / `aria-valuemax` / `aria-valuenow` on the inputs. `type=\"range\"` already has that role.",
+    ],
+    a11y: [
+      "Each thumb is a native slider. Arrow keys, Home, End, and Page Up / Page Down come from the browser. Tab order is DOM order and does not change when thumbs overlap.",
+      "Bootstrap’s focus ring is on the thumb, so each stacked input still shows which handle is focused.",
+      "Name the group with `<legend>`. Name each thumb with `<label for>`. Do not use `aria-labelledby` on a value readout.",
+      "The readout is `<output for aria-live=\"off\">`. Focus is on the slider, which already announces the value; a live region would speak it twice. That is the opposite of Spin button, where focus stays on the button.",
+      "Thumbs are 1.5rem (24px) because the track is not a pointer target. That meets WCAG 2.5.8 Target Size (Minimum).",
+    ],
+  },
+  {
     id: "customizable-select",
     route: "/forms/customizable-select",
     name: "Customizable select",
