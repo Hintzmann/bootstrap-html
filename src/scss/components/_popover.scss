@@ -61,8 +61,8 @@
     }
   }
 
-  // Popover API: UA sets position:fixed; inset:0; margin:auto. Reset here.
-  // Placement insets live on .bs-popover-* so they do not fight this default.
+  // Popover API: UA sets position:fixed; inset:0; margin:auto; padding:.25em.
+  // Reset here. Leftover padding sits between the body and the arrow.
   &[popover] {
     position: fixed;
     position-anchor: auto;
@@ -71,6 +71,7 @@
     max-width: var(--#{$prefix}popover-max-width);
     height: max-content;
     max-height: none;
+    padding: 0;
     margin: 0;
     overflow: visible;
     color: inherit;

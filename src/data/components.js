@@ -862,6 +862,103 @@ export const components = [
     ],
   },
   {
+    id: "spin-button",
+    route: "/forms/spin-button",
+    name: "Spin button",
+    nav: "forms",
+    status: "script",
+    baseline: "newly",
+    blurb: "Plus and minus buttons step a native input. commandfor is the input id.",
+    behavior: null,
+    cost: {
+      bootstrap: "No spin-button plugin. Quantity steppers are custom markup plus script.",
+      bootstrapJs: "Not in bootstrap.min.js",
+      native: "`stepUp` / `stepDown` from `command=\"--step-up\"` / `--step-down`. Load `src/behaviors/step.js`",
+      nativeJs: "Optional src/behaviors/step.js",
+      polyfill: ["invoker"],
+    },
+    support: {
+      noScript:
+        "The input still accepts a typed or native-stepped value. Without `step.js` the plus and minus buttons do nothing.",
+      polyfill:
+        "[`command` / `commandfor`](/polyfills#invoker-commands) when that API is missing. `step.js` is still required to change the value.",
+      noFallback:
+        "`stepUp()` throws on `step=\"any\"` and on types that have no step. An empty date, time, week, or month field without `min` or `value` jumps to 1970-01-01 or 00:00.",
+    },
+    removed: [
+      {
+        from: '`role="spinbutton"` and `aria-valuenow` / `min` / `max` on an `<input type="text">`',
+        to: "A native `<input type=\"number\">` (or date, time, range). `min`, `max`, and `step` are the constraints.",
+      },
+      {
+        from: "`aria-controls` and `data-*` increment buttons wired in page script",
+        to: '`command="--step-up"` / `--step-down` and `commandfor` set to the input id. Load `src/behaviors/step.js`.',
+      },
+    ],
+    avoid: [
+      "`commandfor` is the input id, with no `#`. Do not point it at a wrapper.",
+      "Do not add a `pe-step` or `pe-spin` element. The buttons already invoke the input.",
+      "Do not add `role=\"spinbutton\"` or `aria-valuemin` / `aria-valuemax` / `aria-valuenow` on the input. `type=\"number\"` already has that role.",
+      "`step=\"any\"` is ignored. `stepUp()` throws `InvalidStateError`; the command does nothing.",
+      "Give date, time, week, month, and datetime-local a `min` or a `value`. An empty field steps from epoch.",
+    ],
+    a11y: [
+      "`<input type=\"number\">` is an implicit spinbutton. Arrow keys, Home, and End, and `min` / `max` as valuemin / valuemax, come from the browser. Do not restyle a text input into that role.",
+      "Name the buttons (`aria-label`). Hide the `+` / `−` glyphs with `aria-hidden`. `tabindex=\"-1\"` follows the APG: the keys on the input already step, and touch and voice can still activate the button.",
+      "Focus stays on the button. A visually hidden `<output for>` announces the new value. The module writes it only on a button press.",
+      "The buttons stay enabled at min and max. `stepUp()` already clamps. `disabled` would drop focus.",
+    ],
+  },
+  {
+    id: "range-group",
+    route: "/forms/range-group",
+    name: "Range group",
+    nav: "forms",
+    status: "native",
+    baseline: "newly",
+    blurb: "Two native range inputs stacked on one track. Optional range-group.js clamps and paints the fill.",
+    behavior: null,
+    cost: {
+      bootstrap: "No range-group plugin. Dual sliders are a third-party widget or custom ARIA sliders.",
+      bootstrapJs: "Not in bootstrap.min.js",
+      native:
+        "Two `.form-range` in `.form-range-group`. Optional `src/behaviors/range-group.js` for clamp and fill.",
+      nativeJs: "0 KB. Optional src/behaviors/range-group.js",
+    },
+    support: {
+      noScript:
+        "Two native `type=\"range\"` on one track. Keyboard, submit, and focus work. Without `range-group.js` thumbs can cross and there is no fill. `data-range-group=\"off\"` skips the module when it is loaded.",
+      polyfill: "None",
+      noFallback:
+        "The track is not a click target: `pointer-events: none` on the inputs, so only the thumbs receive pointer events. The later thumb in the DOM wins when they overlap. Fill needs `range-group.js`.",
+    },
+    removed: [
+      {
+        from: "noUiSlider, or a custom `role=\"slider\"` multi-thumb widget",
+        to: "Two `<input type=\"range\" class=\"form-range\">` in `.form-range-track`, inside `<fieldset class=\"form-range-group\">`",
+      },
+      {
+        from: "`aria-valuemin` / `aria-valuemax` updated as the other thumb moves",
+        to: "Value clamp in `src/behaviors/range-group.js`. Do not rewrite `min` / `max` on the inputs; that breaks the shared track.",
+      },
+    ],
+    avoid: [
+      "Do not point `aria-labelledby` at an `<output>`. That replaces the label and the slider is named by its value.",
+      "Do not put `role=\"tooltip\"` on the `<output>`. It is a readout, not a tooltip.",
+      "Do not add a `pe-range-group` element. The fieldset is already the group.",
+      "`data-range-group=\"off\"` skips clamp and fill. Omit it when you load the module and want that behavior.",
+      "Give both inputs the same `min`, `max`, and `step`. Different bounds break the shared geometry.",
+      "Do not add `role=\"slider\"` or `aria-valuemin` / `aria-valuemax` / `aria-valuenow` on the inputs. `type=\"range\"` already has that role.",
+    ],
+    a11y: [
+      "Each thumb is a native slider. Arrow keys, Home, End, and Page Up / Page Down come from the browser. Tab order is DOM order and does not change when thumbs overlap.",
+      "Bootstrap’s focus ring is on the thumb, so each stacked input still shows which handle is focused.",
+      "Name the group with `<legend>`. Name each thumb with `<label for>`. Do not use `aria-labelledby` on a value readout.",
+      "The readout is `<output for aria-live=\"off\">`. Focus is on the slider, which already announces the value; a live region would speak it twice. That is the opposite of Spin button, where focus stays on the button.",
+      "Thumbs are 1.5rem (24px) because the track is not a pointer target. That meets WCAG 2.5.8 Target Size (Minimum).",
+    ],
+  },
+  {
     id: "customizable-select",
     route: "/forms/customizable-select",
     name: "Customizable select",

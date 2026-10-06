@@ -376,6 +376,29 @@ ${dropdownMenuLinks}
     </div>
   </div>
 </fieldset>`,
+  "range-group": `${behaviorScript("range-group")}<fieldset class="form-range-group">
+  <legend class="form-label">Price</legend>
+  <label class="visually-hidden" for="price-min">Minimum price</label>
+  <label class="visually-hidden" for="price-max">Maximum price</label>
+  <div class="form-range-track">
+    <input type="range" class="form-range" id="price-min" name="price-min" min="0" max="1000" step="10" value="200">
+    <input type="range" class="form-range" id="price-max" name="price-max" min="0" max="1000" step="10" value="800">
+  </div>
+  <p class="form-text mb-0">
+    <output for="price-min" aria-live="off">200</output> – <output for="price-max" aria-live="off">800</output>
+  </p>
+</fieldset>`,
+  "spin-button": `${behaviorScript("step")}<label class="form-label" for="qty">Quantity</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="qty" aria-label="Decrease quantity" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="number" class="form-control" id="qty" name="qty" value="1" min="1" max="8">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="qty" aria-label="Increase quantity" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="qty"></output>`,
   "customizable-select": `<label class="form-label" for="plan">Plan</label>
 <select class="form-select" id="plan" name="plan">
   <option value="free">Free</option>

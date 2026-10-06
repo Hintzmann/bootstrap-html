@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
+
+const noScriptCode = `<fieldset class="form-range-group" data-range-group="off">
+  <legend class="form-label">Year</legend>
+  <label class="visually-hidden" for="year-min">Earliest year</label>
+  <label class="visually-hidden" for="year-max">Latest year</label>
+  <div class="form-range-track">
+    <input type="range" class="form-range" id="year-min" name="year-min" min="1900" max="2026" step="1" value="1980">
+    <input type="range" class="form-range" id="year-max" name="year-max" min="1900" max="2026" step="1" value="2010">
+  </div>
+</fieldset>`;
+---
+
+<BaseLayout
+  title="Range group · Bootstrap HTML"
+  description="Two native range inputs on one track. Optional range-group.js clamps thumbs and paints the fill."
+>
+  <h1>Range group</h1>
+  <p class="lead">
+    Two
+    <code>&lt;input type="range"&gt;</code>
+    stacked on one track inside
+    <code>&lt;fieldset class="form-range-group"&gt;</code>.
+    Load
+    <code>src/behaviors/range-group.js</code>
+    for clamp and fill. It is not a
+    <code>pe-*</code>
+    element. Markup follows the Open UI
+    <code>&lt;rangegroup&gt;</code>
+    proposal, so a future native wrapper is a rename.
+  </p>
+
+  <DocsMeta id="range-group" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      The
+      <code>&lt;legend&gt;</code>
+      names the group. Each thumb has its own
+      <code>&lt;label for&gt;</code>.
+      Both inputs share
+      <code>min</code>,
+      <code>max</code>,
+      and
+      <code>step</code>
+      so they sit on the same scale.
+    </li>
+    <li>
+      CSS stacks the inputs in
+      <code>.form-range-track</code>.
+      The track is not a click target. Only the thumbs receive pointer
+      events.
+    </li>
+    <li>
+      The module listens to
+      <code>input</code>
+      and clamps a thumb against its neighbours in DOM order. Overlap
+      is allowed. It does not rewrite
+      <code>min</code>
+      or
+      <code>max</code>
+      on the inputs.
+    </li>
+    <li>
+      It writes
+      <code>--bs-range-lower</code>
+      and
+      <code>--bs-range-upper</code>
+      on the fieldset so CSS can paint the fill. There is no CSS path
+      from a live range value.
+    </li>
+    <li>
+      An optional
+      <code>&lt;output for aria-live="off"&gt;</code>
+      is a visible readout. The slider already announces the value, so
+      the output is not a live region.
+    </li>
+    <li>
+      Without the script the inputs still work. Thumbs can cross, and
+      there is no fill.
+      <code>data-range-group="off"</code>
+      on the fieldset skips the module when it is on the page. The CSS
+      stack stays.
+    </li>
+  </ul>
+
+  <Example
+    title="Price"
+    lead="Drag either thumb. They stop at each other. The fill and the numbers follow."
+    code={examples["range-group"]}
+  />
+
+  <Example
+    title="No script"
+    lead='Same stacking. data-range-group="off" skips clamp and fill when the module is on the page. Thumbs can pass, and the track has no fill.'
+    code={noScriptCode}
+  />
+
+  <DocsMeta id="range-group" at="end" />
+</BaseLayout>
+
+<script>
+  import "../../behaviors/range-group.js";
+</script>
