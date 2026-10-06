@@ -862,6 +862,54 @@ export const components = [
     ],
   },
   {
+    id: "spin-button",
+    route: "/forms/spin-button",
+    name: "Spin button",
+    nav: "forms",
+    status: "script",
+    baseline: "newly",
+    blurb: "Plus and minus buttons step a native input. commandfor is the input id.",
+    behavior: null,
+    cost: {
+      bootstrap: "No spin-button plugin. Quantity steppers are custom markup plus script.",
+      bootstrapJs: "Not in bootstrap.min.js",
+      native: "`stepUp` / `stepDown` from `command=\"--step-up\"` / `--step-down`. Load `src/behaviors/step.js`",
+      nativeJs: "Optional src/behaviors/step.js",
+      polyfill: ["invoker"],
+    },
+    support: {
+      noScript:
+        "The input still accepts a typed or native-stepped value. Without `step.js` the plus and minus buttons do nothing.",
+      polyfill:
+        "[`command` / `commandfor`](/polyfills#invoker-commands) when that API is missing. `step.js` is still required to change the value.",
+      noFallback:
+        "`stepUp()` throws on `step=\"any\"` and on types that have no step. An empty date, time, week, or month field without `min` or `value` jumps to 1970-01-01 or 00:00.",
+    },
+    removed: [
+      {
+        from: '`role="spinbutton"` and `aria-valuenow` / `min` / `max` on an `<input type="text">`',
+        to: "A native `<input type=\"number\">` (or date, time, range). `min`, `max`, and `step` are the constraints.",
+      },
+      {
+        from: "`aria-controls` and `data-*` increment buttons wired in page script",
+        to: '`command="--step-up"` / `--step-down` and `commandfor` set to the input id. Load `src/behaviors/step.js`.',
+      },
+    ],
+    avoid: [
+      "`commandfor` is the input id, with no `#`. Do not point it at a wrapper.",
+      "Do not add a `pe-step` or `pe-spin` element. The buttons already invoke the input.",
+      "Do not add `role=\"spinbutton\"` or `aria-valuemin` / `aria-valuemax` / `aria-valuenow` on the input. `type=\"number\"` already has that role.",
+      "`step=\"any\"` is ignored. `stepUp()` throws `InvalidStateError`; the command does nothing.",
+      "Give date, time, week, month, and datetime-local a `min` or a `value`. An empty field steps from epoch.",
+    ],
+    a11y: [
+      "`<input type=\"number\">` is an implicit spinbutton. Arrow keys, Home, and End, and `min` / `max` as valuemin / valuemax, come from the browser. Do not restyle a text input into that role.",
+      "Name the buttons (`aria-label`). Hide the `+` / `−` glyphs with `aria-hidden`. `tabindex=\"-1\"` follows the APG: the keys on the input already step, and touch and voice can still activate the button.",
+      "Focus stays on the button. A visually hidden `<output for>` announces the new value. The module writes it only on a button press.",
+      "The buttons stay enabled at min and max. `stepUp()` already clamps. `disabled` would drop focus.",
+    ],
+  },
+  {
     id: "customizable-select",
     route: "/forms/customizable-select",
     name: "Customizable select",

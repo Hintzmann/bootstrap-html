@@ -20,6 +20,7 @@ Bootstrap 5.3.8 look and tokens on native HTML.
 - **Field sizing** — `.field-sizing` on `.form-control` / `.form-select`. The control grows to its contents.
 - **Datalist** — `list` on an input pointing at a `<datalist>` id. Native typeahead.
 - **Output** — `<output data-controls>` plus optional `count.js` for checked boxes.
+- **Spin button** — plus/minus buttons with `command="--step-up"` / `--step-down` and `commandfor` set to a native input id. Optional `step.js`.
 - **Customizable select** — `.form-select` opts into `appearance: base-select` where supported. The picker, caret, and checkmark use Bootstrap tokens.
 - **Toast** — `popover="manual"` and `command` / `commandfor`. Optional `pe-toast` for `data-delay` and stacking
 - **Progress** — `<progress class="progress">`. Omit `value` for the indeterminate stripe. `<meter class="meter">` has no Bootstrap equivalent
@@ -93,6 +94,12 @@ The checked-count is optional. Load `src/behaviors/count.js` on pages that use `
 <script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
 ```
 
+Stepping an input from plus/minus buttons is optional. Load `src/behaviors/step.js` on pages that use `command="--step-up"` or `--step-down`. `commandfor` is the input id, with no hash. Without that module the input still works; the buttons do nothing.
+
+```html
+<script type="module" src="./node_modules/bootstrap-html/src/behaviors/step.js"></script>
+```
+
 Sass. Set variables after Bootstrap’s functions and before this entry. Bootstrap’s variables are `!default`, so yours win. `bootstrap` stays a dependency.
 
 ```scss
@@ -139,6 +146,7 @@ Routes on the deployed site (GitHub Pages: `https://<owner>.github.io/<repo>/`):
 | `/forms/datalist/` | [src/pages/forms/datalist.astro](src/pages/forms/datalist.astro) |
 | `/forms/field-sizing/` | [src/pages/forms/field-sizing.astro](src/pages/forms/field-sizing.astro) |
 | `/forms/output/` | [src/pages/forms/output.astro](src/pages/forms/output.astro) |
+| `/forms/spin-button/` | [src/pages/forms/spin-button.astro](src/pages/forms/spin-button.astro) |
 | `/forms/validation/` | [src/pages/forms/validation.astro](src/pages/forms/validation.astro) |
 | `/polyfills/` | [src/pages/polyfills.astro](src/pages/polyfills.astro) |
 | `/components.json` | [src/data/components.js](src/data/components.js) |

@@ -1,0 +1,13 @@
+// Hide the WebKit inner spinner when plus/minus buttons already step
+// the field. Keyboard stepping on the input is unaffected. Firefox has
+// no inner spinner to hide.
+
+.input-group:has([command^="--step"]) input[type="number"] {
+  appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+}

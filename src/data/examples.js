@@ -376,6 +376,17 @@ ${dropdownMenuLinks}
     </div>
   </div>
 </fieldset>`,
+  "spin-button": `${behaviorScript("step")}<label class="form-label" for="qty">Quantity</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="qty" aria-label="Decrease quantity" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="number" class="form-control" id="qty" name="qty" value="1" min="1" max="8">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="qty" aria-label="Increase quantity" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="qty"></output>`,
   "customizable-select": `<label class="form-label" for="plan">Plan</label>
 <select class="form-select" id="plan" name="plan">
   <option value="free">Free</option>

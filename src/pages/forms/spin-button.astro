@@ -1,0 +1,208 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Example from "../../components/Example.astro";
+import DocsMeta from "../../components/DocsMeta.astro";
+import { examples } from "../../data/examples.js";
+
+const rangeCode = `<label class="form-label" for="volume">Volume</label>
+<div class="d-flex align-items-center gap-2">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="volume" aria-label="Decrease volume" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="range" class="form-range flex-grow-1" id="volume" name="volume" value="5" min="0" max="10" step="1">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="volume" aria-label="Increase volume" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="volume"></output>`;
+
+const dateCode = `<label class="form-label" for="start-date">Start date</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="start-date" aria-label="Previous day" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="date" class="form-control" id="start-date" name="start-date" value="2026-10-06" min="2026-01-01" max="2026-12-31">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="start-date" aria-label="Next day" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="start-date"></output>`;
+
+const monthCode = `<label class="form-label" for="billing-month">Billing month</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="billing-month" aria-label="Previous month" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="month" class="form-control" id="billing-month" name="billing-month" value="2026-10" min="2026-01" max="2026-12">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="billing-month" aria-label="Next month" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="billing-month"></output>`;
+
+const weekCode = `<label class="form-label" for="sprint-week">Sprint week</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="sprint-week" aria-label="Previous week" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="week" class="form-control" id="sprint-week" name="sprint-week" value="2026-W41" min="2026-W01" max="2026-W52">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="sprint-week" aria-label="Next week" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="sprint-week"></output>`;
+
+const timeCode = `<label class="form-label" for="alarm">Alarm</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="alarm" aria-label="Earlier time" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="time" class="form-control" id="alarm" name="alarm" value="09:00" min="06:00" max="22:00" step="900">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="alarm" aria-label="Later time" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="alarm"></output>`;
+
+const datetimeCode = `<label class="form-label" for="pickup">Pickup</label>
+<div class="input-group">
+  <button type="button" class="btn btn-outline-secondary" command="--step-down" commandfor="pickup" aria-label="Earlier pickup" tabindex="-1">
+    <span aria-hidden="true">−</span>
+  </button>
+  <input type="datetime-local" class="form-control" id="pickup" name="pickup" value="2026-10-06T09:30" min="2026-10-01T00:00" max="2026-10-31T23:59">
+  <button type="button" class="btn btn-outline-secondary" command="--step-up" commandfor="pickup" aria-label="Later pickup" tabindex="-1">
+    <span aria-hidden="true">+</span>
+  </button>
+</div>
+<output class="visually-hidden" for="pickup"></output>`;
+---
+
+<BaseLayout
+  title="Spin button · Bootstrap HTML"
+  description="Plus and minus buttons that step a native input. commandfor is the input id. Optional step.js."
+>
+  <h1>Spin button</h1>
+  <p class="lead">
+    Buttons with
+    <code>command="--step-up"</code>
+    or
+    <code>--step-down</code>
+    point
+    <code>commandfor</code>
+    at a native
+    <code>&lt;input&gt;</code>.
+    Load
+    <code>src/behaviors/step.js</code>.
+    It is not a
+    <code>pe-*</code>
+    element.
+    <code>min</code>,
+    <code>max</code>,
+    and
+    <code>step</code>
+    stay on the field.
+  </p>
+
+  <DocsMeta id="spin-button" at="start" />
+
+  <h2 class="h4">How it works</h2>
+  <ul>
+    <li>
+      <code>commandfor</code>
+      is the input id, with no
+      <code>#</code>
+      — the same id as
+      <code>&lt;label for&gt;</code>.
+      The
+      <code>command</code>
+      event does not bubble, so the module listens on
+      <code>document</code>
+      in the capture phase.
+    </li>
+    <li>
+      The module calls
+      <code>stepUp()</code>
+      or
+      <code>stepDown()</code>,
+      then fires
+      <code>input</code>
+      and
+      <code>change</code>.
+      Those methods do not fire events on their own.
+    </li>
+    <li>
+      The same commands work on
+      <code>number</code>,
+      <code>range</code>,
+      <code>date</code>,
+      <code>month</code>,
+      <code>week</code>,
+      <code>time</code>,
+      and
+      <code>datetime-local</code>.
+    </li>
+    <li>
+      An optional
+      <code>&lt;output for&gt;</code>
+      is a status live region. The module writes the new value when a
+      button is pressed, so the change is announced while focus stays
+      on the button.
+    </li>
+    <li>
+      Layout is Bootstrap’s
+      <code>.input-group</code>
+      when you want it. The module does not require that class.
+    </li>
+    <li>
+      Without the script the input still works. The buttons do nothing.
+    </li>
+  </ul>
+
+  <Example
+    title="Number"
+    lead="Plus and minus step by 1 between 1 and 8. Arrow keys on the field still work."
+    code={examples["spin-button"]}
+  />
+
+  <Example
+    title="Range"
+    lead="The same commands on a slider. Buttons are a fine-step control next to the track."
+    code={rangeCode}
+  />
+
+  <Example
+    title="Date"
+    lead="One day per press. min and a value keep an empty field from jumping to 1970."
+    code={dateCode}
+  />
+
+  <Example
+    title="Month"
+    lead="One month per press. Same min and value rule as date."
+    code={monthCode}
+  />
+
+  <Example
+    title="Week"
+    lead="One week per press. Safari does not ship type=week; the buttons still call stepUp where the type exists."
+    code={weekCode}
+  />
+
+  <Example
+    title="Time"
+    lead="step is 900 seconds, so each press moves 15 minutes."
+    code={timeCode}
+  />
+
+  <Example
+    title="Datetime local"
+    lead="Default step is 60 seconds. Set min and value so the first press is not epoch."
+    code={datetimeCode}
+  />
+
+  <DocsMeta id="spin-button" at="end" />
+</BaseLayout>
+
+<script>
+  import "../../behaviors/step.js";
+</script>

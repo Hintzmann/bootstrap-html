@@ -39,6 +39,7 @@
     "./behaviors/alert": "./src/behaviors/alert.js",
     "./behaviors/carousel": "./src/behaviors/carousel.js",
     "./behaviors/count": "./src/behaviors/count.js",
+    "./behaviors/step": "./src/behaviors/step.js",
     "./behaviors/*": "./src/behaviors/*"
   },
   "scripts": {
