@@ -65,6 +65,11 @@ html[data-bs-theme="dark"] {
   border-radius: 0;
 }
 
+.docs-toc .nav-link.docs-toc-sub {
+  padding-inline-start: 1.5rem;
+  font-weight: 400;
+}
+
 .docs-toc .nav-link:hover,
 .docs-toc .nav-link:focus-visible {
   color: var(--bs-body-color);

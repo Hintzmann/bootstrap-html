@@ -340,7 +340,7 @@ export const components = [
       polyfill:
         "[`command`](/polyfills#invoker-commands) on the toggle, the same polyfill as the modal.",
       noFallback:
-        "CSS Anchor Positioning: Chrome 125+, Safari 26+, Firefox 147+. Without it the menu is not attached to the button. There is no Popper fallback.",
+        "CSS Anchor Positioning: Chrome 125+, Safari 26+, Firefox 147+. Without it the menu opens centered in the viewport, not at the button, and direction classes (`.dropup`, `.dropend`, `.dropstart`) have no effect. There is no Popper fallback. Older browsers are out of scope; if they must be tethered, load the [OddBird CSS Anchor Positioning polyfill](https://github.com/oddbird/css-anchor-positioning) yourself after `CSS.supports(\"anchor-name: --a\")` fails.",
     },
     removed: [
       {

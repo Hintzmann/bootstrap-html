@@ -12,6 +12,8 @@ interface Props {
 interface TocItem {
   id: string;
   text: string;
+  /** 2 = section (h2), 3 = subsection / example title (h3) */
+  level: 2 | 3;
 }
 
 const { title, description } = Astro.props;
@@ -21,6 +23,10 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
 const rendered = await Astro.slots.render("default");
 const toc: TocItem[] = [];
 const usedIds = new Set<string>();
+
+// Component chrome and nav labels — not page sections.
+const tocSkipClass =
+  /\b(?:offcanvas-title|docs-nav-heading|popover-header|dropdown-header|card-title|modal-title|accordion-header)\b/;
 
 function headingText(inner: string) {
   return inner
@@ -50,21 +56,32 @@ function uniqueId(id: string) {
   return next;
 }
 
+function includeInToc(tag: string, className: string) {
+  if (tocSkipClass.test(className)) return false;
+  // Visual chrome sized as h5/h6 (e.g. card titles, offcanvas).
+  if (/\bh[56]\b/.test(className)) return false;
+  // Docs sections are `h2` with an `h3`/`h4` display class.
+  if (tag === "h2") return /\bh[34]\b/.test(className);
+  // Bare `h3` from Example titles and a few page subsections.
+  return true;
+}
+
 const content = rendered.replace(
-  /<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/gi,
-  (match, attrs = "", inner: string) => {
+  /<(h[23])(\s[^>]*)?>([\s\S]*?)<\/\1>/gi,
+  (match, tag: string, attrs = "", inner: string) => {
     const className = attrs.match(/\sclass="([^"]*)"/)?.[1] ?? "";
-    if (!/\bh[34]\b/.test(className)) return match;
+    if (!includeInToc(tag.toLowerCase(), className)) return match;
 
     const text = headingText(inner);
     if (!text) return match;
 
+    const level = tag.toLowerCase() === "h2" ? 2 : 3;
     const existing = attrs.match(/\sid="([^"]+)"/)?.[1];
     const id = uniqueId(existing || slugify(text));
-    toc.push({ id, text });
+    toc.push({ id, text, level });
     if (existing === id) return match;
     const withoutId = attrs.replace(/\sid="[^"]*"/, "");
-    return `<h2 id="${id}"${withoutId}>${inner}</h2>`;
+    return `<${tag} id="${id}"${withoutId}>${inner}</${tag}>`;
   },
 );
 ---
@@ -169,7 +186,10 @@ const content = rendered.replace(
                   <ul class="nav flex-column docs-toc">
                     {toc.map((item) => (
                       <li class="nav-item">
-                        <a class="nav-link" href={`#${item.id}`}>
+                        <a
+                          class:list={["nav-link", item.level === 3 && "docs-toc-sub"]}
+                          href={`#${item.id}`}
+                        >
                           {item.text}
                         </a>
                       </li>
@@ -194,7 +214,10 @@ const content = rendered.replace(
                 <ul class="nav flex-column docs-toc">
                   {toc.map((item) => (
                     <li class="nav-item">
-                      <a class="nav-link" href={`#${item.id}`}>
+                      <a
+                        class:list={["nav-link", item.level === 3 && "docs-toc-sub"]}
+                        href={`#${item.id}`}
+                      >
                         {item.text}
                       </a>
                     </li>
