@@ -50,6 +50,7 @@ export function buildLlms({ packageJson, site, base }) {
     "",
     `- [llms-full.txt](${url("/llms-full.txt")}): Every component’s example markup in an \`html\` code block, with its avoid list. The installed package has the same file at \`node_modules/bootstrap-html/dist/llms-full.txt\`.`,
     `- [components.json](${url("/components.json")}): The same examples plus polyfills, browser support, and accessibility notes, as JSON for tooling. Packaged at \`node_modules/bootstrap-html/dist/components.json\`.`,
+    `- [Principles](${page("/principles")}): Why native HTML, progressive enhancement, accessibility, and these contracts.`,
     `- [Getting started](${page("/getting-started")}): Stylesheet, polyfill loader, Sass, and the \`data-bs-*\` migration table.`,
     `- [Polyfills](${page("/polyfills")}): What each fallback covers and when the loader fetches it.`,
   ];
