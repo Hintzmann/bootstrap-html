@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sitePath } from "../lib/path.js";
+---
+
+<BaseLayout
+  title="Principles · Bootstrap HTML"
+  description="Why Bootstrap HTML prefers native HTML, progressive enhancement, platform accessibility, and machine-readable contracts for AI."
+>
+  <h1>Principles</h1>
+  <p class="lead">
+    Bootstrap 5.3.8 look and tokens, with behavior from the platform instead of
+    <code>bootstrap.js</code>. This page is the why. Install and migration live under
+    <a href={sitePath("/getting-started")}>Getting started</a>.
+  </p>
+
+  <h2 class="h4" id="what-this-is">What this is</h2>
+  <p>
+    Class names stay Bootstrap’s. Widgets open and close with native HTML:
+    <code>&lt;dialog&gt;</code>,
+    <code>popover</code>,
+    <code>&lt;details&gt;</code>, and
+    <code>command</code> /
+    <code>commandfor</code>.
+    There is no
+    <code>data-bs-*</code>
+    attribute layer and no classList-driven UI state.
+  </p>
+  <p>
+    The
+    <a href={sitePath("/")}>Overview</a>
+    lists every component and what works without script. This package is a
+    preview: CSS-only Bootstrap behavior tracks 5.3.8; native widgets follow
+    this package’s own versioning.
+  </p>
+
+  <h2 class="h4" id="principles">Principles</h2>
+  <ul>
+    <li>
+      Prefer native HTML and CSS over JavaScript. Fix layout with CSS. Do not
+      scroll, measure, or reposition elements in script to correct layout.
+    </li>
+    <li>
+      Target
+      <a href="https://webstatus.dev/">Baseline Newly available</a>
+      features. Experimental platform APIs are in scope when a component is
+      marked experimental; they must degrade rather than break core use.
+    </li>
+    <li>
+      Do not load
+      <code>bootstrap.js</code>
+      or
+      <code>bootstrap.bundle.js</code>.
+      Optional
+      <code>pe-*</code>
+      behaviors exist only when the platform has no CSS path for the job.
+    </li>
+    <li>
+      Polyfills live under
+      <code>src/polyfills/</code>
+      and load only after a feature check, and only when the document uses the
+      matching markup. Never load a polyfill unconditionally.
+    </li>
+  </ul>
+
+  <h2 class="h4" id="progressive-enhancement">Progressive enhancement</h2>
+  <p>
+    A dialog, disclosure, or popover works when the parser reaches it.
+    Bootstrap’s plugins wait for
+    <code>bootstrap.js</code>
+    to download, parse, and attach listeners. That wait is Total Blocking Time
+    on the main thread. These controls add no such task.
+  </p>
+  <p>
+    Scripts enhance. Dismissing an alert, switching tabs, auto-hiding a toast,
+    or clamping a dual range needs a small module on pages that use that
+    markup. Without it, the visible control still works where the platform
+    already does the job; the extra behavior is simply absent.
+  </p>
+  <p>
+    Every page loads the polyfill loader. It checks the APIs and stops. A
+    fallback downloads only when that API is missing and the page uses it. As
+    browsers ship the feature, the file stops being requested. See
+    <a href={sitePath("/polyfills")}>Polyfills</a>.
+  </p>
+  <p>
+    Some gaps have no polyfill. Anchor positioning is the common case: a
+    dropdown or popover still opens when CSS Anchor Positioning is missing; it
+    is just not tethered to the button. Prefer a working untethered menu over a
+    dead control.
+  </p>
+
+  <h2 class="h4" id="accessibility">Accessibility</h2>
+  <p>
+    Use the platform control. A modal is a
+    <code>&lt;dialog&gt;</code>,
+    a collapse is
+    <code>&lt;details&gt;</code>,
+    a button toggle is a checkbox or radio with
+    <code>.btn-check</code>.
+    Do not reinvent roles and
+    <code>aria-expanded</code>
+    on top of an element that already exposes the state.
+  </p>
+  <p>
+    Each component page ends with accessibility notes from the inventory. Name
+    icon-only controls. Prefer
+    <code>&lt;label for&gt;</code>
+    over aria-only labeling when a visible label exists. Follow the avoid list:
+    common mistakes are listed there so they are not reintroduced as “helpful”
+    ARIA.
+  </p>
+
+  <h2 class="h4" id="ai">AI</h2>
+  <p>
+    Agents that only have the docs URL should start from the machine-readable
+    contracts, not from scraping component pages for markup.
+  </p>
+  <ul>
+    <li>
+      <a href={sitePath("/llms.txt")}>/llms.txt</a>
+      — markup rules and absolute links to every component page.
+    </li>
+    <li>
+      <a href={sitePath("/llms-full.txt")}>/llms-full.txt</a>
+      — each example in an
+      <code>html</code>
+      code block next to its avoid list.
+    </li>
+    <li>
+      <a href={sitePath("/components.json")}>/components.json</a>
+      — the same examples plus polyfills, browser support, and accessibility
+      notes, as JSON for tooling.
+    </li>
+  </ul>
+  <p>
+    The installed package ships matching files at
+    <code>node_modules/bootstrap-html/dist/llms-full.txt</code>
+    and
+    <code>node_modules/bootstrap-html/dist/components.json</code>.
+    Point a project’s agent instructions at those paths so generated markup
+    starts from the example, follows the avoid list, and loads any
+    <code>pe-*</code>
+    module the contract names.
+  </p>
+</BaseLayout>
