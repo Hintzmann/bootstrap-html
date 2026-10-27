@@ -38,10 +38,24 @@ const staticCode = `<div class="alert alert-primary" role="alert">
     button. Without that module the alert stays.
   </p>
   <p>
-    <code>.fade.show</code> fades out before the node is removed.
-    Without <code>.fade</code>, or when the user prefers reduced motion,
-    it is removed at once. The listener, the transition handler, and the
-    fallback timer are dropped in <code>disconnectedCallback</code>.
+    Dismiss sets
+    <code>hidden</code>
+    on the alert and removes it when its animations finish. With
+    <code>.fade</code>
+    the stylesheet fades opacity and display out first; there is no
+    <code>.show</code>
+    to toggle. Without
+    <code>.fade</code>,
+    or when the user prefers reduced motion, it goes at once. A timer
+    removes it if an animation never ends.
+  </p>
+  <p>
+    Before that, the element fires a bubbling, cancelable
+    <code>pe-dismiss</code>.
+    Call
+    <code>preventDefault()</code>
+    to keep the alert, for example to undo or to let a framework remove it
+    from its own state.
   </p>
 
   <Example

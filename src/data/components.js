@@ -88,14 +88,14 @@ export const components = [
         element: "pe-alert",
         module: "src/behaviors/alert.js",
         required: true,
-        adds: "Removes the alert on `command=\"--dismiss\"`. A static alert does not use the element.",
+        adds: "On `command=\"--dismiss\"` fires a cancelable `pe-dismiss`, sets `hidden`, and removes the alert after its exit transition. A static alert does not use the element.",
       },
     ],
     cost: {
       bootstrap: "Alert plugin",
       bootstrapJs: "5.0 KB gzip",
       native: "pe-alert. command=--dismiss and commandfor. Required to remove the node.",
-      nativeJs: "0.5 KB gzip",
+      nativeJs: "0.4 KB gzip",
       polyfill: ["invoker"],
     },
     support: {
@@ -109,10 +109,15 @@ export const components = [
         from: "`data-bs-dismiss=\"alert\"`",
         to: "`<pe-alert class=\"alert\">` with `command=\"--dismiss\"` and `commandfor` set to the alert id. Load `src/behaviors/alert.js`.",
       },
+      {
+        from: "`.fade.show` on a dismissible alert",
+        to: "`.fade` alone. The exit is a CSS transition on `pe-alert[hidden]`",
+      },
     ],
     avoid: [
       "`commandfor` is the alert id with no `#`.",
       "The close button has to sit inside the `<pe-alert>`; the `command` event does not bubble.",
+      "Do not toggle `.show` to dismiss. The element owns `hidden`; cancel `pe-dismiss` to keep the alert.",
     ],
     a11y: [
       "Keep `role=\"alert\"` on an important message so assistive technology announces it. A static informational banner can be a `div` without that role.",
@@ -515,17 +520,17 @@ export const components = [
         element: "pe-tabs",
         module: "src/behaviors/tabs.js",
         required: true,
-        adds: "Keeps the selection, the roving `tabindex`, and the `.active` / `.show` panes in sync.",
+        adds: "Keeps `aria-selected`, the roving `tabindex`, and `hidden=\"until-found\"` on the other panels in sync. `select()` and `pe-tab-change` for script.",
       },
     ],
     cost: {
       bootstrap: "Tab plugin",
       bootstrapJs: "5.8 KB gzip",
       native: "pe-tabs. role=tab and aria-controls. Required behavior.",
-      nativeJs: "1.3 KB gzip",
+      nativeJs: "1.0 KB gzip",
     },
     support: {
-      noScript: "The `.active` pane stays visible. Other tabs do not switch.",
+      noScript: "The panel without `hidden` stays visible. Other tabs do not switch.",
       polyfill: "None. `pe-tabs` is required to switch panes. It is not a polyfill.",
       noFallback: "No native tab control yet. Dropdowns inside a tab list are not supported.",
     },
@@ -534,14 +539,22 @@ export const components = [
         from: "`data-bs-toggle=\"tab\"` and `data-bs-target`",
         to: "`<pe-tabs>` with `role=\"tab\"` and `aria-controls`. Load `src/behaviors/tabs.js`.",
       },
+      {
+        from: "`.active` on the tab and `.active` / `.show` on the pane",
+        to: "`aria-selected` on the tab and `hidden=\"until-found\"` on every other panel, written in the markup and kept by `<pe-tabs>`",
+      },
     ],
     avoid: [
       "Do not wrap the tabs in `<pe-focus-group>`. `<pe-tabs>` already owns the arrow keys.",
       "A `.nav-tabs` list of page links is a different thing and needs no tab roles.",
+      "Do not put `.active` on a tab or `.active` / `.show` on a pane. Nothing removes them, so two tabs look selected. Write `aria-selected` and `hidden=\"until-found\"`.",
+      "Do not re-render `aria-selected` from framework state after mount. Call `select()` and listen for `pe-tab-change`.",
+      "Mark a disabled tab with `aria-disabled=\"true\"` or `disabled`. The `.disabled` class alone only styles it.",
     ],
     a11y: [
       "This follows the WAI-ARIA tabs pattern: `role=\"tablist\"`, `role=\"tab\"`, `role=\"tabpanel\"`, `aria-controls`, and `aria-selected`. The selected tab is `tabindex=\"0\"`; the others are `-1`.",
       "Left and Right move in a horizontal list. `aria-orientation=\"vertical\"` uses Up and Down. Home and End jump to the ends. Choosing a tab also selects it.",
+      "Other panels are `hidden=\"until-found\"`, so Find in page and text fragments still reach their text. A match selects that tab without moving focus.",
     ],
   },
   {

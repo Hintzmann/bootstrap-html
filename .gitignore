@@ -4,6 +4,9 @@ dist/
 .astro/
 # scratch space
 tmp/
+# playwright output
+test-results/
+playwright-report/
 
 # dependencies
 node_modules/

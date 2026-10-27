@@ -65,7 +65,7 @@ Arrow keys are optional. Load the behavior and wrap the group in `<pe-focus-grou
 <script type="module" src="./node_modules/bootstrap-html/src/behaviors/focus-group.js"></script>
 ```
 
-Tabs need their behavior. Wrap the list and the panes in `<pe-tabs>` and load `src/behaviors/tabs.js`. Without that module the `.active` pane stays visible and nothing switches. Use `role="tab"` and `aria-controls`. Do not add `data-bs-toggle` or `data-bs-target`.
+Tabs need their behavior. Wrap the list and the panes in `<pe-tabs>` and load `src/behaviors/tabs.js`. Without that module the panel without `hidden` stays visible and nothing switches. Use `role="tab"`, `aria-controls`, `aria-selected`, and `hidden="until-found"` on the other panels; there is no `.active` or `.show`. Do not add `data-bs-toggle` or `data-bs-target`.
 
 ```html
 <script type="module" src="./node_modules/bootstrap-html/src/behaviors/tabs.js"></script>

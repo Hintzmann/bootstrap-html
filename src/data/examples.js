@@ -84,7 +84,7 @@ export const examples = {
 </div>`,
   alerts: `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/alert.js"></script>
 
-<pe-alert class="alert alert-warning alert-dismissible fade show" id="dismiss-alert" role="alert">
+<pe-alert class="alert alert-warning alert-dismissible fade" id="dismiss-alert" role="alert">
   <div><strong>Holy guacamole!</strong> You should check in on some of those fields below.</div>
   <button type="button" class="btn-close" command="--dismiss" commandfor="dismiss-alert" aria-label="Close"></button>
 </pe-alert>`,
@@ -218,7 +218,7 @@ ${dropdownMenuLinks}
   tabs: `${behaviorScript("tabs")}<pe-tabs>
   <ul class="nav nav-tabs" role="tablist">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="home-tab" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+      <button class="nav-link" id="home-tab" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
     </li>
     <li class="nav-item" role="presentation">
       <button class="nav-link" id="profile-tab" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false" tabindex="-1">Profile</button>
@@ -228,14 +228,14 @@ ${dropdownMenuLinks}
     </li>
   </ul>
   <div class="tab-content">
-    <div class="tab-pane active show" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+    <div class="tab-pane" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
       <p class="mt-3 mb-0">This is the home pane. Arrow keys in the field below stay in the field.</p>
       <input class="form-control mt-3" type="text" value="Edit me" aria-label="Note">
     </div>
-    <div class="tab-pane" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+    <div class="tab-pane" id="profile-tab-pane" role="tabpanel" hidden="until-found" aria-labelledby="profile-tab" tabindex="0">
       <p class="mt-3 mb-0">This is the profile pane.</p>
     </div>
-    <div class="tab-pane" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+    <div class="tab-pane" id="contact-tab-pane" role="tabpanel" hidden="until-found" aria-labelledby="contact-tab" tabindex="0">
       <p class="mt-3 mb-0">This is the contact pane.</p>
     </div>
   </div>

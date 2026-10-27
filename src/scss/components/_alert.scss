@@ -3,3 +3,23 @@
 pe-alert {
   display: block;
 }
+
+// pe-alert sets hidden on dismiss and waits for this transition. The
+// selector outranks Bootstrap's .fade:not(.show), so .fade needs no .show.
+pe-alert.fade:not([hidden]) {
+  opacity: 1;
+}
+
+pe-alert.fade {
+  transition: opacity .15s linear, display .15s allow-discrete;
+}
+
+pe-alert.fade[hidden] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  pe-alert.fade {
+    transition: none;
+  }
+}

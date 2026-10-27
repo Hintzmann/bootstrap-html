@@ -1,7 +1,7 @@
 // Two native range inputs on one track. Thumbs stay the only pointer
 // target (`pointer-events: none` on the input), so the hit area is 1.5rem
 // (24px) with a transparent border. Fill between thumbs needs
-// --bs-range-lower / --bs-range-upper from range-group.js; without those
+// --pe-range-lower / --pe-range-upper from range-group.js; without those
 // the first track looks like a plain .form-range.
 
 $form-range-group-thumb-size: 1.5rem !default;
@@ -17,8 +17,8 @@ $form-range-group-thumb-hit: .25rem !default;
 
 @mixin form-range-group-fill {
   $thumb: var(--#{$prefix}range-thumb-size);
-  $lower: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-lower) / 100);
-  $upper: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--#{$prefix}range-upper) / 100);
+  $lower: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--pe-range-lower, 0) / 100);
+  $upper: calc(#{$thumb} * .5 + (100% - #{$thumb}) * var(--pe-range-upper, 0) / 100);
 
   background-image:
     linear-gradient(
@@ -30,8 +30,6 @@ $form-range-group-thumb-hit: .25rem !default;
 }
 
 .form-range-group {
-  --#{$prefix}range-lower: 0;
-  --#{$prefix}range-upper: 0;
   --#{$prefix}range-thumb-size: #{$form-range-group-thumb-size};
 
   min-width: 0;

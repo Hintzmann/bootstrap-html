@@ -1,46 +1,58 @@
 /**
  * Headless tab widget. Load it on pages that use <pe-tabs>.
  *
- * Authors write the Bootstrap classes and the ARIA roles. This element
- * only keeps selection in sync. Tabs are [role="tab"] in this element.
- * The pane is the element whose id matches aria-controls. There is no
- * data-bs-toggle and no data-bs-target.
+ * Tabs are [role="tab"] in this element. The panel is the element whose id
+ * matches aria-controls. State is ARIA and the hidden attribute, nothing
+ * else: the selected tab has aria-selected="true" and tabindex="0", the
+ * others aria-selected="false" and tabindex="-1". Every other panel has
+ * hidden="until-found", so Find in page can still reach its text; the
+ * beforematch event selects that panel's tab without moving focus.
+ * Styling reads those attributes. There is no class to toggle, no
+ * data-bs-toggle, and no data-bs-target.
+ *
+ * Write the start state in the markup, so the page is right before this
+ * module runs. On connect the first enabled tab with aria-selected="true"
+ * wins; with none, the first enabled tab.
  *
  * One tab stays selected. Click, or arrow keys, chooses another.
  * Horizontal lists use Left and Right. aria-orientation="vertical" on
  * the tablist uses Up and Down. Home and End jump to the ends. The
  * list wraps. Disabled tabs are skipped.
  *
- * .active on the tab and .active / .show on the pane follow the
- * selection, so Bootstrap's tab CSS can show the pane. A pane with
- * .fade loses .show first and waits for the opacity transition.
+ * <pe-tabs> owns the selection. select(tabOrId) changes it from script.
+ * Each change dispatches a bubbling pe-tab-change with { tab, panel }.
+ * A framework renders the start state and calls select() after that,
+ * rather than re-rendering aria-selected.
  *
- * Without this module the .active pane stays visible and nothing switches.
+ * Without this module nothing switches; the panel without hidden stays.
  */
 
 class PeTabs extends HTMLElement {
-  #token = 0;
-  #timer = 0;
-  #wait = null;
-
   connectedCallback() {
     this.addEventListener("click", this);
     this.addEventListener("keydown", this);
+    this.addEventListener("beforematch", this, true);
     const tab = this.#current();
-    if (!tab) return;
-    this.#markTabs(tab);
-    this.#markPanels(tab);
+    if (tab) this.#apply(tab);
   }
 
   disconnectedCallback() {
-    this.#clearWait();
     this.removeEventListener("click", this);
     this.removeEventListener("keydown", this);
+    this.removeEventListener("beforematch", this, true);
   }
 
   handleEvent(event) {
     if (event.type === "click") this.#onClick(event);
-    else this.#onKeydown(event);
+    else if (event.type === "keydown") this.#onKeydown(event);
+    else this.#onBeforeMatch(event);
+  }
+
+  /** Select a tab element, or the tab with that id. */
+  select(tabOrId) {
+    const tab = typeof tabOrId === "string" ? this.#tabs().find((el) => el.id === tabOrId) : tabOrId;
+    if (!tab || !this.#tabs().includes(tab)) return;
+    this.#select(tab);
   }
 
   #onClick(event) {
@@ -48,7 +60,6 @@ class PeTabs extends HTMLElement {
     const tab = event.target.closest("[role=tab]");
     if (!tab || tab.closest("pe-tabs") !== this) return;
     if (tab.tagName === "A") event.preventDefault();
-    if (this.#disabled(tab)) return;
     this.#select(tab);
   }
 
@@ -95,71 +106,45 @@ class PeTabs extends HTMLElement {
     this.#select(items[index]);
   }
 
+  // The browser removes hidden from the panel right after this event.
+  #onBeforeMatch(event) {
+    if (!(event.target instanceof Element)) return;
+    const tab = this.#tabs().find((el) => {
+      const panel = this.#panel(el);
+      return panel && panel.contains(event.target);
+    });
+    if (tab) this.#select(tab);
+  }
+
   #select(next) {
     if (!next || this.#disabled(next)) return;
     const prev = this.#tabs().find((el) => el.getAttribute("aria-selected") === "true");
-    if (prev === next) return;
-
-    this.#markTabs(next);
-    const outgoing = prev ? this.#panel(prev) : null;
-    const ms = this.#fadeMs(outgoing);
-    if (!ms) {
-      this.#markPanels(next);
-      return;
-    }
-
-    this.#clearWait();
-    const token = ++this.#token;
-    const finish = (event) => {
-      if (event && (event.target !== outgoing || event.propertyName !== "opacity")) return;
-      if (token !== this.#token) return;
-      this.#token++;
-      this.#clearWait();
-      this.#markPanels(next);
-    };
-    outgoing.addEventListener("transitionend", finish);
-    this.#wait = { el: outgoing, fn: finish };
-    this.#timer = window.setTimeout(finish, ms + 20);
-    outgoing.classList.remove("show");
-  }
-
-  #current() {
-    const tabs = this.#tabs();
-    return (
-      tabs.find((el) => el.getAttribute("aria-selected") === "true" && !this.#disabled(el)) ??
-      tabs.find((el) => el.classList.contains("active") && !this.#disabled(el)) ??
-      tabs.find((el) => !this.#disabled(el)) ??
-      null
+    if (prev === next && this.#panel(next)?.hidden === false) return;
+    this.#apply(next);
+    this.dispatchEvent(
+      new CustomEvent("pe-tab-change", {
+        bubbles: true,
+        detail: { tab: next, panel: this.#panel(next) },
+      }),
     );
   }
 
-  #markTabs(next) {
+  #apply(next) {
     for (const el of this.#tabs()) {
       const on = el === next;
       el.setAttribute("aria-selected", on ? "true" : "false");
       el.tabIndex = on ? 0 : -1;
-      el.classList.toggle("active", on);
-    }
-  }
-
-  #markPanels(next) {
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    for (const el of this.#tabs()) {
       const panel = this.#panel(el);
       if (!panel) continue;
       if (el.id) panel.setAttribute("aria-labelledby", el.id);
-      if (el !== next) {
-        panel.classList.remove("active", "show");
-        continue;
-      }
-      panel.classList.add("active");
-      if (reduce || !panel.classList.contains("fade") || panel.classList.contains("show")) {
-        panel.classList.add("show");
-        continue;
-      }
-      void panel.offsetWidth;
-      panel.classList.add("show");
+      if (on) panel.removeAttribute("hidden");
+      else panel.setAttribute("hidden", "until-found");
     }
+  }
+
+  #current() {
+    const tabs = this.#tabs().filter((el) => !this.#disabled(el));
+    return tabs.find((el) => el.getAttribute("aria-selected") === "true") ?? tabs[0] ?? null;
   }
 
   #tabs() {
@@ -174,24 +159,7 @@ class PeTabs extends HTMLElement {
   }
 
   #disabled(el) {
-    return el.classList.contains("disabled") || el.hasAttribute("disabled") || el.getAttribute("aria-disabled") === "true";
-  }
-
-  #fadeMs(panel) {
-    if (!panel?.classList.contains("fade")) return 0;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return 0;
-    if (!panel.classList.contains("show")) return 0;
-    const raw = getComputedStyle(panel).transitionDuration.split(",")[0].trim();
-    const n = Number.parseFloat(raw);
-    if (!n) return 0;
-    return raw.endsWith("ms") ? n : n * 1000;
-  }
-
-  #clearWait() {
-    window.clearTimeout(this.#timer);
-    this.#timer = 0;
-    this.#wait?.el.removeEventListener("transitionend", this.#wait.fn);
-    this.#wait = null;
+    return el.hasAttribute("disabled") || el.getAttribute("aria-disabled") === "true";
   }
 }
 

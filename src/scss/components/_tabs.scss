@@ -4,15 +4,62 @@ pe-tabs {
   display: contents;
 }
 
+// tabs.js writes aria-selected and hidden, not .active and .show. These
+// rules give Bootstrap's active look to the selected tab in each nav
+// variant, one class more specific than Bootstrap's own `.active` rules.
+// anchor-name is the tab the sliding underline below follows.
+pe-tabs .nav-tabs .nav-link[aria-selected="true"] {
+  anchor-name: --#{$prefix}tab;
+  color: var(--#{$prefix}nav-tabs-link-active-color);
+  background-color: var(--#{$prefix}nav-tabs-link-active-bg);
+  border-color: var(--#{$prefix}nav-tabs-link-active-border-color);
+}
+
+pe-tabs .nav-pills .nav-link[aria-selected="true"] {
+  color: var(--#{$prefix}nav-pills-link-active-color);
+  @include gradient-bg(var(--#{$prefix}nav-pills-link-active-bg));
+}
+
+pe-tabs .nav-underline .nav-link[aria-selected="true"] {
+  font-weight: $font-weight-bold;
+  color: var(--#{$prefix}nav-underline-link-active-color);
+  border-bottom-color: currentcolor;
+}
+
+// Bootstrap hides every `.tab-pane` and shows `.active`. Here the panel
+// without hidden is the selected one. `hidden="until-found"` panels keep
+// the reboot rule, so Find in page can still reveal them.
+pe-tabs .tab-content > .tab-pane:not([hidden]) {
+  display: block;
+}
+
+// `.fade:not(.show)` would keep a pane transparent now that nothing adds
+// `.show`. The selected pane fades in; the old one goes at once, so the
+// two never share the flow. A keyframe animation, not @starting-style:
+// an until-found panel keeps its box, so there is no display change for
+// @starting-style to start from.
+@keyframes #{$prefix}tab-pane-in {
+  from {
+    opacity: 0;
+  }
+}
+
+pe-tabs .tab-content > .tab-pane.fade:not([hidden]) {
+  opacity: 1;
+  animation: #{$prefix}tab-pane-in .15s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  pe-tabs .tab-content > .tab-pane.fade:not([hidden]) {
+    animation: none;
+  }
+}
+
 // Sliding underline on the selected tab. The tab is the anchor; the
 // tablist paints one ::after. Without anchor positioning the active
 // tab keeps Bootstrap’s own border.
 pe-tabs .nav-tabs {
   position: relative;
-}
-
-pe-tabs .nav-tabs .nav-link[aria-selected="true"] {
-  anchor-name: --#{$prefix}tab;
 }
 
 pe-tabs .nav-tabs::after {

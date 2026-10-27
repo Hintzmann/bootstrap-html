@@ -1,23 +1,26 @@
 /**
  * Dismissible alert. Load it on pages that use <pe-alert>.
  *
- * The element is the alert. Add class="alert". A close button inside it
- * uses command="--dismiss" and commandfor set to this element's id.
- * commandfor is the id, with no hash. The command event does not bubble,
- * so the listener stays on this element.
+ * The element is the alert. A close button inside it uses
+ * command="--dismiss" and commandfor set to this element's id. commandfor
+ * is the id, with no hash. The command event does not bubble, so the
+ * listener stays on this element.
  *
- * Without .fade the node is removed at once. With .fade, .show is removed
- * first and the node goes after the opacity transition. prefers-reduced-motion
- * skips the wait.
+ * Dismiss first dispatches a bubbling, cancelable pe-dismiss; calling
+ * preventDefault() keeps the alert. Otherwise the element gets hidden and
+ * is removed once its finished animations settle. CSS owns any exit
+ * transition (for example opacity and display with allow-discrete on
+ * [hidden]); this module only waits for it. Infinite animations are not
+ * waited for, and a timer removes the node if an animation never settles.
+ * A second dismiss while closing does nothing.
  *
  * Without this module the alert stays. Static alerts do not need it.
- * disconnectedCallback drops the command listener, the transition listener,
- * and the fallback timer.
+ * disconnectedCallback drops the command listener and the timer.
  */
 
 class PeAlert extends HTMLElement {
+  #closing = false;
   #timer = 0;
-  #onEnd = null;
 
   connectedCallback() {
     this.addEventListener("command", this);
@@ -25,7 +28,8 @@ class PeAlert extends HTMLElement {
 
   disconnectedCallback() {
     this.removeEventListener("command", this);
-    this.#clear();
+    window.clearTimeout(this.#timer);
+    this.#timer = 0;
   }
 
   handleEvent(event) {
@@ -34,36 +38,22 @@ class PeAlert extends HTMLElement {
   }
 
   #close() {
-    const ms = this.#fadeMs();
-    if (!ms) {
+    if (this.#closing) return;
+    const dismiss = new Event("pe-dismiss", { bubbles: true, cancelable: true });
+    if (!this.dispatchEvent(dismiss)) return;
+    this.#closing = true;
+    this.hidden = true;
+
+    const finite = (this.getAnimations?.() ?? []).filter(
+      (animation) => Number.isFinite(animation.effect?.getComputedTiming().endTime),
+    );
+    if (!finite.length) {
       this.remove();
       return;
     }
-    this.#clear();
-    this.#onEnd = (event) => {
-      if (event.target !== this || event.propertyName !== "opacity") return;
-      this.remove();
-    };
-    this.addEventListener("transitionend", this.#onEnd);
-    this.#timer = window.setTimeout(() => this.remove(), ms + 20);
-    this.classList.remove("show");
-  }
-
-  #fadeMs() {
-    if (!this.classList.contains("fade") || !this.classList.contains("show")) return 0;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return 0;
-    const raw = getComputedStyle(this).transitionDuration.split(",")[0].trim();
-    const n = Number.parseFloat(raw);
-    if (!n) return 0;
-    return raw.endsWith("ms") ? n : n * 1000;
-  }
-
-  #clear() {
-    window.clearTimeout(this.#timer);
-    this.#timer = 0;
-    if (!this.#onEnd) return;
-    this.removeEventListener("transitionend", this.#onEnd);
-    this.#onEnd = null;
+    const longest = Math.max(...finite.map((animation) => animation.effect.getComputedTiming().endTime));
+    this.#timer = window.setTimeout(() => this.remove(), longest + 100);
+    Promise.allSettled(finite.map((animation) => animation.finished)).then(() => this.remove());
   }
 }
 

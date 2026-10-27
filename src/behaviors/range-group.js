@@ -4,21 +4,22 @@
  * There is no CSS path from a range input’s live value: `attr()` reads the
  * content attribute, which does not follow the value while dragging.
  * `<rangegroup>`, `::slider-segment`, and `appearance: base` for range have
- * not shipped. This module writes `--bs-range-lower` / `--bs-range-upper`
- * on `.form-range-group` and clamps thumbs so they do not cross (overlap
+ * not shipped. This module writes `--pe-range-lower` / `--pe-range-upper`
+ * on the group and clamps thumbs so they do not cross (overlap
  * is allowed). It also writes `output[for~=id]`, same as step.js.
  *
  * Not a pe-* element. Do not add pe-range-group. Load this module on pages
- * that use `.form-range-group`. `data-range-group="off"` on the group skips
+ * that use `.form-range-group`, or `data-pe="range-group"` for the same
+ * group without Bootstrap classes. `data-range-group="off"` on the group skips
  * clamp and fill (the CSS stack stays). Without the module the inputs still
  * work; thumbs can cross and there is no fill.
  */
 
-const GROUP = ".form-range-group";
-const LIVE = '.form-range-group:not([data-range-group="off"])';
+const GROUP = '.form-range-group, [data-pe="range-group"]';
+const LIVE = `:is(${GROUP}):not([data-range-group="off"])`;
 const RANGE = 'input[type="range"]';
-const LOWER = "--bs-range-lower";
-const UPPER = "--bs-range-upper";
+const LOWER = "--pe-range-lower";
+const UPPER = "--pe-range-upper";
 
 function rangesIn(group) {
   return [...group.querySelectorAll(RANGE)];

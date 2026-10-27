@@ -52,6 +52,7 @@
     "lint": "npm run lint:css",
     "lint:css": "stylelint \"src/scss/**/*.scss\"",
     "test": "vitest run",
+    "test:browser": "playwright test",
     "prepare": "npm run css && npm run contract",
     "preview": "astro preview",
     "astro": "astro"
@@ -61,6 +62,7 @@
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.3",
+    "@playwright/test": "^1.64.1",
     "astro": "^7.3.3",
     "happy-dom": "^20.14.5",
     "sass": "^1.104.1",

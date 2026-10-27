@@ -41,10 +41,23 @@ describe("range-group.js", () => {
   it("writes custom props and outputs on syncGroups", () => {
     const { group, minOut, maxOut } = mount();
     syncGroups();
-    expect(group.style.getPropertyValue("--bs-range-lower")).toBe("20");
-    expect(group.style.getPropertyValue("--bs-range-upper")).toBe("80");
+    expect(group.style.getPropertyValue("--pe-range-lower")).toBe("20");
+    expect(group.style.getPropertyValue("--pe-range-upper")).toBe("80");
     expect(minOut.textContent).toBe("200");
     expect(maxOut.textContent).toBe("800");
+  });
+
+  it("treats data-pe=range-group like .form-range-group", () => {
+    document.body.innerHTML = `
+      <fieldset data-pe="range-group" id="plain">
+        <input type="range" id="lo" min="0" max="10" value="7">
+        <input type="range" id="hi" min="0" max="10" value="3">
+      </fieldset>
+    `;
+    const group = document.getElementById("plain");
+    syncGroups();
+    expect(document.getElementById("lo").value).toBe("3");
+    expect(group.style.getPropertyValue("--pe-range-upper")).toBe("30");
   });
 
   it("clamps the lower thumb against the next", () => {
@@ -53,8 +66,8 @@ describe("range-group.js", () => {
     setValue(min, 900);
     expect(min.value).toBe(max.value);
     expect(minOut.textContent).toBe(max.value);
-    expect(Number(group.style.getPropertyValue("--bs-range-lower"))).toBe(
-      Number(group.style.getPropertyValue("--bs-range-upper")),
+    expect(Number(group.style.getPropertyValue("--pe-range-lower"))).toBe(
+      Number(group.style.getPropertyValue("--pe-range-upper")),
     );
   });
 
@@ -97,18 +110,18 @@ describe("range-group.js", () => {
     const group = document.getElementById("year");
     const min = document.getElementById("year-min");
     syncGroups();
-    expect(group.style.getPropertyValue("--bs-range-lower")).toBe("");
+    expect(group.style.getPropertyValue("--pe-range-lower")).toBe("");
     min.value = "2020";
     min.dispatchEvent(new Event("input", { bubbles: true }));
     expect(min.value).toBe("2020");
     expect(document.getElementById("year-max").value).toBe("2010");
-    expect(group.style.getPropertyValue("--bs-range-lower")).toBe("");
+    expect(group.style.getPropertyValue("--pe-range-lower")).toBe("");
   });
 
   it("syncGroup no-ops on a node that is not a group", () => {
     document.body.innerHTML = `<div id="nope"><input type="range" value="10"></div>`;
     expect(() => syncGroup(document.getElementById("nope"))).not.toThrow();
-    expect(document.getElementById("nope").style.getPropertyValue("--bs-range-lower")).toBe("");
+    expect(document.getElementById("nope").style.getPropertyValue("--pe-range-lower")).toBe("");
   });
 
   it("matches output for when the id is one of several", () => {
