@@ -237,6 +237,19 @@
   translate: -50% 0;
 }
 
+// Without CSS Anchor Positioning every `anchor()` above is dropped and the
+// top-layer menu lands at the viewport's top-left. A top-layer element's
+// containing block is the viewport, so `position: relative` on the wrapper
+// cannot tether it; center it like a dialog instead. `!important` beats
+// the direction variants (dropup, dropend, submenu, context, center).
+@supports not (anchor-name: --a) {
+  .dropdown-menu[popover] {
+    inset: 0 !important; // stylelint-disable-line declaration-no-important
+    margin: auto !important; // stylelint-disable-line declaration-no-important
+    translate: none !important; // stylelint-disable-line declaration-no-important
+  }
+}
+
 // Dividers (basically an `<hr>`) within the dropdown
 .dropdown-divider {
   height: 0;

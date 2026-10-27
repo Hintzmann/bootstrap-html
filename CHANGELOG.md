@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **Dropdown** — without CSS Anchor Positioning a `.dropdown-menu[popover]` opens centered in the viewport instead of at its top-left corner. Direction classes (`.dropup`, `.dropend`, `.dropstart`) have no effect there. There is still no Popper fallback.
 - **Range group** — two native `<input type="range">` stacked on one track in `<fieldset class="form-range-group">`. Optional `src/behaviors/range-group.js` clamps thumbs and writes `--bs-range-lower` / `--bs-range-upper` for the fill. `data-range-group="off"` skips the module. Not a `pe-*` element.
 - **Spin button** — plus and minus buttons use `command="--step-up"` / `--step-down` with `commandfor` set to a native input id. `src/behaviors/step.js` calls `stepUp()` / `stepDown()` and fires `input` and `change`. Works on `number`, `range`, `date`, `month`, `week`, `time`, and `datetime-local`. Not a `pe-*` element. Optional `<output for>` announces the new value.
 - The package ships `dist/components.json` (export `bootstrap-html/components.json`), the same contract served at `/components.json`. Each component now has an `example`: one canonical markup sample from `src/data/examples.js`, rendered on its docs page.
