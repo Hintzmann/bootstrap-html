@@ -1,5 +1,7 @@
 import { listed } from "../data/components.js";
 import { examples } from "../data/examples.js";
+import { manifestFile } from "./contract.js";
+import { contractHash } from "./hash.js";
 import { sitePath } from "./path.js";
 import { patterns } from "./patterns.js";
 
@@ -43,6 +45,7 @@ function intro(packageJson) {
     "- A component that requires a `pe-*` element does not work without that element and its module.",
     "- Loading assets: with a bundler, import the package exports (`bootstrap-html/behaviors/tabs`, `bootstrap-html/polyfills`). A CMS or plain page loads the same files with `<script type=\"module\" src>`. An import map can point `bootstrap-html/` at the package folder so both use one specifier.",
     "- Who owns state: the platform owns `<dialog>` (`close`, `cancel`), `popover` (`beforetoggle`, `toggle`), and `<details>` (`toggle`). `<pe-tabs>` owns the selection (`select()`, `pe-tab-change`). `<pe-alert>` owns dismiss (`pe-dismiss`, cancelable). A framework renders the start state, then listens to those events and calls those methods; it does not re-render the state attributes they own.",
+    `- After copying a pattern, record it in \`${manifestFile}\` at the project root: \`{ contract, contractVersion, hashVersion, patterns: [{ id, hash, version, files }] }\`, with \`id\`, \`hash\`, and \`version\` from the component heading in llms-full.txt. On a later run, report every pattern whose hash differs and the changes newer than its recorded version. Never overwrite local files without asking.`,
     "- Follow the component’s avoid list.",
   ];
 }
@@ -83,6 +86,19 @@ export function buildLlms({ packageJson, site, base }) {
   return lines.join("\n");
 }
 
+function changeLines(item) {
+  if (!item.changes?.length) return [];
+  return [
+    "",
+    "Changes:",
+    "",
+    ...item.changes.map(
+      (change) =>
+        `- ${change.sinceVersion} ${change.type}: ${change.note}${change.migration ? ` Migration: ${change.migration}` : ""}`,
+    ),
+  ];
+}
+
 function patternLines(item, page) {
   const pattern = patterns[item.id];
   if (!pattern) return ["", `No neutral pattern: ${item.patternless}`];
@@ -116,9 +132,10 @@ export function buildLlmsFull({ packageJson, site, base }) {
       const experimental = item.baseline === "experimental" ? " Experimental." : "";
       lines.push(
         "",
-        `### ${item.name}`,
+        `### ${item.name} · id \`${item.id}\` · hash \`${contractHash(item)}\` · version ${packageJson.version}`,
         "",
         `${item.blurb}${scriptsNote(item.scripts)}${experimental} Docs: ${page(item.route)}`,
+        ...changeLines(item),
         ...patternLines(item, page),
         "",
         "Bootstrap theme example:",

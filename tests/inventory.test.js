@@ -113,7 +113,7 @@ describe("component inventory", () => {
     const text = buildLlmsFull({ packageJson, site: "https://example.org", base: "/bootstrap-html/" });
     for (const item of components) {
       expect(examples[item.id], item.id).not.toContain("```");
-      expect(text, item.id).toContain(`### ${item.name}\n`);
+      expect(text, item.id).toContain(`### ${item.name} · id \`${item.id}\` · hash `);
       expect(text, item.id).toContain(`\`\`\`html\n${examples[item.id]}\n\`\`\``);
       for (const line of item.avoid) expect(text, item.id).toContain(`- ${line}`);
     }

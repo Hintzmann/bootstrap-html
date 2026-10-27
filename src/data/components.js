@@ -25,6 +25,11 @@
  * - support     The three columns of the browser matrix: what works with no
  *              script, what a polyfill covers, and what has no fallback.
  * - removed    Bootstrap JavaScript hooks this component replaces.
+ * - changes    What changed per release: `{ sinceVersion, type, note,
+ *              migration }`. `type` is `fix`, `feature`, or `breaking`;
+ *              `breaking` needs a `migration`. A changed contract hash
+ *              (src/lib/hash.js) needs an entry newer than the snapshot
+ *              in ./contract-hashes.json.
  * - avoid      Markup that looks right but is not supported here.
  * - a11y       Accessibility notes rendered after the examples.
  */
@@ -114,6 +119,14 @@ export const components = [
       {
         from: "`.fade.show` on a dismissible alert",
         to: "`.fade` alone. The exit is a CSS transition on `pe-alert[hidden]`",
+      },
+    ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "breaking",
+        note: "Dismiss sets `hidden`, waits for finite animations, and fires a cancelable `pe-dismiss` first. `.show` is no longer used.",
+        migration: "Drop `show` from `class=\"alert … fade show\"`. Code that listened for the node to lose `.show` listens for `pe-dismiss`.",
       },
     ],
     avoid: [
@@ -370,6 +383,13 @@ export const components = [
         to: "`.dropdown-submenu` with a nested `popover=\"auto\"` inside the parent menu",
       },
     ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "fix",
+        note: "Without CSS Anchor Positioning the menu opens centered instead of at the viewport's top-left corner.",
+      },
+    ],
     avoid: [
       "`command` works on `<button>`, not `<a href>`.",
       "Sibling `popover=\"auto\"` menus replace each other. Nest the submenu popover (or its invoker) inside the parent popover, or the parent closes.",
@@ -547,6 +567,14 @@ export const components = [
       {
         from: "`.active` on the tab and `.active` / `.show` on the pane",
         to: "`aria-selected` on the tab and `hidden=\"until-found\"` on every other panel, written in the markup and kept by `<pe-tabs>`",
+      },
+    ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "breaking",
+        note: "State is `aria-selected` and `hidden=\"until-found\"`, not `.active` / `.show`. New `select()` and `pe-tab-change`. The `.disabled` class alone no longer skips a tab.",
+        migration: "Remove `active` from the tab and `active show` from the pane. Add `hidden=\"until-found\"` to every panel but the selected one. Mark disabled tabs with `aria-disabled=\"true\"` or `disabled`.",
       },
     ],
     avoid: [
@@ -890,6 +918,13 @@ export const components = [
         to: '`<output data-controls>` with the container id, no hash, and `src/behaviors/count.js`',
       },
     ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "fix",
+        note: "`count.js` keeps the output's first element child after the number, whatever its class.",
+      },
+    ],
     avoid: [
       "Do not add a `pe-count` or `pe-checked` element. The output is already a status live region.",
       "`data-controls` is a container id, with no `#` and no CSS selector. `:checked` does not belong in the attribute.",
@@ -998,6 +1033,13 @@ export const components = [
         to: "Value clamp in `src/behaviors/range-group.js`. Do not rewrite `min` / `max` on the inputs; that breaks the shared track.",
       },
     ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "feature",
+        note: "The fill reads `--pe-range-lower` / `--pe-range-upper`, and `data-pe=\"range-group\"` works without Bootstrap classes.",
+      },
+    ],
     avoid: [
       "Do not point `aria-labelledby` at an `<output>`. That replaces the label and the slider is named by its value.",
       "Do not put `role=\"tooltip\"` on the `<output>`. It is a readout, not a tooltip.",
@@ -1040,6 +1082,13 @@ export const components = [
       {
         from: "A dropdown or Choices/Select2 widget used as a select",
         to: "`<select class=\"form-select\">`. `::picker(select)` is the menu.",
+      },
+    ],
+    changes: [
+      {
+        sinceVersion: "0.4.0",
+        type: "fix",
+        note: "`selectedcontent` and `::field-content` are separate rules. Grouped, Chrome dropped both.",
       },
     ],
     avoid: [

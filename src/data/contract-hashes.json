@@ -1,0 +1,30 @@
+{
+  "version": "0.3.0",
+  "hashVersion": 1,
+  "hashes": {
+    "accordion": "sha256-7ba6c68196dc0666",
+    "alerts": "sha256-d81d3c3aef82d9fa",
+    "buttons": "sha256-26231ef9d09efc7f",
+    "collapse": "sha256-6bb6fc65556994f0",
+    "modal": "sha256-247f564e4f32f318",
+    "offcanvas": "sha256-eaab3e318ef47471",
+    "navbar": "sha256-3a983a967e636086",
+    "dropdown": "sha256-e331fbd50f667eca",
+    "popover": "sha256-d8eee9c36e1e074c",
+    "tooltip": "sha256-0578789cad127269",
+    "scrollspy": "sha256-a1c8b70d19b5399d",
+    "tabs": "sha256-44761439b44c317d",
+    "toasts": "sha256-aad9eeb4cb7e13d0",
+    "carousel": "sha256-f134614a1ca5d015",
+    "progress": "sha256-57dc101b8c1431e6",
+    "spinner": "sha256-2de79905a9ffede1",
+    "validation": "sha256-5963cc7766b82ffc",
+    "field-sizing": "sha256-7746c71a994ecf9d",
+    "datalist": "sha256-9675556b235f414c",
+    "output": "sha256-4e89260bf4a2b013",
+    "spin-button": "sha256-ea8ea42a678c4fdd",
+    "range-group": "sha256-79829abd49635365",
+    "customizable-select": "sha256-a51e081086f388f7",
+    "composed": "sha256-228b59fb932e96bf"
+  }
+}

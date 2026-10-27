@@ -50,6 +50,8 @@
     "build": "astro build && npm run css",
     "css": "sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=expanded src/scss/bootstrap-html.scss dist/css/bootstrap-html.css && sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=compressed src/scss/bootstrap-html.scss dist/css/bootstrap-html.min.css",
     "contract": "node scripts/build-contract.js",
+    "contract:hashes": "node scripts/contract-hashes.js",
+    "check:pack": "node scripts/check-pack.js",
     "check:banner": "node scripts/check-banner.js",
     "lint": "npm run lint:css",
     "lint:css": "stylelint \"src/scss/**/*.scss\" \"src/patterns/**/*.css\"",
