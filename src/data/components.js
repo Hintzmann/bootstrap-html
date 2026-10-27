@@ -15,6 +15,8 @@
  * - status     `native` needs no component script. `script` does.
  * - baseline   `newly` is Baseline Newly available. `experimental` is not
  *              interoperable yet and is labelled as such in the docs.
+ * - patternless Why there is no neutral pattern. Every other id has
+ *              src/patterns/<id>.html (and usually <id>.css).
  * - scripts    Modules the markup loads. `element` is the `pe-*` element the
  *              module defines, or null for a plain module such as step.js.
  *              `required` means the component does not work without it.
@@ -131,6 +133,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "newly",
+    patternless: "Theme only. A native `<button>`, or a checkbox with its `<label>`, has no mechanics to copy.",
     blurb: "Toggle buttons are checkbox or radio plus .btn-check. No button plugin.",
     scripts: [],
     cost: {
@@ -290,6 +293,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "newly",
+    patternless: "Composed of the collapse and dropdown patterns plus page layout. Copy those patterns.",
     blurb: "details/summary, or a dialog offcanvas. Polyfill on the dialog toggler.",
     scripts: [],
     cost: {
@@ -477,6 +481,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "experimental",
+    patternless: "Experimental `scroll-target-group` with a fallback that depends on Bootstrap's nav layout. A neutral pattern waits for the platform.",
     blurb: "scroll-target-group and :target-current. Polyfill when that CSS is missing.",
     scripts: [],
     cost: {
@@ -607,6 +612,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "experimental",
+    patternless: "`<pe-carousel>` still reads `.carousel-inner` and `.carousel-item`. A neutral pattern needs those hooks first.",
     blurb: "CSS scroll snap and swipe. Buttons outside Chrome are an optional module.",
     scripts: [
       {
@@ -652,6 +658,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "newly",
+    patternless: "Theme only. Native `<progress>` with `value` and `max` has no mechanics to copy.",
     blurb: "Native progress and meter. Omit value for the indeterminate stripe.",
     scripts: [],
     cost: {
@@ -697,6 +704,7 @@ export const components = [
     nav: "components",
     status: "native",
     baseline: "newly",
+    patternless: "Theme only. The state is `aria-busy=\"true\"` on the busy element; the painted disc is design.",
     blurb: "aria-busy paints a spinner on the host. No extra spinner element.",
     scripts: [],
     cost: {
@@ -1053,6 +1061,7 @@ export const components = [
     nav: "recipes",
     status: "native",
     baseline: "experimental",
+    patternless: "A recipe built from other patterns, not one primitive.",
     blurb: "Mixed examples that compose existing primitives. No new pe-* element.",
     scripts: [
       {

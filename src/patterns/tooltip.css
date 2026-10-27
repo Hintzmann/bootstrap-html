@@ -1,0 +1,38 @@
+/*
+ * aria-description is the tooltip text and its accessible description.
+ * ::after paints it on hover and keyboard focus. The alternative text after
+ * the slash is empty, so assistive technology does not read it twice.
+ * Touch has no hover: never put information only here.
+ * left / translate are physical on purpose so the bubble centers in RTL too.
+ */
+[data-pe="tooltip"] {
+  position: relative;
+}
+
+[data-pe="tooltip"][aria-description]:not([aria-description=""])::after {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  z-index: 1;
+  inline-size: max-content;
+  max-inline-size: var(--pe-tooltip-max-width, 12.5rem);
+  padding: .25rem .5rem;
+  margin-block-end: var(--pe-tooltip-gap, .25rem);
+  color: var(--pe-tooltip-color, Canvas);
+  pointer-events: none;
+  content: attr(aria-description) / "";
+  background-color: var(--pe-tooltip-bg, CanvasText);
+  opacity: 0;
+  transition: opacity var(--pe-duration, .15s) linear;
+  translate: -50% 0;
+}
+
+[data-pe="tooltip"][aria-description]:not([aria-description=""]):is(:hover, :focus-visible)::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pe="tooltip"]::after {
+    transition: none;
+  }
+}

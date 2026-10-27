@@ -1,0 +1,64 @@
+/*
+ * Offcanvas is a modal <dialog> pinned to the inline-start edge. The
+ * browser owns [open], focus, Escape, and closedby="any". translate slides
+ * it in; overlay and display need allow-discrete so the slide out plays
+ * before it leaves the top layer. --pe-offcanvas-from flips for RTL.
+ */
+html:has(dialog[data-pe="offcanvas"]:modal) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+dialog[data-pe="offcanvas"] {
+  --pe-offcanvas-from: -100%;
+
+  inset-block: 0;
+  inset-inline: 0 auto;
+  inline-size: var(--pe-offcanvas-size, min(25rem, 100%));
+  max-inline-size: 100%;
+  block-size: 100%;
+  max-block-size: none;
+  margin: 0;
+  transition: translate var(--pe-duration, .3s) ease-in-out, overlay var(--pe-duration, .3s) ease-in-out allow-discrete, display var(--pe-duration, .3s) ease-in-out allow-discrete;
+  translate: var(--pe-offcanvas-from) 0;
+}
+
+dialog[data-pe="offcanvas"]:dir(rtl) {
+  --pe-offcanvas-from: 100%;
+}
+
+dialog[data-pe="offcanvas"]:open {
+  translate: none;
+}
+
+@starting-style {
+  dialog[data-pe="offcanvas"]:open {
+    translate: var(--pe-offcanvas-from) 0;
+  }
+}
+
+dialog[data-pe="offcanvas"]::backdrop {
+  background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
+  opacity: 0;
+  transition: opacity var(--pe-duration, .3s) ease-in-out, overlay var(--pe-duration, .3s) ease-in-out allow-discrete, display var(--pe-duration, .3s) ease-in-out allow-discrete;
+}
+
+dialog[data-pe="offcanvas"]:open::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog[data-pe="offcanvas"]:open::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[data-pe="offcanvas"] {
+    transition: none;
+  }
+
+  dialog[data-pe="offcanvas"]::backdrop {
+    transition: none;
+  }
+}

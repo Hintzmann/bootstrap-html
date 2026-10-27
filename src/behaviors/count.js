@@ -16,6 +16,9 @@
  * attribute, not the .checked property, so a click and el.checked = true
  * would miss it.
  *
+ * The first element child of the output, for example a visually hidden
+ * " selected", is kept after the number. Any class works.
+ *
  * Not a pe-* element. The output is already a status live region. Load
  * this module on pages that use output[data-controls]. Without it the
  * controls still work; the output stays at whatever was in the markup.
@@ -32,8 +35,8 @@ function controlsRoot(output) {
 }
 
 function writeCount(output, n) {
-  const sr = output.querySelector(".visually-hidden");
-  if (sr) output.replaceChildren(String(n), sr);
+  const label = output.firstElementChild;
+  if (label) output.replaceChildren(String(n), label);
   else output.textContent = String(n);
 }
 

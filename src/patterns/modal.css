@@ -1,0 +1,60 @@
+/*
+ * A modal <dialog> is in the top layer; the browser owns [open], focus,
+ * Escape, and (with closedby="any") light dismiss. <form method="dialog">
+ * closes it and sets returnValue without script.
+ *
+ * overlay and display need allow-discrete so the exit fade plays before
+ * the dialog leaves the top layer. @starting-style gives the entry fade a
+ * first frame. Only modal and offcanvas style ::backdrop; a global rule
+ * would also dim popovers.
+ *
+ * Scroll lock: scrollbar-gutter: stable keeps the page from shifting when
+ * overflow hides its scrollbar. On a page that never scrolls it reserves
+ * the gutter while the modal is open; set it on html permanently if that
+ * matters for the project.
+ */
+html:has(dialog[data-pe="modal"]:modal) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+dialog[data-pe="modal"] {
+  opacity: 0;
+  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
+}
+
+dialog[data-pe="modal"]:open {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog[data-pe="modal"]:open {
+    opacity: 0;
+  }
+}
+
+dialog[data-pe="modal"]::backdrop {
+  background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
+  opacity: 0;
+  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
+}
+
+dialog[data-pe="modal"]:open::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  dialog[data-pe="modal"]:open::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  dialog[data-pe="modal"] {
+    transition: none;
+  }
+
+  dialog[data-pe="modal"]::backdrop {
+    transition: none;
+  }
+}

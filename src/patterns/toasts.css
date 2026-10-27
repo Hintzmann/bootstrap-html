@@ -1,0 +1,31 @@
+/*
+ * popover="manual" puts the toast in the top layer without light dismiss;
+ * command / commandfor show and hide it. Optional pe-toast adds
+ * data-delay autohide and pauses on hover and focus. Its stacking of
+ * several open toasts still reads Bootstrap's .toast-container, so a
+ * neutral page shows one toast per corner.
+ */
+[data-pe="toasts"] {
+  inset: auto;
+  inset-block-end: 1rem;
+  inset-inline-end: 1rem;
+  margin: 0;
+  opacity: 0;
+  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
+}
+
+[data-pe="toasts"]:popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  [data-pe="toasts"]:popover-open {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pe="toasts"] {
+    transition: none;
+  }
+}

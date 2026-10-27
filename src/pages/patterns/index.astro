@@ -1,0 +1,34 @@
+---
+import PatternLayout from "../../layouts/PatternLayout.astro";
+import { components } from "../../data/components.js";
+import { patterns } from "../../lib/patterns.js";
+import { sitePath } from "../../lib/path.js";
+import { inlineMarkup } from "../../lib/markup.js";
+---
+
+<PatternLayout title="All" css="" modules={[]}>
+  <h1>Neutral patterns</h1>
+  <p>
+    Markup and mechanics CSS on
+    <code>data-pe</code>
+    hooks, without Bootstrap. Each page loads only its own CSS and scripts.
+    Back to the
+    <a href={sitePath("/")}>docs</a>.
+  </p>
+  <ul>
+    {
+      components.map((item) =>
+        patterns[item.id] ? (
+          <li>
+            <a href={sitePath(`/patterns/${item.id}`)}>{item.name}</a>
+          </li>
+        ) : (
+          <li>
+            {item.name}: no pattern.
+            <Fragment set:html={inlineMarkup(item.patternless)} />
+          </li>
+        ),
+      )
+    }
+  </ul>
+</PatternLayout>

@@ -1,0 +1,32 @@
+/*
+ * <details> owns [open]; the <summary> is the trigger and must stay its
+ * first child. ::details-content animates block-size where
+ * interpolate-size is supported; elsewhere the panel opens at once.
+ */
+details[data-pe="collapse"] {
+  interpolate-size: allow-keywords;
+}
+
+details[data-pe="collapse"] > summary {
+  cursor: pointer;
+}
+
+details[data-pe="collapse"]::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size var(--pe-duration, .35s) ease, content-visibility var(--pe-duration, .35s) ease allow-discrete;
+}
+
+details[data-pe="collapse"][open]::details-content {
+  block-size: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  details[data-pe="collapse"] {
+    interpolate-size: numeric-only;
+  }
+
+  details[data-pe="collapse"]::details-content {
+    transition: none;
+  }
+}

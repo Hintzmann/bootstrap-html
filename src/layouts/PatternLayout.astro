@@ -1,0 +1,49 @@
+---
+import { sitePath } from "../lib/path.js";
+
+interface Props {
+  title: string;
+  css: string;
+  modules: string[];
+}
+
+const { title, css, modules } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{title} pattern · Bootstrap HTML</title>
+    <style is:inline>
+      body {
+        max-width: 48rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: system-ui, sans-serif;
+        line-height: 1.5;
+      }
+
+      pre {
+        overflow: auto;
+        padding: 1rem;
+        border: 1px solid GrayText;
+      }
+    </style>
+    <style is:inline set:html={css} />
+  </head>
+  <body data-pe-modules={modules.join(" ")}>
+    <main>
+      <slot />
+      <p><a href={sitePath("/patterns")}>All patterns</a></p>
+    </main>
+    <script>
+      const available = import.meta.glob("../behaviors/*.js");
+      const wanted = (document.body.dataset.peModules ?? "").split(" ").filter(Boolean);
+      await Promise.all(wanted.map((name) => available[`../behaviors/${name}.js`]?.()));
+      await import("../polyfills/index.js");
+    </script>
+  </body>
+</html>

@@ -2,6 +2,7 @@
 import { componentById } from "../data/components.js";
 import { inlineMarkup } from "../lib/markup.js";
 import { sitePath } from "../lib/path.js";
+import { patterns } from "../lib/patterns.js";
 
 interface Props {
   id: keyof typeof componentById;
@@ -16,6 +17,23 @@ if (!item) throw new Error(`Unknown component: ${String(id)}`);
   <table class="table table-sm mb-0">
     <caption>Markup this component accepts. The full inventory is <a href={sitePath("/components.json")}>/components.json</a>.</caption>
     <tbody>
+      <tr>
+        <th scope="row">Pattern</th>
+        <td>
+          {
+            patterns[id] ? (
+              <>
+                <a href={sitePath(`/patterns/${id}`)}>Neutral pattern</a>
+                {" without Bootstrap: markup and mechanics CSS on "}
+                <code>data-pe</code>
+                {" hooks."}
+              </>
+            ) : (
+              <Fragment set:html={`None. ${inlineMarkup(item.patternless)}`} />
+            )
+          }
+        </td>
+      </tr>
       {
         item.scripts.map((script) => (
           <tr>

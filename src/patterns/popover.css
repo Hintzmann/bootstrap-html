@@ -1,0 +1,40 @@
+/*
+ * The command="toggle-popover" button is the implicit anchor, so
+ * position-anchor: auto needs no anchor-name. That anchor only exists
+ * when the invoker opens it; showPopover() from script has none.
+ * No ::backdrop rule: a popover is not a modal. Without anchor
+ * positioning it is centered like a dialog.
+ */
+[data-pe="popover"] {
+  position-anchor: auto;
+  position-area: inline-end;
+  position-try-fallbacks: flip-inline, flip-block;
+  inset: auto;
+  margin: 0;
+  margin-inline-start: var(--pe-popover-gap, .5rem);
+  opacity: 0;
+  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
+}
+
+[data-pe="popover"]:popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  [data-pe="popover"]:popover-open {
+    opacity: 0;
+  }
+}
+
+@supports not (anchor-name: --a) {
+  [data-pe="popover"] {
+    inset: 0;
+    margin: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pe="popover"] {
+    transition: none;
+  }
+}

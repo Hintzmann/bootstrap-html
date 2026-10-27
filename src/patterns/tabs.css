@@ -1,0 +1,41 @@
+/*
+ * pe-tabs owns aria-selected, the roving tabindex, and hidden on panels.
+ * Write the start state in the markup. Panels that are not selected are
+ * hidden="until-found", so Find in page can reach them and select their
+ * tab. A reset with [hidden] { display: none !important } would break
+ * that, so until-found is restated here.
+ *
+ * The selected panel fades in with a keyframe animation. @starting-style
+ * does not fire: an until-found panel keeps its box, so there is no
+ * display change to start from. The old panel goes at once.
+ */
+pe-tabs[data-pe="tabs"] {
+  display: block;
+}
+
+[data-pe="tabs"] [role="tabpanel"][hidden="until-found"] {
+  display: revert !important; /* stylelint-disable-line declaration-no-important */
+  content-visibility: hidden;
+}
+
+[data-pe="tabs"] [role="tab"][aria-selected="true"] {
+  text-decoration: underline;
+  text-decoration-thickness: .125em;
+  text-underline-offset: .25em;
+}
+
+@keyframes pe-tab-panel-in {
+  from {
+    opacity: 0;
+  }
+}
+
+[data-pe="tabs"] [role="tabpanel"]:not([hidden]) {
+  animation: pe-tab-panel-in var(--pe-duration, .15s) linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pe="tabs"] [role="tabpanel"]:not([hidden]) {
+    animation: none;
+  }
+}

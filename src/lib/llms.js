@@ -1,6 +1,7 @@
 import { listed } from "../data/components.js";
 import { examples } from "../data/examples.js";
 import { sitePath } from "./path.js";
+import { patterns } from "./patterns.js";
 
 const groups = [
   ["components", "Components"],
@@ -30,16 +31,19 @@ function intro(packageJson) {
     "",
     `> ${packageJson.description}`,
     "",
-    `Version ${packageJson.version}, Bootstrap ${packageJson.dependencies.bootstrap}. Class names are Bootstrap’s. Behavior comes from native HTML: \`<dialog>\`, \`popover\`, \`<details>\`, and \`command\` / \`commandfor\`.`,
+    `Version ${packageJson.version}, Bootstrap ${packageJson.dependencies.bootstrap}. Behavior comes from native HTML: \`<dialog>\`, \`popover\`, \`<details>\`, and \`command\` / \`commandfor\`. Most components have a neutral pattern (markup and mechanics CSS on \`data-pe\` hooks, no classes) and an example in the Bootstrap theme.`,
     "",
     "Rules for generated markup:",
     "",
     "- Do not load `bootstrap.js` or `bootstrap.bundle.js`, and do not write `data-bs-*` attributes.",
+    "- Without Bootstrap, start from the pattern. Rename `data-pe` hooks to the project’s convention (classes, Tailwind utilities, component props). Keep the mechanics: state selectors such as `:open`, `:popover-open`, `[open]`, `[hidden]`, and `[aria-selected]`, transition properties with `allow-discrete`, `@starting-style`, anchors, and `@supports` fallbacks. With Bootstrap, start from the example.",
     "- `command` / `commandfor` triggers are `<button>` elements, not `<a href>`. `commandfor` is an id with no `#`.",
     "- Load `src/polyfills/index.js` once per page with `type=\"module\"`. It fetches a fallback only when the browser lacks the API and the page uses it.",
     "- A client-side router calls `loadPolyfills(root)`, exported by the same module, after each render. The first import only checks the markup that existed then.",
     "- A component that requires a `pe-*` element does not work without that element and its module.",
-    "- Start from the component’s example and follow its avoid list.",
+    "- Loading assets: with a bundler, import the package exports (`bootstrap-html/behaviors/tabs`, `bootstrap-html/polyfills`). A CMS or plain page loads the same files with `<script type=\"module\" src>`. An import map can point `bootstrap-html/` at the package folder so both use one specifier.",
+    "- Who owns state: the platform owns `<dialog>` (`close`, `cancel`), `popover` (`beforetoggle`, `toggle`), and `<details>` (`toggle`). `<pe-tabs>` owns the selection (`select()`, `pe-tab-change`). `<pe-alert>` owns dismiss (`pe-dismiss`, cancelable). A framework renders the start state, then listens to those events and calls those methods; it does not re-render the state attributes they own.",
+    "- Follow the component’s avoid list.",
   ];
 }
 
@@ -79,11 +83,28 @@ export function buildLlms({ packageJson, site, base }) {
   return lines.join("\n");
 }
 
+function patternLines(item, page) {
+  const pattern = patterns[item.id];
+  if (!pattern) return ["", `No neutral pattern: ${item.patternless}`];
+  const hooks = pattern.hooks.map(({ hook, element }) => `\`${hook}\` on \`<${element}>\``).join(", ");
+  const lines = [
+    "",
+    `Neutral pattern (${pattern.files.join(", ")}). Hooks: ${hooks}. Live: ${page(`/patterns/${item.id}`)}`,
+    "",
+    "```html",
+    pattern.markup,
+    "```",
+  ];
+  if (pattern.css) lines.push("", "```css", pattern.css, "```");
+  return lines;
+}
+
 /**
- * /llms-full.txt: the example and avoid list for every component in one
- * Markdown file, so an agent reading it as text gets copyable markup instead
- * of an escaped JSON string. Support and accessibility notes stay in
- * components.json to keep this short enough to read whole.
+ * /llms-full.txt: the neutral pattern, the Bootstrap example, and the avoid
+ * list for every component in one Markdown file, so an agent reading it as
+ * text gets copyable markup instead of an escaped JSON string. Support and
+ * accessibility notes stay in components.json to keep this short enough to
+ * read whole.
  */
 export function buildLlmsFull({ packageJson, site, base }) {
   const { page } = links({ site, base });
@@ -98,6 +119,9 @@ export function buildLlmsFull({ packageJson, site, base }) {
         `### ${item.name}`,
         "",
         `${item.blurb}${scriptsNote(item.scripts)}${experimental} Docs: ${page(item.route)}`,
+        ...patternLines(item, page),
+        "",
+        "Bootstrap theme example:",
         "",
         "```html",
         examples[item.id],

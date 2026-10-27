@@ -1,0 +1,57 @@
+---
+import PatternLayout from "../../layouts/PatternLayout.astro";
+import { componentById } from "../../data/components.js";
+import { patterns } from "../../lib/patterns.js";
+import { sitePath } from "../../lib/path.js";
+
+export function getStaticPaths() {
+  return Object.keys(patterns).map((id) => ({ params: { id } }));
+}
+
+const { id } = Astro.params;
+const item = componentById[id];
+const pattern = patterns[id];
+const modules = item.scripts.map((script) => script.module.replace(/^src\/behaviors\//, "").replace(/\.js$/, ""));
+---
+
+<PatternLayout title={item.name} css={pattern.css} modules={modules}>
+  <h1>{item.name}</h1>
+  <p>
+    The neutral pattern: no Bootstrap, only this page’s mechanics CSS and
+    the scripts it lists. The
+    <a href={sitePath(`${item.route}/`)}>component page</a>
+    has the Bootstrap theme.
+  </p>
+
+  <div data-pattern={id}>
+    <Fragment set:html={pattern.markup} />
+  </div>
+
+  <h2>Markup</h2>
+  <pre><code>{pattern.markup}</code></pre>
+
+  {
+    pattern.css && (
+      <>
+        <h2>CSS</h2>
+        <pre><code>{pattern.css}</code></pre>
+      </>
+    )
+  }
+
+  {
+    item.scripts.length > 0 && (
+      <>
+        <h2>Scripts</h2>
+        <ul>
+          {item.scripts.map((script) => (
+            <li>
+              {script.required ? "Required" : "Optional"}:
+              <code>{script.module}</code>
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</PatternLayout>

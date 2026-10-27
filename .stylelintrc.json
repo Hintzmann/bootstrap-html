@@ -1,6 +1,14 @@
 {
   "extends": ["stylelint-config-twbs-bootstrap"],
   "ignoreFiles": ["src/scss/docs.scss"],
+  "overrides": [
+    {
+      "files": ["src/patterns/**/*.css"],
+      "rules": {
+        "selector-max-attribute": null
+      }
+    }
+  ],
   "rules": {
     "selector-no-qualifying-type": null,
     "selector-class-pattern": null,

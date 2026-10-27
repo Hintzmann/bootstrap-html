@@ -6,6 +6,7 @@ import { components, listed, scriptSubpath } from "../src/data/components.js";
 import { examples } from "../src/data/examples.js";
 import { buildContract } from "../src/lib/contract.js";
 import { buildLlms, buildLlmsFull } from "../src/lib/llms.js";
+import { patterns } from "../src/lib/patterns.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readRepo = (rel) => readFileSync(join(root, rel), "utf8");
@@ -116,7 +117,11 @@ describe("component inventory", () => {
       expect(text, item.id).toContain(`\`\`\`html\n${examples[item.id]}\n\`\`\``);
       for (const line of item.avoid) expect(text, item.id).toContain(`- ${line}`);
     }
-    expect(text.match(/^```/gm)).toHaveLength(components.length * 2);
+    const fences = components.reduce((n, item) => {
+      const pattern = patterns[item.id];
+      return n + 2 + (pattern ? 2 : 0) + (pattern?.css ? 2 : 0);
+    }, 0);
+    expect(text.match(/^```/gm)).toHaveLength(fences);
     expect(text).not.toMatch(/\]\(\//);
     expect(packageJson.files).toContain("dist/llms-full.txt");
     expect(packageJson.exports["./llms-full.txt"]).toBe("./dist/llms-full.txt");

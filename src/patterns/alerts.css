@@ -1,0 +1,21 @@
+/*
+ * pe-alert sets hidden on dismiss, then removes itself when the exit
+ * transition ends. display needs allow-discrete so the fade plays before
+ * the element leaves the layout. display: block beats the UA [hidden]
+ * rule, so [hidden] is restated here.
+ */
+pe-alert[data-pe="alerts"] {
+  display: block;
+  transition: opacity var(--pe-duration, .15s) linear, display var(--pe-duration, .15s) allow-discrete;
+}
+
+pe-alert[data-pe="alerts"][hidden] {
+  display: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  pe-alert[data-pe="alerts"] {
+    transition: none;
+  }
+}

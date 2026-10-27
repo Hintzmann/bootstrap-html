@@ -1,0 +1,10 @@
+<pe-focus-group items="[popover] :is(a, button):not([aria-disabled='true'])">
+  <div data-pe="dropdown">
+    <button type="button" command="toggle-popover" commandfor="pe-dropdown-menu">Options</button>
+    <ul popover="auto" id="pe-dropdown-menu">
+      <li><a href="#edit">Edit</a></li>
+      <li><a href="#duplicate">Duplicate</a></li>
+      <li><a href="#archive">Archive</a></li>
+    </ul>
+  </div>
+</pe-focus-group>

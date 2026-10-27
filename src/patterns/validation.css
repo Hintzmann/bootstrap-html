@@ -1,0 +1,20 @@
+/*
+ * :user-invalid matches only after the user has edited the field or tried
+ * to submit, so a fresh form shows no errors. The browser's constraint
+ * validation blocks the submit and focuses the first invalid field. The
+ * message is the next sibling of its control and stays the control's
+ * aria-describedby while hidden.
+ */
+[data-pe="validation"] :is(input, select, textarea) + p {
+  display: none;
+}
+
+[data-pe="validation"] :user-invalid {
+  outline: 2px solid var(--pe-invalid, #b3261e);
+  outline-offset: 1px;
+}
+
+[data-pe="validation"] :user-invalid + p {
+  display: block;
+  color: var(--pe-invalid, #b3261e);
+}

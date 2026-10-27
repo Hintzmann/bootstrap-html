@@ -1,0 +1,48 @@
+/*
+ * Experimental. appearance: base-select makes the native <select> and its
+ * ::picker(select) stylable; the browser still owns opening, keyboard, and
+ * the value. Everything is inside @supports, so other browsers keep the
+ * OS picker. multiple and size > 1 stay on the OS listbox.
+ *
+ * ::picker(select) and ::picker-icon each have their own rule: a browser
+ * that does not know one pseudo-element drops the whole selector list.
+ */
+@supports (appearance: base-select) {
+  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])) {
+    appearance: base-select;
+  }
+
+  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker(select) {
+    appearance: base-select;
+    opacity: 0;
+    transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) allow-discrete, display var(--pe-duration, .15s) allow-discrete;
+  }
+
+  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker(select) {
+    opacity: 1;
+  }
+
+  @starting-style {
+    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker(select) {
+      opacity: 0;
+    }
+  }
+
+  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker-icon {
+    transition: rotate var(--pe-duration, .15s) linear;
+  }
+
+  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker-icon {
+    rotate: 180deg;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker(select) {
+      transition: none;
+    }
+
+    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker-icon {
+      transition: none;
+    }
+  }
+}

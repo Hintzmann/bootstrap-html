@@ -1,6 +1,7 @@
 import { components, scriptSubpath } from "../data/components.js";
 import { examples } from "../data/examples.js";
 import { bundleGzipKb, polyfillById } from "../data/js-cost.js";
+import { patterns } from "./patterns.js";
 
 /**
  * The component inventory as JSON, for tooling and agents that would
@@ -9,6 +10,10 @@ import { bundleGzipKb, polyfillById } from "../data/js-cost.js";
  * dist/components.json.
  *
  * Text fields keep the Markdown backticks from src/data/components.js.
+ *
+ * `pattern` is the stack-neutral markup and mechanics CSS from
+ * src/patterns, or null with a `patternless` reason. `example` is the same
+ * component in the Bootstrap theme.
  */
 export const contractVersion = 2;
 
@@ -19,6 +24,8 @@ export function buildContract(packageJson) {
     version: packageJson.version,
     bootstrap: packageJson.dependencies.bootstrap,
     bootstrapBundleGzipKb: bundleGzipKb,
+    patternUsage:
+      "Without Bootstrap, start from `pattern`: copy its markup and CSS. Rename the `data-pe` hooks to the project's convention, but keep the state selectors, transition properties, and fallbacks. With Bootstrap, use `example`.",
     polyfillLoader: {
       module: "src/polyfills/index.js",
       import: `${packageJson.name}/polyfills`,
@@ -51,6 +58,8 @@ export function buildContract(packageJson) {
       replaces: item.removed,
       avoid: item.avoid,
       accessibility: item.a11y,
+      pattern: patterns[item.id] ?? null,
+      patternless: item.patternless ?? null,
       example: examples[item.id],
     })),
   };
