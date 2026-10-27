@@ -28,11 +28,21 @@ test("the selected tab gets the active look without .active", async ({ page }) =
   const home = page.locator("#home-tab");
   const profile = page.locator("#profile-tab");
   const background = (el) => getComputedStyle(el).backgroundColor;
-  const active = await home.evaluate(background);
-  expect(await profile.evaluate(background)).not.toBe(active);
+  // .nav-link transitions background-color, so read the token, not a frame.
+  const active = await home.evaluate((el) => {
+    const probe = document.createElement("span");
+    probe.style.backgroundColor = "var(--bs-nav-tabs-link-active-bg)";
+    el.append(probe);
+    const value = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return value;
+  });
+  await expect.poll(() => home.evaluate(background)).toBe(active);
+  await expect.poll(() => profile.evaluate(background)).not.toBe(active);
   await expect(home).not.toHaveClass(/\bactive\b/);
   await profile.click();
   await expect.poll(() => profile.evaluate(background)).toBe(active);
+  await expect.poll(() => home.evaluate(background)).not.toBe(active);
 });
 
 test("beforematch on a hidden panel selects its tab", async ({ page }) => {
