@@ -8,6 +8,14 @@
 // Bootstrap’s appearance: none caret and the OS picker. Multiple and
 // size != 1 stay on the OS listbox (listbox base-select is narrower).
 
+@mixin select-content-layout() {
+  display: flex;
+  flex: 1 1 auto;
+  gap: $spacer * .5;
+  align-items: center;
+  min-width: 0;
+}
+
 @supports (appearance: base-select) {
   .form-select:not([multiple], [size]:not([size="1"])) {
     display: flex;
@@ -32,13 +40,14 @@
       display: contents;
     }
 
-    selectedcontent,
+    // Separate rules: a browser that does not know ::field-content drops
+    // the whole selector list, selectedcontent included (Chrome 148).
+    selectedcontent {
+      @include select-content-layout();
+    }
+
     &#{"::field-content"} {
-      display: flex;
-      flex: 1 1 auto;
-      gap: $spacer * .5;
-      align-items: center;
-      min-width: 0;
+      @include select-content-layout();
     }
 
     selectedcontent .form-select-desc {
