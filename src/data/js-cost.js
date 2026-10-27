@@ -19,7 +19,7 @@ export const polyfills = [
   {
     id: "loader",
     file: "index.js",
-    kb: 0.3,
+    kb: 0.4,
     anchor: "",
     when: "Always. A browser that already has the APIs stops here.",
   },

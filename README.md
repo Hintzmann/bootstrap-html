@@ -178,7 +178,7 @@ The package ships `dist/components.json` (export `bootstrap-html/components.json
 ```markdown
 UI uses bootstrap-html. Before writing component markup, read `node_modules/bootstrap-html/dist/llms-full.txt`: start from the component’s example, follow its avoid list, and load the `pe-*` module it names. `dist/components.json` has the same data plus browser support and accessibility notes.
 No bootstrap.js and no `data-bs-*`. `command` / `commandfor` triggers are `<button>`, not `<a href>`.
-Load `bootstrap-html/src/polyfills/index.js` once per page as a module.
+Load `bootstrap-html/src/polyfills/index.js` once per page as a module. After a client-side render, call its exported `loadPolyfills(root)`.
 ```
 
 ```sh

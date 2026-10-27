@@ -15,7 +15,9 @@
  * - status     `native` needs no component script. `script` does.
  * - baseline   `newly` is Baseline Newly available. `experimental` is not
  *              interoperable yet and is labelled as such in the docs.
- * - behavior   The optional or required `pe-*` element, or null.
+ * - scripts    Modules the markup loads. `element` is the `pe-*` element the
+ *              module defines, or null for a plain module such as step.js.
+ *              `required` means the component does not work without it.
  * - cost       Rendered by JsCost.astro. `polyfill` holds ids from
  *              ./js-cost.js.
  * - support     The three columns of the browser matrix: what works with no
@@ -34,12 +36,14 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Exclusive groups with details/summary and name.",
-    behavior: {
-      element: "pe-focus-group",
-      module: "src/behaviors/focus-group.js",
-      required: false,
-      adds: "Arrow, Home, and End keys across the summaries. Tab works without it.",
-    },
+    scripts: [
+      {
+        element: "pe-focus-group",
+        module: "src/behaviors/focus-group.js",
+        required: false,
+        adds: "Arrow, Home, and End keys across the summaries. Tab works without it.",
+      },
+    ],
     cost: {
       bootstrap: "Collapse plugin. Accordion is that plugin; there is no accordion.js.",
       bootstrapJs: "5.6 KB gzip",
@@ -79,12 +83,14 @@ export const components = [
     status: "script",
     baseline: "newly",
     blurb: "Static alerts are HTML. Dismiss needs pe-alert.",
-    behavior: {
-      element: "pe-alert",
-      module: "src/behaviors/alert.js",
-      required: true,
-      adds: "Removes the alert on `command=\"--dismiss\"`. A static alert does not use the element.",
-    },
+    scripts: [
+      {
+        element: "pe-alert",
+        module: "src/behaviors/alert.js",
+        required: true,
+        adds: "Removes the alert on `command=\"--dismiss\"`. A static alert does not use the element.",
+      },
+    ],
     cost: {
       bootstrap: "Alert plugin",
       bootstrapJs: "5.0 KB gzip",
@@ -121,7 +127,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Toggle buttons are checkbox or radio plus .btn-check. No button plugin.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Button plugin. It toggles .active and aria-pressed on a button.",
       bootstrapJs: "1.4 KB gzip",
@@ -160,7 +166,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Single panel; trigger and content must be parent/child.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Collapse plugin",
       bootstrapJs: "5.6 KB gzip",
@@ -197,7 +203,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "dialog with command/commandfor. Polyfill if command or closedby is missing.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Modal plugin (backdrop, focus trap, scrollbar)",
       bootstrapJs: "7.3 KB gzip",
@@ -242,7 +248,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "dialog placements. Polyfill if command or closedby is missing.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Offcanvas plugin (same helpers as Modal)",
       bootstrapJs: "6.9 KB gzip",
@@ -280,7 +286,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "details/summary, or a dialog offcanvas. Polyfill on the dialog toggler.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Collapse plugin. Navbar is that plugin plus the navbar CSS.",
       bootstrapJs: "5.6 KB gzip",
@@ -322,12 +328,14 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Popover API menus. Polyfill if command is missing.",
-    behavior: {
-      element: "pe-focus-group",
-      module: "src/behaviors/focus-group.js",
-      required: false,
-      adds: "Arrow, Home, and End keys across `.dropdown-item`. Tab works without it.",
-    },
+    scripts: [
+      {
+        element: "pe-focus-group",
+        module: "src/behaviors/focus-group.js",
+        required: false,
+        adds: "Arrow, Home, and End keys across `.dropdown-item`. Tab works without it.",
+      },
+    ],
     cost: {
       bootstrap: "Dropdown plugin, including Popper",
       bootstrapJs: "13.7 KB gzip",
@@ -372,7 +380,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Titled bubbles, four directions. Polyfill if command is missing.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Popover plugin, which includes Tooltip and Popper",
       bootstrapJs: "15.5 KB gzip",
@@ -415,7 +423,7 @@ export const components = [
     baseline: "newly",
     blurb:
       "Hover/focus tips. aria-description is the no-script fallback. popover=hint plus interestfor is experimental.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Tooltip plugin, including Popper",
       bootstrapJs: "15.3 KB gzip",
@@ -465,7 +473,7 @@ export const components = [
     status: "native",
     baseline: "experimental",
     blurb: "scroll-target-group and :target-current. Polyfill when that CSS is missing.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "Scrollspy plugin",
       bootstrapJs: "5.7 KB gzip",
@@ -502,12 +510,14 @@ export const components = [
     status: "script",
     baseline: "newly",
     blurb: "pe-tabs is required. Panes do not switch without it.",
-    behavior: {
-      element: "pe-tabs",
-      module: "src/behaviors/tabs.js",
-      required: true,
-      adds: "Keeps the selection, the roving `tabindex`, and the `.active` / `.show` panes in sync.",
-    },
+    scripts: [
+      {
+        element: "pe-tabs",
+        module: "src/behaviors/tabs.js",
+        required: true,
+        adds: "Keeps the selection, the roving `tabindex`, and the `.active` / `.show` panes in sync.",
+      },
+    ],
     cost: {
       bootstrap: "Tab plugin",
       bootstrapJs: "5.8 KB gzip",
@@ -542,12 +552,14 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "popover=manual. Optional pe-toast adds data-delay and stacking.",
-    behavior: {
-      element: "pe-toast",
-      module: "src/behaviors/toast.js",
-      required: false,
-      adds: "`data-delay` autohide and corner stacking. Show and close work without it.",
-    },
+    scripts: [
+      {
+        element: "pe-toast",
+        module: "src/behaviors/toast.js",
+        required: false,
+        adds: "`data-delay` autohide and corner stacking. Show and close work without it.",
+      },
+    ],
     cost: {
       bootstrap: "Toast plugin",
       bootstrapJs: "5.4 KB gzip",
@@ -583,12 +595,14 @@ export const components = [
     status: "native",
     baseline: "experimental",
     blurb: "CSS scroll snap and swipe. Buttons outside Chrome are an optional module.",
-    behavior: {
-      element: "pe-carousel",
-      module: "src/behaviors/carousel.js",
-      required: false,
-      adds: "Prev, next, and pip controls where `::scroll-button` is missing. Inert where it is not.",
-    },
+    scripts: [
+      {
+        element: "pe-carousel",
+        module: "src/behaviors/carousel.js",
+        required: false,
+        adds: "Prev, next, and pip controls where `::scroll-button` is missing. Inert where it is not.",
+      },
+    ],
     cost: {
       bootstrap: "Carousel plugin (slide, swipe, indicators, keyboard)",
       bootstrapJs: "6.7 KB gzip",
@@ -626,7 +640,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Native progress and meter. Omit value for the indeterminate stripe.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "No Progress plugin. Markup is div.progress > .progress-bar with ARIA.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -671,7 +685,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "aria-busy paints a spinner on the host. No extra spinner element.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "No Spinner plugin. Markup is .spinner-border plus visually-hidden text.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -716,7 +730,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: ":user-valid / :user-invalid after type, blur, or submit. No wrapper class.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap:
         "No validation plugin. The Bootstrap docs add .was-validated from a submit listener.",
@@ -754,7 +768,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Opt-in field-sizing: content. The control grows to its value.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "No equivalent. Autosize is a third-party script.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -791,7 +805,7 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Native typeahead with input list and datalist. No dropdown script.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "No equivalent. Typeahead is a third-party script or a dropdown.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -828,7 +842,14 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Native output for a calculated result. Optional count.js for checked boxes.",
-    behavior: null,
+    scripts: [
+      {
+        element: null,
+        module: "src/behaviors/count.js",
+        required: false,
+        adds: "Writes how many checkboxes inside the `data-controls` container are checked.",
+      },
+    ],
     cost: {
       bootstrap: "No equivalent. A badge or span updated from a change listener.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -869,12 +890,19 @@ export const components = [
     status: "script",
     baseline: "newly",
     blurb: "Plus and minus buttons step a native input. commandfor is the input id.",
-    behavior: null,
+    scripts: [
+      {
+        element: null,
+        module: "src/behaviors/step.js",
+        required: true,
+        adds: "Runs `stepUp()` / `stepDown()` on `command=\"--step-up\"` / `--step-down`, then fires `input` and `change`.",
+      },
+    ],
     cost: {
       bootstrap: "No spin-button plugin. Quantity steppers are custom markup plus script.",
       bootstrapJs: "Not in bootstrap.min.js",
       native: "`stepUp` / `stepDown` from `command=\"--step-up\"` / `--step-down`. Load `src/behaviors/step.js`",
-      nativeJs: "Optional src/behaviors/step.js",
+      nativeJs: "0.4 KB gzip",
       polyfill: ["invoker"],
     },
     support: {
@@ -917,7 +945,14 @@ export const components = [
     status: "native",
     baseline: "newly",
     blurb: "Two native range inputs stacked on one track. Optional range-group.js clamps and paints the fill.",
-    behavior: null,
+    scripts: [
+      {
+        element: null,
+        module: "src/behaviors/range-group.js",
+        required: false,
+        adds: "Keeps the thumbs from crossing and writes the fill properties on the group.",
+      },
+    ],
     cost: {
       bootstrap: "No range-group plugin. Dual sliders are a third-party widget or custom ARIA sliders.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -966,7 +1001,7 @@ export const components = [
     status: "native",
     baseline: "experimental",
     blurb: "appearance: base-select on .form-select. Picker, icon, and checkmark take Bootstrap tokens.",
-    behavior: null,
+    scripts: [],
     cost: {
       bootstrap: "No equivalent. A dropdown or a third-party select plugin.",
       bootstrapJs: "Not in bootstrap.min.js",
@@ -1006,7 +1041,26 @@ export const components = [
     status: "native",
     baseline: "experimental",
     blurb: "Mixed examples that compose existing primitives. No new pe-* element.",
-    behavior: null,
+    scripts: [
+      {
+        element: null,
+        module: "src/behaviors/count.js",
+        required: false,
+        adds: "Fills `<output data-controls>` in the filter drawer and multi-select recipes.",
+      },
+      {
+        element: "pe-toast",
+        module: "src/behaviors/toast.js",
+        required: false,
+        adds: "Autohide in the confirm-then-toast and countdown recipes.",
+      },
+      {
+        element: "pe-tabs",
+        module: "src/behaviors/tabs.js",
+        required: false,
+        adds: "Switches panes in the sliding tab underline recipe.",
+      },
+    ],
     cost: {
       bootstrap: "Not one plugin. These are recipes on Dropdown, Offcanvas, Toast, Tabs, Progress, Buttons, and Output.",
       bootstrapJs: "Varies by recipe",
@@ -1068,6 +1122,16 @@ export function listed(group) {
 }
 
 export const componentById = Object.fromEntries(components.map((item) => [item.id, item]));
+
+/** `<pe-tabs>` for an element, `step.js` for a plain module. */
+export function scriptLabel(script) {
+  return script.element ? `<${script.element}>` : script.module.split("/").pop();
+}
+
+/** The package.json `exports` key, `./behaviors/step` for `src/behaviors/step.js`. */
+export function scriptSubpath(script) {
+  return `./${script.module.replace(/^src\//, "").replace(/\.js$/, "")}`;
+}
 
 /** Shape JsCost.astro expects, keyed by component id. */
 export const costs = Object.fromEntries(components.map((item) => [item.id, item.cost]));

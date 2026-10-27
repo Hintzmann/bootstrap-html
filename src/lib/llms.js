@@ -8,10 +8,15 @@ const groups = [
   ["recipes", "Recipes"],
 ];
 
-function behaviorNote(behavior) {
-  if (!behavior) return "";
-  const element = `\`<${behavior.element}>\` and \`${behavior.module}\``;
-  return behavior.required ? ` Requires ${element}.` : ` Optional ${element}: ${behavior.adds}`;
+function scriptsNote(scripts) {
+  return scripts
+    .map((script) => {
+      const what = script.element
+        ? `\`<${script.element}>\` and \`${script.module}\``
+        : `\`${script.module}\``;
+      return script.required ? ` Requires ${what}.` : ` Optional ${what}: ${script.adds}`;
+    })
+    .join("");
 }
 
 function links({ site, base }) {
@@ -32,6 +37,7 @@ function intro(packageJson) {
     "- Do not load `bootstrap.js` or `bootstrap.bundle.js`, and do not write `data-bs-*` attributes.",
     "- `command` / `commandfor` triggers are `<button>` elements, not `<a href>`. `commandfor` is an id with no `#`.",
     "- Load `src/polyfills/index.js` once per page with `type=\"module\"`. It fetches a fallback only when the browser lacks the API and the page uses it.",
+    "- A client-side router calls `loadPolyfills(root)`, exported by the same module, after each render. The first import only checks the markup that existed then.",
     "- A component that requires a `pe-*` element does not work without that element and its module.",
     "- Start from the component’s example and follow its avoid list.",
   ];
@@ -59,7 +65,7 @@ export function buildLlms({ packageJson, site, base }) {
     lines.push("", `## ${title}`, "");
     for (const item of listed(group)) {
       const experimental = item.baseline === "experimental" ? " Experimental." : "";
-      lines.push(`- [${item.name}](${page(item.route)}): ${item.blurb}${behaviorNote(item.behavior)}${experimental}`);
+      lines.push(`- [${item.name}](${page(item.route)}): ${item.blurb}${scriptsNote(item.scripts)}${experimental}`);
     }
   }
 
@@ -91,7 +97,7 @@ export function buildLlmsFull({ packageJson, site, base }) {
         "",
         `### ${item.name}`,
         "",
-        `${item.blurb}${behaviorNote(item.behavior)}${experimental} Docs: ${page(item.route)}`,
+        `${item.blurb}${scriptsNote(item.scripts)}${experimental} Docs: ${page(item.route)}`,
         "",
         "```html",
         examples[item.id],

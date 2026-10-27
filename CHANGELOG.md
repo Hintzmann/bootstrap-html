@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Contract v2** — `components.json` has `contractVersion: 2`. Each component lists `scripts`: every module the markup loads, with its `pe-*` element or `null`, the package import, and whether it is required. Replaces `element`, which could not describe `step.js`, `count.js`, or `range-group.js`. Spin button now says that `step.js` is required for the buttons.
+- `src/polyfills/index.js` exports `loadPolyfills(root)`. A client-side router calls it after each render; the first import only sees the markup that was there. Same feature checks, and a fallback is not fetched twice.
+- `.gitattributes` keeps text files LF on every platform.
+
 - **Dropdown** — without CSS Anchor Positioning a `.dropdown-menu[popover]` opens centered in the viewport instead of at its top-left corner. Direction classes (`.dropup`, `.dropend`, `.dropstart`) have no effect there. There is still no Popper fallback.
 - **Customizable select** — `selectedcontent` and `::field-content` are separate rules. Grouped, Chrome dropped the whole rule because it does not know `::field-content`, so `selectedcontent` lost its flex layout.
 - **Range group** — two native `<input type="range">` stacked on one track in `<fieldset class="form-range-group">`. Optional `src/behaviors/range-group.js` clamps thumbs and writes `--bs-range-lower` / `--bs-range-upper` for the fill. `data-range-group="off"` skips the module. Not a `pe-*` element.

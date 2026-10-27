@@ -17,18 +17,22 @@ if (!item) throw new Error(`Unknown component: ${String(id)}`);
     <caption>Markup this component accepts. The full inventory is <a href={sitePath("/components.json")}>/components.json</a>.</caption>
     <tbody>
       {
-        item.behavior && (
+        item.scripts.map((script) => (
           <tr>
-            <th scope="row">{item.behavior.required ? "Required" : "Optional"}</th>
+            <th scope="row">{script.required ? "Required" : "Optional"}</th>
             <td>
-              <code set:html={`&lt;${item.behavior.element}&gt;`} />
-              <span class="text-body-secondary"> · </span>
-              <code>{item.behavior.module}</code>
+              {script.element && (
+                <>
+                  <code set:html={`&lt;${script.element}&gt;`} />
+                  <span class="text-body-secondary"> · </span>
+                </>
+              )}
+              <code>{script.module}</code>
               {". "}
-              <Fragment set:html={inlineMarkup(item.behavior.adds)} />
+              <Fragment set:html={inlineMarkup(script.adds)} />
             </td>
           </tr>
-        )
+        ))
       }
       {
         item.avoid.length > 0 && (

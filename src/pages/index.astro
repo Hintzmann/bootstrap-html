@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { sitePath } from "../lib/path.js";
 import { inlineMarkup, joinList } from "../lib/markup.js";
-import { components, listed } from "../data/components.js";
+import { components, listed, scriptLabel } from "../data/components.js";
 import { bundleGzipKb, polyfills } from "../data/js-cost.js";
 
 const loader = polyfills.find((item) => item.id === "loader");
@@ -11,19 +11,24 @@ const optionalPolyfillKb = Math.round(
   optionalPolyfills.reduce((sum, item) => sum + item.kb, 0) * 10,
 ) / 10;
 
-const requiredScripts = components.filter((item) => item.behavior?.required);
+const requiredScripts = components.filter((item) => item.scripts.some((script) => script.required));
 const requiredSentence = joinList(
   requiredScripts.map(
     (item) => `[${item.name.toLowerCase()}](${item.route}) (${item.cost.nativeJs})`,
   ),
 );
 
-// One element can serve several components, so dedupe by element name.
+// One module can serve several components, so dedupe by label, and leave
+// out a module that another component already requires.
+const requiredLabels = new Set(
+  components.flatMap((item) => item.scripts.filter((script) => script.required).map(scriptLabel)),
+);
 const optionalSentence = joinList([
   ...new Set(
     components
-      .filter((item) => item.behavior && !item.behavior.required)
-      .map((item) => `\`${item.behavior.element}\``),
+      .flatMap((item) => item.scripts.filter((script) => !script.required).map(scriptLabel))
+      .filter((label) => !requiredLabels.has(label))
+      .map((label) => `\`${label}\``),
   ),
 ]);
 

@@ -40,6 +40,17 @@ const migration = [
     matching markup. See
     <a href={sitePath("/polyfills")}>Polyfills</a>.
   </p>
+  <p>
+    The first import checks the markup that is in the document at that
+    moment. A client-side router renders more later, so it calls the
+    exported
+    <code>loadPolyfills(root)</code>
+    after each route with the new subtree. The checks are the same, and a
+    fallback that is already loaded is not fetched again.
+  </p>
+  <pre class="example-code mb-4"><code>{`import { loadPolyfills } from "bootstrap-html/polyfills";
+
+router.afterEach(() => loadPolyfills(document.querySelector("main")));`}</code></pre>
 
   <h2 class="h4">Sass</h2>
   <p>

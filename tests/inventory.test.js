@@ -1,8 +1,8 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { components, listed } from "../src/data/components.js";
+import { components, listed, scriptSubpath } from "../src/data/components.js";
 import { examples } from "../src/data/examples.js";
 import { buildContract } from "../src/lib/contract.js";
 import { buildLlms, buildLlmsFull } from "../src/lib/llms.js";
@@ -53,9 +53,26 @@ describe("component inventory", () => {
       const key = /^[a-z]+$/.test(item.id) ? `examples.${item.id}` : `examples["${item.id}"]`;
       expect(readRepo(`src/pages${item.route}.astro`), item.id).toContain(`code={${key}}`);
       expect(examples[item.id], item.id).not.toMatch(/data-bs-|bootstrap\.js|pep-/);
-      if (item.behavior?.required) {
-        expect(examples[item.id], item.id).toContain(`<${item.behavior.element}`);
-        expect(examples[item.id], item.id).toContain(item.behavior.module);
+      for (const script of item.scripts.filter((entry) => entry.required)) {
+        if (script.element) expect(examples[item.id], item.id).toContain(`<${script.element}`);
+        expect(examples[item.id], item.id).toContain(script.module);
+      }
+    }
+  });
+
+  it("lists every script a component loads as an exported module", () => {
+    const packageJson = JSON.parse(readRepo("package.json"));
+    for (const item of components) {
+      if (item.status === "script") {
+        expect(item.scripts.some((script) => script.required), item.id).toBe(true);
+      }
+      for (const script of item.scripts) {
+        expect(script.module, item.id).toMatch(/^src\/behaviors\/[a-z-]+\.js$/);
+        expect(existsSync(join(root, script.module)), script.module).toBe(true);
+        expect(packageJson.exports[scriptSubpath(script)], script.module).toBe(`./${script.module}`);
+        if (script.element) {
+          expect(readRepo(script.module), script.module).toContain(`customElements.define("${script.element}"`);
+        }
       }
     }
   });
@@ -65,6 +82,11 @@ describe("component inventory", () => {
     const contract = buildContract(packageJson);
     expect(contract.components.map((item) => item.id)).toEqual(components.map((item) => item.id));
     expect(contract.components.every((item) => item.example)).toBe(true);
+    expect(contract.contractVersion).toBe(2);
+    const spin = contract.components.find((item) => item.id === "spin-button");
+    expect(spin.scripts).toEqual([
+      expect.objectContaining({ element: null, import: "bootstrap-html/behaviors/step", required: true }),
+    ]);
     expect(packageJson.files).toContain("dist/components.json");
     expect(packageJson.exports["./components.json"]).toBe("./dist/components.json");
   });
@@ -77,7 +99,10 @@ describe("component inventory", () => {
     expect(text).toContain("(https://example.org/bootstrap-html/llms-full.txt)");
     for (const item of components) {
       expect(text, item.id).toContain(`[${item.name}](https://example.org/bootstrap-html${item.route}/)`);
-      if (item.behavior?.required) expect(text, item.id).toContain(`Requires \`<${item.behavior.element}>\``);
+      for (const script of item.scripts.filter((entry) => entry.required)) {
+        const what = script.element ? `<${script.element}>` : script.module;
+        expect(text, item.id).toContain(`Requires \`${what}\``);
+      }
     }
     expect(text).not.toMatch(/\]\(\//);
   });
@@ -125,18 +150,14 @@ describe("component inventory", () => {
     }
   });
 
-  it("names every behavior module and count.js in AGENTS.md", () => {
+  it("names every script module in AGENTS.md", () => {
     const agents = readRepo("AGENTS.md");
-    const modules = [
-      ...new Set(
-        components
-          .map((item) => item.behavior?.module)
-          .filter(Boolean),
-      ),
+    const modules = [...new Set(components.flatMap((item) => item.scripts.map((script) => script.module)))];
+    expect(modules).toEqual(expect.arrayContaining([
       "src/behaviors/count.js",
       "src/behaviors/step.js",
       "src/behaviors/range-group.js",
-    ];
+    ]));
     for (const module of modules) {
       expect(agents, module).toContain(module);
     }
