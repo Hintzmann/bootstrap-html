@@ -1,0 +1,23 @@
+---
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { renderChangelog } from "../lib/changelog.js";
+
+// process.cwd() is the project root for npm scripts and Astro. An Astro
+// build moves this module, so import.meta.url would point at the wrong folder.
+const notes = renderChangelog(readFileSync(join(process.cwd(), "CHANGELOG.md"), "utf8"));
+---
+
+<BaseLayout
+  title="Changelog · Bootstrap HTML"
+  description="Release notes for bootstrap-html. The site header shows the package version and the date of the latest commit."
+>
+  <h1>Changelog</h1>
+  <p class="lead">
+    Release notes for
+    <code>bootstrap-html</code>.
+    The header date is the latest commit on this site, not a date on each version.
+  </p>
+  <div class="docs-changelog" set:html={notes} />
+</BaseLayout>
