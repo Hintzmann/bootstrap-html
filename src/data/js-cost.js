@@ -7,7 +7,8 @@
  * and popover. Those runtimes overlap. The published whole file is
  * bootstrap.bundle.min.js at bundleGzipKb.
  *
- * Polyfills: esbuild minify of src/polyfills (bundle: false), then gzip.
+ * Polyfills: the shipped dist/js/polyfills files (`npm run js`:
+ * esbuild minify per file, no bundling), then gzip.
  *
  * Per-component data lives in ./components.js.
  */
@@ -19,7 +20,7 @@ export const polyfills = [
   {
     id: "loader",
     file: "index.js",
-    kb: 0.4,
+    kb: 0.3,
     anchor: "",
     when: "Always. A browser that already has the APIs stops here.",
   },
@@ -40,14 +41,14 @@ export const polyfills = [
   {
     id: "scrollspy",
     file: "scroll-target-group.js",
-    kb: 0.8,
+    kb: 1.0,
     anchor: "scroll-target-group",
     when: "scroll-target-group is missing and the page has [data-polyfill-scrollspy].",
   },
   {
     id: "interestfor",
     file: "interestfor.js",
-    kb: 2.8,
+    kb: 2.1,
     anchor: "interestfor",
     when: "interestForElement is missing and the page has [interestfor].",
   },

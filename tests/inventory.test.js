@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { components, listed, scriptSubpath } from "../src/data/components.js";
+import { components, listed, scriptPath, scriptSubpath } from "../src/data/components.js";
 import { examples } from "../src/data/examples.js";
 import { buildContract } from "../src/lib/contract.js";
 import { buildLlms, buildLlmsFull } from "../src/lib/llms.js";
@@ -56,7 +56,7 @@ describe("component inventory", () => {
       expect(examples[item.id], item.id).not.toMatch(/data-bs-|bootstrap\.js|pep-/);
       for (const script of item.scripts.filter((entry) => entry.required)) {
         if (script.element) expect(examples[item.id], item.id).toContain(`<${script.element}`);
-        expect(examples[item.id], item.id).toContain(script.module);
+        expect(examples[item.id], item.id).toContain(`node_modules/bootstrap-html/${scriptPath(script)}`);
       }
     }
   });
@@ -86,10 +86,23 @@ describe("component inventory", () => {
     expect(contract.contractVersion).toBe(2);
     const spin = contract.components.find((item) => item.id === "spin-button");
     expect(spin.scripts).toEqual([
-      expect.objectContaining({ element: null, import: "bootstrap-html/behaviors/step", required: true }),
+      expect.objectContaining({
+        element: null,
+        import: "bootstrap-html/behaviors/step",
+        script: "dist/js/behaviors/step.js",
+        required: true,
+      }),
     ]);
+    expect(packageJson.exports["./js/behaviors/*"]).toBe("./dist/js/behaviors/*");
     expect(packageJson.files).toContain("dist/components.json");
     expect(packageJson.exports["./components.json"]).toBe("./dist/components.json");
+  });
+
+  it("declares the BSD-3-Clause interestfor code next to MIT", () => {
+    const packageJson = JSON.parse(readRepo("package.json"));
+    expect(packageJson.license).toBe("MIT AND BSD-3-Clause");
+    expect(readRepo("LICENSE")).toContain("BSD 3-Clause License");
+    expect(readRepo("src/polyfills/interestfor.js")).toMatch(/^\/\*! interestfor: .*BSD-3-Clause/);
   });
 
   it("links every component from llms.txt with absolute URLs under base", () => {

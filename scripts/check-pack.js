@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { buildContract } from "../src/lib/contract.js";
 
 // Every path the contract or package.json exports names must be in the
@@ -30,10 +30,19 @@ need(packageJson.sass, "sass");
 
 const contract = buildContract(packageJson);
 need(contract.polyfillLoader.module, "polyfillLoader");
+need(contract.polyfillLoader.script, "polyfillLoader script");
+for (const folder of ["polyfills", "behaviors"]) {
+  for (const file of readdirSync(new URL(`../src/${folder}/`, import.meta.url))) {
+    need(`dist/js/${folder}/${file}`, `minified ${folder}`);
+  }
+}
 need("dist/components.json", "contract");
 need("dist/llms-full.txt", "contract");
 for (const item of contract.components) {
-  for (const script of item.scripts) need(script.module, `${item.id} script`);
+  for (const script of item.scripts) {
+    need(script.module, `${item.id} script`);
+    need(script.script, `${item.id} minified script`);
+  }
   for (const polyfill of item.polyfills) need(polyfill.module, `${item.id} polyfill`);
   for (const file of item.pattern?.files ?? []) need(file, `${item.id} pattern`);
 }

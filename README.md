@@ -48,63 +48,63 @@ The package is not on the npm registry yet. Install it from GitHub:
 npm install github:Hintzmann/bootstrap-html
 ```
 
-`prepare` compiles `dist/css` and writes `dist/components.json` and `dist/llms-full.txt` during that install. Plain HTML with the compiled CSS needs no install once the package is on a CDN. Sass customization and bundlers need it in `node_modules`. `bootstrap` is only used by the Sass entry.
+`prepare` compiles `dist/css`, minifies `src/polyfills` and `src/behaviors` into `dist/js/`, and writes `dist/components.json` and `dist/llms-full.txt` during that install. Plain HTML with the compiled CSS needs no install once the package is on a CDN. Sass customization and bundlers need it in `node_modules`. `bootstrap` is only used by the Sass entry.
 
 CSS:
 
 ```html
 <link rel="stylesheet" href="./node_modules/bootstrap-html/dist/css/bootstrap-html.min.css">
-<script type="module" src="./node_modules/bootstrap-html/src/polyfills/index.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/polyfills/index.js"></script>
 ```
 
-Load that module URL directly. The loader feature-detects each API and fetches a polyfill only when the page uses markup that needs it.
+Load that module URL directly. The loader feature-detects each API and fetches a polyfill from the same folder only when the page uses markup that needs it. `dist/js/polyfills/` is a minified copy of `src/polyfills/`, one file per module and no bundling. A bundler imports `bootstrap-html/polyfills` (the source) and minifies it itself. The behaviors below work the same way: a plain page loads the minified copy in `dist/js/behaviors/`, and a bundler imports `bootstrap-html/behaviors/tabs` and so on (the source in `src/behaviors/`).
 
 Arrow keys are optional. Load the behavior and wrap the group in `<pe-focus-group>` when you want Arrow, Home, and End. Dropdown items and accordion summaries are the documented cases. Tab still works if that script is absent. A nested group owns its own items.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/focus-group.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/focus-group.js"></script>
 ```
 
 Tabs need their behavior. Wrap the list and the panes in `<pe-tabs>` and load `src/behaviors/tabs.js`. Without that module the panel without `hidden` stays visible and nothing switches. Use `role="tab"`, `aria-controls`, `aria-selected`, and `hidden="until-found"` on the other panels; there is no `.active` or `.show`. Do not add `data-bs-toggle` or `data-bs-target`.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/tabs.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/tabs.js"></script>
 ```
 
 Dismissible alerts need their behavior. Use `<pe-alert class="alert">` and load `src/behaviors/alert.js`. The close button uses `command="--dismiss"` and `commandfor` set to the alert id, with no hash. Without that module the alert stays. A static alert does not use the element.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/alert.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/alert.js"></script>
 ```
 
 Toast autohide is optional the same way. Use `<pe-toast class="toast" data-delay="5000">` and load `src/behaviors/toast.js`. Show and close still work with `command` if that script is absent.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/toast.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/toast.js"></script>
 ```
 
 Carousel controls are optional. `::scroll-button` and `::scroll-marker` draw the prev, next, and pip controls in Chromium with no script. Elsewhere, wrap the carousel in `<pe-carousel class="carousel">`, write the buttons yourself with `command="--prev"`, `command="--next"`, or `command="--slide"` pointing at the `.carousel-inner` id, and load `src/behaviors/carousel.js`. The element does nothing when the browser has `::scroll-button`. Scroll snap and touch swipe work either way.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/carousel.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/carousel.js"></script>
 ```
 
 The checked-count is optional. Load `src/behaviors/count.js` on pages that use `<output data-controls>`. `data-controls` is a container id, with no hash. The script writes how many `input[type=checkbox]` inside that node are checked. It is not tied to a dropdown.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/count.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/count.js"></script>
 ```
 
 Stepping an input from plus/minus buttons is optional. Load `src/behaviors/step.js` on pages that use `command="--step-up"` or `--step-down`. `commandfor` is the input id, with no hash. Without that module the input still works; the buttons do nothing.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/step.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/step.js"></script>
 ```
 
 A dual-thumb range is optional the same way. Load `src/behaviors/range-group.js` on pages that use `.form-range-group`. `data-range-group="off"` on a group skips clamp and fill. Without that module the two inputs still work; thumbs can cross and there is no fill.
 
 ```html
-<script type="module" src="./node_modules/bootstrap-html/src/behaviors/range-group.js"></script>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/range-group.js"></script>
 ```
 
 Sass. Set variables after Bootstrap’s functions and before this entry. Bootstrap’s variables are `!default`, so yours win. `bootstrap` stays a dependency.
@@ -178,7 +178,7 @@ The package ships `dist/components.json` (export `bootstrap-html/components.json
 ```markdown
 UI uses bootstrap-html. Before writing component markup, read `node_modules/bootstrap-html/dist/llms-full.txt`: start from the component’s example, follow its avoid list, and load the `pe-*` module it names. `dist/components.json` has the same data plus browser support and accessibility notes.
 No bootstrap.js and no `data-bs-*`. `command` / `commandfor` triggers are `<button>`, not `<a href>`.
-Load `bootstrap-html/src/polyfills/index.js` once per page as a module. After a client-side render, call its exported `loadPolyfills(root)`.
+Load the polyfill loader once per page: import `bootstrap-html/polyfills` with a bundler, or `node_modules/bootstrap-html/dist/js/polyfills/index.js` as a module script on a plain page. After a client-side render, call its exported `loadPolyfills(root)`. Load a `pe-*` behavior the same way: `bootstrap-html/behaviors/<name>` with a bundler, `node_modules/bootstrap-html/dist/js/behaviors/<name>.js` on a plain page.
 ```
 
 ```sh
@@ -188,6 +188,6 @@ npm run build
 npm run preview
 ```
 
-`npm run build` writes the docs to `dist/` and the package CSS to `dist/css/`.
+`npm run build` writes the docs to `dist/`, the package CSS to `dist/css/`, and the minified polyfills and behaviors to `dist/js/` (`npm run js`). The docs pages load the polyfills, and the `/patterns/` pages their behaviors, from that folder, so `astro build` alone leaves them without script. `dist/js/` is generated; edit `src/polyfills/` and `src/behaviors/`.
 
-SCSS for the interactive widgets is adapted from Bootstrap 5.3.8, copyright The Bootstrap Authors, MIT. See [LICENSE](LICENSE).
+The package is `MIT AND BSD-3-Clause`. SCSS for the interactive widgets is adapted from Bootstrap 5.3.8, copyright The Bootstrap Authors, MIT. The `interestfor` polyfill is adapted from Mason Freed’s [interestfor](https://github.com/mfreed7/interestfor), BSD-3-Clause. See [LICENSE](LICENSE).

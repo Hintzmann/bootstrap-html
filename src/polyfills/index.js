@@ -14,35 +14,24 @@
  */
 
 function uses(root, selector) {
-  return Boolean(root.matches?.(selector) || root.querySelector(selector));
+  return root.matches?.(selector) || root.querySelector(selector);
 }
 
 export async function loadPolyfills(root = document) {
-  const polyfills = [];
-
-  if (!('commandForElement' in HTMLButtonElement.prototype) && uses(root, '[commandfor]')) {
-    polyfills.push(import('./invoker-commands.js'));
-  }
-
-  if (!('closedBy' in HTMLDialogElement.prototype) && uses(root, 'dialog[closedby]')) {
-    polyfills.push(import('./dialog-closedby.js'));
-  }
-
-  if (
-    (typeof CSS === 'undefined' || !CSS.supports('scroll-target-group: auto')) &&
-    uses(root, '[data-polyfill-scrollspy]')
-  ) {
-    polyfills.push(import('./scroll-target-group.js'));
-  }
-
-  if (
-    !Object.prototype.hasOwnProperty.call(HTMLButtonElement.prototype, 'interestForElement') &&
-    uses(root, '[interestfor]')
-  ) {
-    polyfills.push(import('./interestfor.js'));
-  }
-
-  await Promise.all(polyfills);
+  await Promise.all([
+    !('commandForElement' in HTMLButtonElement.prototype) &&
+      uses(root, '[commandfor]') &&
+      import('./invoker-commands.js'),
+    !('closedBy' in HTMLDialogElement.prototype) &&
+      uses(root, 'dialog[closedby]') &&
+      import('./dialog-closedby.js'),
+    !CSS.supports('scroll-target-group: auto') &&
+      uses(root, '[data-polyfill-scrollspy]') &&
+      import('./scroll-target-group.js'),
+    !Object.hasOwn(HTMLButtonElement.prototype, 'interestForElement') &&
+      uses(root, '[interestfor]') &&
+      import('./interestfor.js'),
+  ]);
 }
 
 await loadPolyfills();

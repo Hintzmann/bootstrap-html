@@ -1204,6 +1204,11 @@ export function scriptSubpath(script) {
   return `./${script.module.replace(/^src\//, "").replace(/\.js$/, "")}`;
 }
 
+/** The minified copy for a plain page, `dist/js/behaviors/step.js` for `src/behaviors/step.js`. */
+export function scriptPath(script) {
+  return script.module.replace(/^src\//, "dist/js/");
+}
+
 /** Shape JsCost.astro expects, keyed by component id. */
 export const costs = Object.fromEntries(components.map((item) => [item.id, item.cost]));
 

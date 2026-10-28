@@ -1,5 +1,5 @@
 ---
-import { sitePath } from "../lib/path.js";
+import { behaviorPath, polyfillLoaderPath, sitePath } from "../lib/path.js";
 
 interface Props {
   title: string;
@@ -34,16 +34,12 @@ const { title, css, modules } = Astro.props;
     </style>
     <style is:inline set:html={css} />
   </head>
-  <body data-pe-modules={modules.join(" ")}>
+  <body>
     <main>
       <slot />
       <p><a href={sitePath("/patterns")}>All patterns</a></p>
     </main>
-    <script>
-      const available = import.meta.glob("../behaviors/*.js");
-      const wanted = (document.body.dataset.peModules ?? "").split(" ").filter(Boolean);
-      await Promise.all(wanted.map((name) => available[`../behaviors/${name}.js`]?.()));
-      await import("../polyfills/index.js");
-    </script>
+    {modules.map((name) => <script is:inline type="module" src={behaviorPath(name)}></script>)}
+    <script is:inline type="module" src={polyfillLoaderPath()}></script>
   </body>
 </html>

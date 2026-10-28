@@ -8,19 +8,15 @@
  * - `closerequest` and missing Auto already match native modal Esc.
  */
 
-const KNOWN = new Set(['any', 'closerequest', 'none']);
+const KNOWN = ['any', 'closerequest', 'none'];
 
-let done = false;
-
-if (!done && !('closedBy' in HTMLDialogElement.prototype)) {
-  done = true;
-
+if (!('closedBy' in HTMLDialogElement.prototype)) {
   Object.defineProperty(HTMLDialogElement.prototype, 'closedBy', {
     configurable: true,
     enumerable: true,
     get() {
       const v = (this.getAttribute('closedby') ?? '').trim().toLowerCase();
-      return KNOWN.has(v) ? v : '';
+      return KNOWN.includes(v) ? v : '';
     },
     set(v) {
       if (v == null || v === '') this.removeAttribute('closedby');
@@ -31,19 +27,19 @@ if (!done && !('closedBy' in HTMLDialogElement.prototype)) {
   document.addEventListener(
     'click',
     (event) => {
-      if (event.defaultPrevented || event.button !== 0) return;
       const dialog = event.target;
-      if (!(dialog instanceof HTMLDialogElement) || !dialog.open || dialog.closedBy !== 'any')
-        return;
-
-      const r = dialog.getBoundingClientRect();
       if (
-        r.top <= event.clientY &&
-        event.clientY <= r.bottom &&
-        r.left <= event.clientX &&
-        event.clientX <= r.right
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        !(dialog instanceof HTMLDialogElement) ||
+        !dialog.open ||
+        dialog.closedBy !== 'any'
       )
         return;
+
+      const { top, right, bottom, left } = dialog.getBoundingClientRect();
+      const { clientX: x, clientY: y } = event;
+      if (top <= y && y <= bottom && left <= x && x <= right) return;
 
       if (typeof dialog.requestClose === 'function') dialog.requestClose();
       else if (dialog.dispatchEvent(new Event('cancel', { cancelable: true })) && dialog.open)

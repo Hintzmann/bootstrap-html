@@ -4,11 +4,12 @@
  * components.json ships it as `example`, so an agent copies the same markup a
  * reader sees. Pick the markup that works in every browser the docs support.
  *
- * Script URLs point at the installed package, like the docs code samples.
+ * Script URLs point at the minified copies in the installed package
+ * (dist/js/), like the docs code samples.
  */
 
 export const behaviorScript = (name) =>
-  `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/${name}.js"></script>
+  `<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/${name}.js"></script>
 
 `;
 
@@ -82,7 +83,7 @@ export const examples = {
     </div>
   </details>
 </div>`,
-  alerts: `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/alert.js"></script>
+  alerts: `<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/alert.js"></script>
 
 <pe-alert class="alert alert-warning alert-dismissible fade" id="dismiss-alert" role="alert">
   <div><strong>Holy guacamole!</strong> You should check in on some of those fields below.</div>
@@ -256,7 +257,7 @@ ${dropdownMenuLinks}
     </div>
   </div>
 </div>`,
-  carousel: `<script type="module" src="./node_modules/bootstrap-html/src/behaviors/carousel.js"></script>
+  carousel: `<script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/carousel.js"></script>
 
 <pe-carousel class="carousel slide">
   <button type="button" class="carousel-control-prev" command="--prev" commandfor="fallback-carousel">

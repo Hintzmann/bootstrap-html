@@ -28,11 +28,13 @@ const migration = [
   <p>
     Install <code>bootstrap-html</code> and point a link at the compiled CSS.
     The polyfill script is a module URL so it can still fetch a fallback
-    next to itself. A bundler that inlines that file will break the
-    feature checks.
+    next to itself. <code>dist/js/polyfills/</code> holds minified copies
+    of
+    <code>src/polyfills/</code>; load those on a plain page. A bundler
+    that inlines that file will break the feature checks.
   </p>
   <pre class="example-code mb-4"><code>{`<link rel="stylesheet" href="./node_modules/bootstrap-html/dist/css/bootstrap-html.min.css">
-<script type="module" src="./node_modules/bootstrap-html/src/polyfills/index.js"></script>`}</code></pre>
+<script type="module" src="./node_modules/bootstrap-html/dist/js/polyfills/index.js"></script>`}</code></pre>
   <p>
     The loader checks <code>commandForElement</code>, <code>closedBy</code>,
     <code>scroll-target-group</code>, and <code>interestForElement</code>.

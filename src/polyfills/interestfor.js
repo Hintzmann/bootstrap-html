@@ -1,3 +1,5 @@
+/*! interestfor: Copyright (c) 2025, Mason Freed. BSD-3-Clause, see LICENSE. */
+
 /**
  * Interest Invokers polyfill (`interestfor` / `interestForElement` / InterestEvent).
  *
@@ -9,6 +11,9 @@
  * target popover via `showPopover({ source })`. Delay is read from
  * `--interest-delay-start` / `--interest-delay-end` (native `interest-delay-*`
  * is not readable in getComputedStyle where the CSS properties are missing).
+ * They are registered as `normal | <time>` and inherit, like the native
+ * properties. The `--interest-delay` shorthand has no registrable syntax, so
+ * each of its values must be `normal` or a plain time in s or ms.
  * Does not polyfill `popover="hint"` itself.
  */
 
@@ -16,60 +21,46 @@ const ATTR = 'interestfor';
 const START_PROP = '--interest-delay-start';
 const END_PROP = '--interest-delay-end';
 const SHORTHAND_PROP = '--interest-delay';
-const INVOKER_DATA = '__interestForData';
-const TARGET_DATA = '__interestForTargetData';
 
-const State = { None: 'none', Full: 'full' };
-const Source = {
-  Hover: 'hover',
-  DeHover: 'dehover',
-  Focus: 'focus',
-  Blur: 'blur',
-};
+const RICH_CONTENT = [
+  'a[href]',
+  'area[href]',
+  ':is(input,select,textarea,button):not([disabled])',
+  'iframe',
+  'object',
+  'embed',
+  '[contenteditable]',
+  '[tabindex]:not([tabindex="-1"])',
+  'h1,h2,h3,h4,h5,h6,ul,ol,li,table,nav,header,footer,main,aside,article,section,form,blockquote,details,summary,dialog',
+  '[role]:not([role="presentation" i],[role="none" i],[role="generic" i],[role="image" i])',
+].join(',');
 
-let done = false;
-let InterestEvent;
+/** Invoker → `{ interest, gainTimer, loseTimer, pressTimer, anchorName }`. */
+const invokers = new WeakMap();
+/** Target → the invoker that has interest in it. */
+const sources = new WeakMap();
 const invokersWithInterest = new Set();
 let touchInProgress = false;
+let InterestEvent = globalThis.InterestEvent;
 
-if (
-  !done &&
-  typeof HTMLButtonElement === 'function' &&
-  !Object.prototype.hasOwnProperty.call(HTMLButtonElement.prototype, 'interestForElement')
-) {
-  done = true;
-  install();
-}
-
-function install() {
+if (!Object.hasOwn(HTMLButtonElement.prototype, 'interestForElement')) {
   defineInterestEvent();
-  for (const Ctor of invokerConstructors()) {
-    defineInterestForElement(Ctor);
-  }
   registerDelayProperties();
+  // SVGAElement is missing outside browsers (happy-dom).
+  for (const Ctor of [HTMLButtonElement, HTMLAnchorElement, HTMLAreaElement, globalThis.SVGAElement]) {
+    if (Ctor) defineInterestForElement(Ctor);
+  }
   addEventHandlers();
 }
 
-function invokerConstructors() {
-  const ctors = [HTMLButtonElement];
-  if (typeof HTMLAnchorElement === 'function') ctors.push(HTMLAnchorElement);
-  if (typeof HTMLAreaElement === 'function') ctors.push(HTMLAreaElement);
-  if (typeof SVGAElement === 'function') ctors.push(SVGAElement);
-  return ctors;
-}
-
 function defineInterestEvent() {
-  if (typeof globalThis.InterestEvent === 'function') {
-    InterestEvent = globalThis.InterestEvent;
-    return;
-  }
+  if (typeof InterestEvent === 'function') return;
 
-  class InterestEventImpl extends Event {
+  InterestEvent = class InterestEvent extends Event {
     #source;
 
-    constructor(type, init = {}) {
-      const { source = null, ...eventInit } = init;
-      super(type, { bubbles: false, cancelable: true, composed: true, ...eventInit });
+    constructor(type, { source = null, ...init } = {}) {
+      super(type, init);
       if (source != null && !(source instanceof Element)) {
         throw new TypeError('source must be an Element');
       }
@@ -79,9 +70,7 @@ function defineInterestEvent() {
     get source() {
       return this.#source;
     }
-  }
-
-  InterestEvent = InterestEventImpl;
+  };
 
   Object.defineProperty(globalThis, 'InterestEvent', {
     configurable: true,
@@ -91,7 +80,7 @@ function defineInterestEvent() {
 }
 
 function defineInterestForElement(Ctor) {
-  if (Object.prototype.hasOwnProperty.call(Ctor.prototype, 'interestForElement')) return;
+  if (Object.hasOwn(Ctor.prototype, 'interestForElement')) return;
 
   Object.defineProperty(Ctor.prototype, 'interestForElement', {
     configurable: true,
@@ -119,92 +108,46 @@ function getInterestForTarget(el) {
   const id = el.getAttribute(ATTR);
   if (!id) return null;
   const root = el.getRootNode();
-  if (typeof root.getElementById === 'function') return root.getElementById(id);
-  return document.getElementById(id);
+  return (root.getElementById ? root : document).getElementById(id);
 }
 
 function registerDelayProperties() {
-  if (!document.head) return;
-  const style = document.createElement('style');
-  style.textContent = `@property ${START_PROP} { syntax: "normal | <time>"; inherits: false; initial-value: normal; }
-@property ${END_PROP} { syntax: "normal | <time>"; inherits: false; initial-value: normal; }
-@property ${SHORTHAND_PROP} { syntax: "[ normal | <time> ]{1,2}"; inherits: false; initial-value: normal; }`;
-  document.head.appendChild(style);
+  for (const name of [START_PROP, END_PROP]) {
+    try {
+      CSS.registerProperty({ name, syntax: 'normal | <time>', inherits: true, initialValue: 'normal' });
+    } catch {}
+  }
 }
 
-function parseTimeValue(val) {
-  const s = String(val).trim();
-  const seconds = s.match(/^([\d.]+)s$/);
-  if (seconds) return Number.parseFloat(seconds[1]);
-  const ms = s.match(/^([\d.]+)ms$/);
-  if (ms) return Number.parseFloat(ms[1]) / 1000;
-  return Number.parseFloat(s) || 0;
-}
-
-function getDelaySeconds(el, prop) {
+function getDelaySeconds(el, gain) {
   const style = getComputedStyle(el);
-  const longhand = style.getPropertyValue(prop).trim();
+  const longhand = style.getPropertyValue(gain ? START_PROP : END_PROP).trim().toLowerCase();
+  const shorthand = style.getPropertyValue(SHORTHAND_PROP).trim().toLowerCase().split(/\s+/);
+  const value = longhand && longhand !== 'normal' ? longhand : (shorthand[gain ? 0 : 1] ?? shorthand[0]);
+  const time = /^(\d*\.?\d+)(m?s)$/.exec(value);
+  if (!time) return gain ? 0.5 : 0.25;
+  return time[2] === 'ms' ? time[1] / 1000 : Number(time[1]);
+}
 
-  if (longhand && longhand.toLowerCase() !== 'normal') {
-    return parseTimeValue(longhand);
-  }
-
-  const shorthand = style.getPropertyValue(SHORTHAND_PROP).trim();
-  if (shorthand && shorthand.toLowerCase() !== 'normal') {
-    const parts = shorthand.split(/\s+/).filter((part) => part.length > 0);
-    if (parts.length > 0) {
-      const first = parts[0];
-      const second = parts.length > 1 ? parts[1] : first;
-      const fromShorthand = prop === START_PROP ? first : second;
-      if (fromShorthand.toLowerCase() !== 'normal') {
-        return parseTimeValue(fromShorthand);
-      }
-    }
-  }
-
-  return prop === START_PROP ? 0.5 : 0.25;
+function dispatchInterest(type, invoker, target) {
+  return target.dispatchEvent(
+    new InterestEvent(type, { cancelable: true, composed: true, source: invoker }),
+  );
 }
 
 function getInterestInvoker(target) {
-  const inv = target[TARGET_DATA]?.invoker || null;
-  return inv && inv[INVOKER_DATA]?.state !== State.None ? inv : null;
+  const invoker = sources.get(target);
+  return invoker && invokers.get(invoker)?.interest ? invoker : null;
 }
 
 function onPopoverToggle(event) {
   if (event.newState !== 'closed') return;
-  const invoker = event.target[TARGET_DATA]?.invoker;
-  if (invoker) gainOrLoseInterest(invoker, event.target, State.None);
+  const invoker = sources.get(event.target);
+  if (invoker) gainOrLoseInterest(invoker, event.target, false);
 }
 
-const focusableSelector = [
-  'a[href]',
-  'area[href]',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  'button:not([disabled])',
-  'iframe',
-  'object',
-  'embed',
-  '[contenteditable]',
-  '[tabindex]:not([tabindex="-1"])',
-].join(',');
-
 function isPlainHint(target) {
-  if (target.getAttribute('popover')?.toLowerCase() !== 'hint') return false;
-  if (target.querySelector(focusableSelector)) return false;
-  if (
-    target.querySelector(
-      'h1,h2,h3,h4,h5,h6,ul,ol,li,table,nav,header,footer,main,aside,article,section,form,blockquote,details,summary,dialog',
-    )
-  ) {
-    return false;
-  }
-  for (const el of target.querySelectorAll('[role]')) {
-    const role = el.getAttribute('role').toLowerCase();
-    if (!['presentation', 'none', 'generic', 'image'].includes(role)) return false;
-  }
-  return true;
+  return target.getAttribute('popover')?.toLowerCase() === 'hint' && !target.querySelector(RICH_CONTENT);
 }
 
 function setupAccessibility(invoker, target) {
@@ -217,35 +160,20 @@ function setupAccessibility(invoker, target) {
   if (!target.hasAttribute('role')) target.setAttribute('role', 'tooltip');
 }
 
-function initializeDataField(el) {
-  if (el[INVOKER_DATA]) return;
-  el[INVOKER_DATA] = {
-    state: State.None,
-    gainedTimer: null,
-    lostTimer: null,
-    longPressTimer: null,
-    anchorName: null,
-    clearGainedTask() {
-      clearTimeout(this.gainedTimer);
-    },
-    clearLostTask() {
-      clearTimeout(this.lostTimer);
-    },
-  };
+function initState(el) {
+  let state = invokers.get(el);
+  if (state) return state;
+  state = {};
+  invokers.set(el, state);
   const target = getInterestForTarget(el);
   if (target) setupAccessibility(el, target);
+  return state;
 }
 
-function applyState(invoker, newState) {
-  const data = invoker[INVOKER_DATA];
+function gainInterest(invoker) {
+  const state = invokers.get(invoker);
   const target = getInterestForTarget(invoker);
-  if (newState !== State.Full) throw new Error('Invalid state');
-  if (data.state !== State.None) throw new Error('Invalid state');
-
-  const shouldContinue = target.dispatchEvent(
-    new InterestEvent('interest', { source: invoker }),
-  );
-  if (!shouldContinue) return false;
+  if (state.interest || !dispatchInterest('interest', invoker, target)) return false;
 
   try {
     target.showPopover({ source: invoker });
@@ -257,13 +185,9 @@ function applyState(invoker, newState) {
     }
   }
 
-  data.state = State.Full;
-  if (!target[TARGET_DATA]) target[TARGET_DATA] = {};
-  target[TARGET_DATA].invoker = invoker;
-  if (target.hasAttribute('popover')) {
-    target[TARGET_DATA].toggleListener = onPopoverToggle;
-    target.addEventListener('toggle', onPopoverToggle);
-  }
+  state.interest = true;
+  sources.set(target, invoker);
+  if (target.hasAttribute('popover')) target.addEventListener('toggle', onPopoverToggle);
   invokersWithInterest.add(invoker);
   invoker.classList.add('interest-source');
   target.classList.add('interest-target');
@@ -276,143 +200,124 @@ function applyState(invoker, newState) {
     const anchorName = `--interest-anchor-${Math.random().toString(36).slice(2)}`;
     invoker.style.anchorName = anchorName;
     target.style.positionAnchor = anchorName;
-    data.anchorName = anchorName;
+    state.anchorName = anchorName;
   }
   return true;
 }
 
 function clearState(invoker, force = false) {
-  const data = invoker[INVOKER_DATA];
-  if (!data) return;
-  clearTimeout(data.gainedTimer);
-  clearTimeout(data.lostTimer);
-  if (data.state === State.None) return;
+  const state = invokers.get(invoker);
+  if (!state) return;
+  clearTimeout(state.gainTimer);
+  clearTimeout(state.loseTimer);
+  if (!state.interest) return;
 
   const target = getInterestForTarget(invoker);
-  const shouldContinue = target.dispatchEvent(
-    new InterestEvent('loseinterest', { source: invoker }),
-  );
-  if (!force && !shouldContinue) return;
+  if (!dispatchInterest('loseinterest', invoker, target) && !force) return;
 
   try {
     target.hidePopover();
   } catch {
     // already closed
   }
-  if (target[TARGET_DATA]?.toggleListener) {
-    target.removeEventListener('toggle', target[TARGET_DATA].toggleListener);
-  }
-  target[TARGET_DATA] = null;
+  target.removeEventListener('toggle', onPopoverToggle);
+  sources.delete(target);
   invokersWithInterest.delete(invoker);
   invoker.classList.remove('interest-source');
   target.classList.remove('interest-target');
   if (!isPlainHint(target)) invoker.setAttribute('aria-expanded', 'false');
-  if (data.anchorName) {
+  if (state.anchorName) {
     invoker.style.anchorName = '';
     target.style.positionAnchor = '';
-    data.anchorName = null;
+    state.anchorName = null;
   }
-  data.state = State.None;
+  state.interest = false;
 }
 
-function gainOrLoseInterest(invoker, target, newState) {
-  if (!invoker || !target) return false;
+function gainOrLoseInterest(invoker, target, gain) {
   if (
+    !target ||
     !invoker.isConnected ||
     getInterestForTarget(invoker) !== target ||
-    (newState === State.None && getInterestInvoker(target) !== invoker)
+    (!gain && getInterestInvoker(target) !== invoker)
   ) {
     return false;
   }
 
-  if (newState !== State.None) {
+  if (gain) {
     const existing = getInterestInvoker(target);
     if (existing) {
       if (existing === invoker) {
-        existing[INVOKER_DATA].clearLostTask();
+        clearTimeout(invokers.get(existing).loseTimer);
         return false;
       }
-      if (!gainOrLoseInterest(existing, target, State.None)) return false;
+      if (!gainOrLoseInterest(existing, target, false)) return false;
       if (!invoker.isConnected || getInterestForTarget(invoker) !== target) return false;
     }
-    return applyState(invoker, newState);
+    return gainInterest(invoker);
   }
 
   clearState(invoker);
   return true;
 }
 
-function scheduleInterestGainedTask(invoker, newState) {
-  const delay = getDelaySeconds(invoker, START_PROP) * 1000;
-  if (!Number.isFinite(delay) || delay < 0) return;
-  invoker[INVOKER_DATA].clearGainedTask();
-  invoker[INVOKER_DATA].gainedTimer = setTimeout(() => {
-    gainOrLoseInterest(invoker, getInterestForTarget(invoker), newState);
-  }, delay);
+function scheduleInterest(invoker, gain) {
+  const state = invokers.get(invoker);
+  const timer = gain ? 'gainTimer' : 'loseTimer';
+  clearTimeout(state[timer]);
+  state[timer] = setTimeout(() => {
+    gainOrLoseInterest(invoker, getInterestForTarget(invoker), gain);
+  }, getDelaySeconds(invoker, gain) * 1000);
 }
 
-function scheduleInterestLostTask(invoker) {
-  const delay = getDelaySeconds(invoker, END_PROP) * 1000;
-  if (!Number.isFinite(delay) || delay < 0) return;
-  invoker[INVOKER_DATA].clearLostTask();
-  invoker[INVOKER_DATA].lostTimer = setTimeout(() => {
-    gainOrLoseInterest(invoker, getInterestForTarget(invoker), State.None);
-  }, delay);
-}
-
-function handleInterestHoverOrFocus(el, source) {
+function handleInterest(el, gain, blur) {
   if (touchInProgress || !el.isConnected) return;
 
-  const target = getInterestForTarget(el);
-  if (!target) {
+  if (!getInterestForTarget(el)) {
     const containingTarget = el.closest('.interest-target');
     if (!containingTarget) return;
     const upstreamInvoker = getInterestInvoker(containingTarget);
     if (!upstreamInvoker) return;
-    if (source === Source.Hover || source === Source.Focus) {
-      upstreamInvoker[INVOKER_DATA].clearLostTask();
-    } else if (source === Source.Blur || !el.matches(':hover')) {
-      scheduleInterestLostTask(upstreamInvoker);
-    }
+    if (gain) clearTimeout(invokers.get(upstreamInvoker).loseTimer);
+    else if (blur || !el.matches(':hover')) scheduleInterest(upstreamInvoker, false);
     return;
   }
 
-  initializeDataField(el);
-  const data = el[INVOKER_DATA];
+  const state = initState(el);
   const upstreamInvoker = getInterestInvoker(el);
+  const upstream = upstreamInvoker && invokers.get(upstreamInvoker);
 
-  if (source === Source.Hover || source === Source.Focus) {
-    data.clearLostTask();
-    if (upstreamInvoker) upstreamInvoker[INVOKER_DATA].clearLostTask();
-    scheduleInterestGainedTask(el, State.Full);
+  if (gain) {
+    clearTimeout(state.loseTimer);
+    if (upstream) clearTimeout(upstream.loseTimer);
+    scheduleInterest(el, true);
     return;
   }
 
-  data.clearGainedTask();
-  if (data.state !== State.None) scheduleInterestLostTask(el);
-  if (upstreamInvoker) {
-    upstreamInvoker[INVOKER_DATA].clearGainedTask();
-    if (source === Source.Blur || !el.matches(':hover')) {
-      scheduleInterestLostTask(upstreamInvoker);
-    }
+  clearTimeout(state.gainTimer);
+  if (state.interest) scheduleInterest(el, false);
+  if (upstream) {
+    clearTimeout(upstream.gainTimer);
+    if (blur || !el.matches(':hover')) scheduleInterest(upstreamInvoker, false);
   }
 }
 
 function addEventHandlers() {
-  const handler = (event, source) => {
+  const onHoverOrFocus = (event) => {
+    const gain = event.type === 'mouseover' || event.type === 'focusin';
+    const blur = event.type === 'focusout';
     for (let node = event.target; node && node !== document; node = node.parentElement) {
-      if (node instanceof Element) handleInterestHoverOrFocus(node, source);
+      if (node instanceof Element) handleInterest(node, gain, blur);
     }
   };
+  for (const type of ['mouseover', 'mouseout', 'focusin', 'focusout']) {
+    document.addEventListener(type, onHoverOrFocus, true);
+  }
 
-  document.addEventListener('mouseover', (event) => handler(event, Source.Hover), true);
-  document.addEventListener('mouseout', (event) => handler(event, Source.DeHover), true);
-  document.addEventListener('focusin', (event) => handler(event, Source.Focus), true);
-  document.addEventListener('focusout', (event) => handler(event, Source.Blur), true);
   document.addEventListener(
     'keydown',
     (event) => {
-      if (event.key !== 'Escape' && event.key !== 'Esc') return;
+      if (event.key !== 'Escape') return;
       for (const invoker of [...invokersWithInterest]) clearState(invoker, true);
     },
     true,
@@ -424,20 +329,20 @@ function addEventHandlers() {
       touchInProgress = true;
       const invoker = event.target.closest?.('button[interestfor]');
       if (!invoker) return;
-      initializeDataField(invoker);
-      invoker[INVOKER_DATA].longPressTimer = setTimeout(() => {
-        gainOrLoseInterest(invoker, getInterestForTarget(invoker), State.Full);
-        invoker[INVOKER_DATA].longPressTimer = null;
+      const state = initState(invoker);
+      state.pressTimer = setTimeout(() => {
+        gainOrLoseInterest(invoker, getInterestForTarget(invoker), true);
+        state.pressTimer = null;
       }, 500);
     },
     true,
   );
 
   const cancelLongPress = (event) => {
-    const invoker = event.target.closest?.('button[interestfor]');
-    if (invoker && invoker[INVOKER_DATA]?.longPressTimer) {
-      clearTimeout(invoker[INVOKER_DATA].longPressTimer);
-      invoker[INVOKER_DATA].longPressTimer = null;
+    const state = invokers.get(event.target.closest?.('button[interestfor]'));
+    if (state?.pressTimer) {
+      clearTimeout(state.pressTimer);
+      state.pressTimer = null;
     }
   };
   document.addEventListener('touchend', (event) => {

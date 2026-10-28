@@ -1,4 +1,4 @@
-import { components, scriptSubpath } from "../data/components.js";
+import { components, scriptPath, scriptSubpath } from "../data/components.js";
 import { examples } from "../data/examples.js";
 import { bundleGzipKb, polyfillById } from "../data/js-cost.js";
 import { contractHash, hashVersion } from "./hash.js";
@@ -58,8 +58,9 @@ export function buildContract(packageJson) {
     polyfillLoader: {
       module: "src/polyfills/index.js",
       import: `${packageJson.name}/polyfills`,
+      script: "dist/js/polyfills/index.js",
       usage:
-        "Import the loader once per document; it checks the markup that is there. After a client-side render, call its exported `loadPolyfills(root)` so markup added later still gets its fallback.",
+        "Import the loader once per document; it checks the markup that is there. After a client-side render, call its exported `loadPolyfills(root)` so markup added later still gets its fallback. Without a bundler, load the minified `script` with `<script type=\"module\" src>`; it fetches its siblings in `dist/js/polyfills/`.",
     },
     components: components.map((item) => ({
       id: item.id,
@@ -74,6 +75,7 @@ export function buildContract(packageJson) {
         element: script.element,
         module: script.module,
         import: `${packageJson.name}${scriptSubpath(script).slice(1)}`,
+        script: scriptPath(script),
         required: script.required,
         adds: script.adds,
       })),

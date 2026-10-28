@@ -3,7 +3,7 @@
   "description": "Bootstrap 5.3.8 look on native HTML. No bootstrap.js. A polyfill loads only when a browser API is missing.",
   "type": "module",
   "version": "0.3.0",
-  "license": "MIT",
+  "license": "MIT AND BSD-3-Clause",
   "homepage": "https://hintzmann.github.io/bootstrap-html/",
   "engines": {
     "node": ">=22.12.0"
@@ -12,6 +12,7 @@
   "sass": "src/scss/bootstrap-html.scss",
   "files": [
     "dist/css",
+    "dist/js",
     "dist/components.json",
     "dist/llms-full.txt",
     "src/scss",
@@ -29,6 +30,8 @@
     },
     "./css/bootstrap-html.css": "./dist/css/bootstrap-html.css",
     "./css/bootstrap-html.min.css": "./dist/css/bootstrap-html.min.css",
+    "./js/polyfills/*": "./dist/js/polyfills/*",
+    "./js/behaviors/*": "./dist/js/behaviors/*",
     "./scss/bootstrap-html": "./src/scss/bootstrap-html.scss",
     "./components.json": "./dist/components.json",
     "./llms-full.txt": "./dist/llms-full.txt",
@@ -47,8 +50,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && npm run css",
+    "build": "astro build && npm run css && npm run js",
     "css": "sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=expanded src/scss/bootstrap-html.scss dist/css/bootstrap-html.css && sass --load-path=node_modules --silence-deprecation=import,global-builtin,color-functions,if-function --style=compressed src/scss/bootstrap-html.scss dist/css/bootstrap-html.min.css",
+    "js": "node scripts/build-js.js",
     "contract": "node scripts/build-contract.js",
     "contract:hashes": "node scripts/contract-hashes.js",
     "check:pack": "node scripts/check-pack.js",
@@ -57,7 +61,7 @@
     "lint:css": "stylelint \"src/scss/**/*.scss\" \"src/patterns/**/*.css\"",
     "test": "vitest run",
     "test:browser": "playwright test",
-    "prepare": "npm run css && npm run contract",
+    "prepare": "npm run css && npm run js && npm run contract",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -68,6 +72,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "@playwright/test": "^1.64.1",
     "astro": "^7.3.3",
+    "esbuild": "^0.28.2",
     "happy-dom": "^20.14.5",
     "sass": "^1.104.1",
     "stylelint": "^16.26.1",

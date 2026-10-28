@@ -112,8 +112,11 @@ const interestforCode = `<span class="d-inline-block">
   <h2 class="h4">How loading works</h2>
   <ul>
     <li>
-      <code>BaseLayout</code> imports <code>src/polyfills/index.js</code>
-      once. That file is the only top-level <code>await</code> entry
+      <code>BaseLayout</code> loads the minified
+      <code>dist/js/polyfills/index.js</code> once as a plain module
+      script, so Vite does not bundle it (the dev server serves
+      <code>src/polyfills/index.js</code>). That file is the only
+      top-level <code>await</code> entry
       (Safari mis-handles several modules importing the same awaiting
       file at once).
     </li>
@@ -238,11 +241,13 @@ const interestforCode = `<span class="d-inline-block">
     </li>
     <li>
       Built-in commands: <code>show-modal</code>, <code>close</code>,
-      <code>request-close</code>, <code>show-picker</code>,
-      <code>toggle-popover</code>, <code>show-popover</code>,
-      <code>hide-popover</code> (plus <code>open-popover</code> /
-      <code>close-popover</code> aliases). Custom <code>--*</code>
+      <code>request-close</code>, <code>toggle-popover</code>,
+      <code>show-popover</code>, <code>hide-popover</code>. On
+      <code>close</code> and <code>request-close</code> the button’s
+      <code>value</code> becomes the dialog’s
+      <code>returnValue</code>. Custom <code>--*</code>
       commands dispatch <code>command</code> and do nothing else.
+      Other values do nothing, as in the native API.
     </li>
     <li>
       The native <code>command</code> event does not bubble — listen
@@ -310,9 +315,15 @@ const interestforCode = `<span class="d-inline-block">
       attribute uses the overflow ancestor of the targets.
     </li>
     <li>
-      An <code>IntersectionObserver</code> watches the overflow box
-      that contains the targets and toggles a class named
-      <code>:target-current</code> on the matching fragment link.
+      On scroll and resize it toggles a class named
+      <code>:target-current</code> on the fragment link Chrome would
+      mark: the last target at or before the scroll position, or a
+      closer one less than half a scrollport ahead. Targets past the end
+      of the scroll range are spread over its last eighth, so the last
+      link is reached even when its section is short. It respects
+      <code>scroll-padding</code> and
+      <code>scroll-margin</code>, and reads scroll geometry without
+      changing it.
     </li>
     <li>
       Styles use
@@ -363,7 +374,9 @@ const interestforCode = `<span class="d-inline-block">
     </li>
     <li>
       Delay is read from <code>--interest-delay-start</code> /
-      <code>--interest-delay-end</code>. Hint tooltips also set the
+      <code>--interest-delay-end</code>. The polyfill registers both as
+      <code>normal | &lt;time&gt;</code>, inheriting like the native
+      properties. Hint tooltips also set the
       native <code>interest-delay-*</code> properties to <code>0s</code>
       unless the author overrides <code>--bs-tooltip-delay-*</code>.
     </li>
