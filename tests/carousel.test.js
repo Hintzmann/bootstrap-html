@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { commandEvent } from "./setup.js";
-import "../src/behaviors/carousel.js";
+import "../src/behaviors/carousel-controls.js";
 
 beforeEach(() => {
   const proto = Object.getPrototypeOf(CSS);
@@ -70,5 +70,31 @@ describe("pe-carousel", () => {
     const spy = vi.spyOn(items[2], "scrollIntoView");
     inner.dispatchEvent(commandEvent("--slide", pips[2]));
     expect(spy).toHaveBeenCalledOnce();
+  });
+});
+
+describe("carousel.js", () => {
+  afterEach(() => {
+    vi.doUnmock("../src/behaviors/carousel-controls.js");
+  });
+
+  it("imports the controls only where ::scroll-button is missing", async () => {
+    const proto = Object.getPrototypeOf(CSS);
+    const loaded = vi.fn();
+    vi.doMock("../src/behaviors/carousel-controls.js", () => {
+      loaded();
+      return {};
+    });
+
+    proto.supports = () => true;
+    vi.resetModules();
+    await import("../src/behaviors/carousel.js");
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(loaded).not.toHaveBeenCalled();
+
+    proto.supports = () => false;
+    vi.resetModules();
+    await import("../src/behaviors/carousel.js");
+    await vi.waitFor(() => expect(loaded).toHaveBeenCalledOnce());
   });
 });

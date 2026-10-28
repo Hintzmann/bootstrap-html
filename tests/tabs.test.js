@@ -84,6 +84,35 @@ describe("pe-tabs", () => {
     expect(byId("t2").getAttribute("aria-selected")).toBe("true");
   });
 
+  it("skips disabled tabs at either end with Home and End", () => {
+    mount({
+      selected: ["t2"],
+      extraTab: `<button type="button" role="tab" id="t3" aria-controls="p3" aria-selected="false" tabindex="-1">Three</button>
+        <button type="button" role="tab" id="t4" aria-disabled="true" aria-selected="false" tabindex="-1">Four</button>`,
+    });
+    byId("t1").setAttribute("aria-disabled", "true");
+    byId("t2").focus();
+    keydown(byId("t2"), "End");
+    expect(byId("t3").getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(byId("t3"));
+    keydown(byId("t3"), "Home");
+    expect(byId("t2").getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(byId("t2"));
+  });
+
+  it("moves from a focused disabled tab to the nearest enabled one", () => {
+    mount({
+      selected: ["t2"],
+      extraTab: `<button type="button" role="tab" id="t3" aria-disabled="true" aria-controls="p3" aria-selected="false" tabindex="-1">Three</button>`,
+    });
+    byId("t3").focus();
+    keydown(byId("t3"), "ArrowRight");
+    expect(byId("t1").getAttribute("aria-selected")).toBe("true");
+    byId("t3").focus();
+    keydown(byId("t3"), "ArrowLeft");
+    expect(byId("t2").getAttribute("aria-selected")).toBe("true");
+  });
+
   it("selects the first tab when none is marked", () => {
     mount({ selected: [] });
     expect(byId("t1").getAttribute("aria-selected")).toBe("true");

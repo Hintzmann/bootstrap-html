@@ -25,19 +25,12 @@
 const DEFAULT_ITEMS = ".dropdown-item:not(.disabled, [aria-disabled='true'])";
 
 class PeFocusGroup extends HTMLElement {
-  connectedCallback() {
+  constructor() {
+    super();
     this.addEventListener("keydown", this);
   }
 
-  disconnectedCallback() {
-    this.removeEventListener("keydown", this);
-  }
-
   handleEvent(event) {
-    if (event.type === "keydown") this.#onKeydown(event);
-  }
-
-  #onKeydown(event) {
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     if (this.#inTextField(event.target)) return;
 
@@ -70,13 +63,8 @@ class PeFocusGroup extends HTMLElement {
     return this.getAttribute("items") || DEFAULT_ITEMS;
   }
 
-  #orientation() {
-    const value = this.getAttribute("orientation");
-    return value === "vertical" || value === "horizontal" ? value : "both";
-  }
-
   #direction(key) {
-    const orientation = this.#orientation();
+    const orientation = this.getAttribute("orientation");
     const vertical = orientation !== "horizontal";
     const horizontal = orientation !== "vertical";
     if ((key === "ArrowDown" && vertical) || (key === "ArrowRight" && horizontal)) return "next";
@@ -92,7 +80,7 @@ class PeFocusGroup extends HTMLElement {
       if (el.closest("pe-focus-group") !== this) return false;
       if (el.hasAttribute("disabled") || el.getAttribute("aria-disabled") === "true") return false;
       if (el.closest("[hidden]")) return false;
-      if (typeof el.checkVisibility === "function" && !el.checkVisibility()) return false;
+      if (!el.checkVisibility()) return false;
       return true;
     });
   }

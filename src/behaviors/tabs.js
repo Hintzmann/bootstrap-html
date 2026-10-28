@@ -28,18 +28,16 @@
  */
 
 class PeTabs extends HTMLElement {
-  connectedCallback() {
+  constructor() {
+    super();
     this.addEventListener("click", this);
     this.addEventListener("keydown", this);
     this.addEventListener("beforematch", this, true);
-    const tab = this.#current();
-    if (tab) this.#apply(tab);
   }
 
-  disconnectedCallback() {
-    this.removeEventListener("click", this);
-    this.removeEventListener("keydown", this);
-    this.removeEventListener("beforematch", this, true);
+  connectedCallback() {
+    const tab = this.#current();
+    if (tab) this.#apply(tab);
   }
 
   handleEvent(event) {
@@ -56,54 +54,39 @@ class PeTabs extends HTMLElement {
   }
 
   #onClick(event) {
-    if (!(event.target instanceof Element)) return;
-    const tab = event.target.closest("[role=tab]");
-    if (!tab || tab.closest("pe-tabs") !== this) return;
+    const tab = this.#ownTab(event.target);
+    if (!tab) return;
     if (tab.tagName === "A") event.preventDefault();
     this.#select(tab);
   }
 
   #onKeydown(event) {
     if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-    if (!(event.target instanceof Element)) return;
-    const tab = event.target.closest("[role=tab]");
-    if (!tab || tab.closest("pe-tabs") !== this) return;
+    const tab = this.#ownTab(event.target);
+    if (!tab) return;
 
     const list = tab.closest("[role=tablist]");
     const vertical = list?.getAttribute("aria-orientation") === "vertical";
     const key = event.key;
-    let step = 0;
-    if (key === "Home") step = "first";
-    else if (key === "End") step = "last";
-    else if (!vertical && key === "ArrowRight") step = 1;
-    else if (!vertical && key === "ArrowLeft") step = -1;
-    else if (vertical && key === "ArrowDown") step = 1;
-    else if (vertical && key === "ArrowUp") step = -1;
-    else return;
+    const step = {
+      Home: 1,
+      End: -1,
+      [vertical ? "ArrowDown" : "ArrowRight"]: 1,
+      [vertical ? "ArrowUp" : "ArrowLeft"]: -1,
+    }[key];
+    if (!step) return;
 
     const all = this.#tabs().filter((el) => el.closest("[role=tablist]") === list);
-    const items = all.filter((el) => !this.#disabled(el));
-    if (!items.length) return;
+    if (all.every((el) => this.#disabled(el))) return;
 
-    let index = items.indexOf(tab);
-    if (index === -1) {
-      const at = all.indexOf(tab);
-      if (step === "first") index = 0;
-      else if (step === "last") index = items.length - 1;
-      else if (step === 1) {
-        index = items.findIndex((el) => all.indexOf(el) > at);
-        if (index === -1) index = 0;
-      } else {
-        index = items.findLastIndex((el) => all.indexOf(el) < at);
-        if (index === -1) index = items.length - 1;
-      }
-    } else if (step === "first") index = 0;
-    else if (step === "last") index = items.length - 1;
-    else index = (index + step + items.length) % items.length;
+    // Home and End start one past the far end, so a disabled end tab is skipped too.
+    let index = key === "Home" ? -1 : key === "End" ? all.length : all.indexOf(tab);
+    do index = (index + step + all.length) % all.length;
+    while (this.#disabled(all[index]));
 
     event.preventDefault();
-    items[index].focus();
-    this.#select(items[index]);
+    all[index].focus();
+    this.#select(all[index]);
   }
 
   // The browser removes hidden from the panel right after this event.
@@ -132,7 +115,7 @@ class PeTabs extends HTMLElement {
   #apply(next) {
     for (const el of this.#tabs()) {
       const on = el === next;
-      el.setAttribute("aria-selected", on ? "true" : "false");
+      el.setAttribute("aria-selected", String(on));
       el.tabIndex = on ? 0 : -1;
       const panel = this.#panel(el);
       if (!panel) continue;
@@ -149,6 +132,11 @@ class PeTabs extends HTMLElement {
 
   #tabs() {
     return [...this.querySelectorAll("[role=tab]")].filter((el) => el.closest("pe-tabs") === this);
+  }
+
+  #ownTab(target) {
+    const tab = target instanceof Element ? target.closest("[role=tab]") : null;
+    return tab?.closest("pe-tabs") === this ? tab : null;
   }
 
   #panel(tab) {

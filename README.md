@@ -83,7 +83,7 @@ Toast autohide is optional the same way. Use `<pe-toast class="toast" data-delay
 <script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/toast.js"></script>
 ```
 
-Carousel controls are optional. `::scroll-button` and `::scroll-marker` draw the prev, next, and pip controls in Chromium with no script. Elsewhere, wrap the carousel in `<pe-carousel class="carousel">`, write the buttons yourself with `command="--prev"`, `command="--next"`, or `command="--slide"` pointing at the `.carousel-inner` id, and load `src/behaviors/carousel.js`. The element does nothing when the browser has `::scroll-button`. Scroll snap and touch swipe work either way.
+Carousel controls are optional. `::scroll-button` and `::scroll-marker` draw the prev, next, and pip controls in Chromium with no script. Elsewhere, wrap the carousel in `<pe-carousel class="carousel">`, write the buttons yourself with `command="--prev"`, `command="--next"`, or `command="--slide"` pointing at the `.carousel-inner` id, and load `src/behaviors/carousel.js`. Where the browser has `::scroll-button`, that file fetches nothing more. Elsewhere it imports `carousel-controls.js` from the same folder, so keep the two files together. Scroll snap and touch swipe work either way.
 
 ```html
 <script type="module" src="./node_modules/bootstrap-html/dist/js/behaviors/carousel.js"></script>

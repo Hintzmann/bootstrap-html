@@ -15,26 +15,25 @@
  * A second dismiss while closing does nothing.
  *
  * Without this module the alert stays. Static alerts do not need it.
- * disconnectedCallback drops the command listener and the timer.
+ * disconnectedCallback drops the timer.
  */
 
 class PeAlert extends HTMLElement {
   #closing = false;
   #timer = 0;
 
-  connectedCallback() {
+  constructor() {
+    super();
     this.addEventListener("command", this);
   }
 
   disconnectedCallback() {
-    this.removeEventListener("command", this);
-    window.clearTimeout(this.#timer);
+    clearTimeout(this.#timer);
     this.#timer = 0;
   }
 
   handleEvent(event) {
-    if (event.type !== "command" || event.command !== "--dismiss") return;
-    this.#close();
+    if (event.command === "--dismiss") this.#close();
   }
 
   #close() {
@@ -44,7 +43,7 @@ class PeAlert extends HTMLElement {
     this.#closing = true;
     this.hidden = true;
 
-    const finite = (this.getAnimations?.() ?? []).filter(
+    const finite = this.getAnimations().filter(
       (animation) => Number.isFinite(animation.effect?.getComputedTiming().endTime),
     );
     if (!finite.length) {
@@ -52,7 +51,7 @@ class PeAlert extends HTMLElement {
       return;
     }
     const longest = Math.max(...finite.map((animation) => animation.effect.getComputedTiming().endTime));
-    this.#timer = window.setTimeout(() => this.remove(), longest + 100);
+    this.#timer = setTimeout(() => this.remove(), longest + 100);
     Promise.allSettled(finite.map((animation) => animation.finished)).then(() => this.remove());
   }
 }

@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Example from "../../components/Example.astro";
 import DocsMeta from "../../components/DocsMeta.astro";
 import { examples, carouselSlide, carouselSlides } from "../../data/examples.js";
+import { behaviorPath } from "../../lib/path.js";
 
 const basicCode = `<div class="carousel slide">
   <div class="carousel-inner">
@@ -163,9 +164,11 @@ const darkCode = `<div class="carousel slide" data-bs-theme="dark">
     <code>&lt;pe-carousel&gt;</code> is the carousel, with
     <code>class=&quot;carousel&quot;</code>. Load
     <code>src/behaviors/carousel.js</code> only on pages that use it.
-    Where <code>::scroll-button</code> exists, the element does nothing:
-    the generated buttons and pips stay, and the HTML controls are
-    hidden. Where it does not, the two buttons scroll one
+    Where <code>::scroll-button</code> exists, that file fetches nothing
+    more and the element stays undefined: the generated buttons and pips
+    stay, and the HTML controls are hidden. Where it does not, it imports
+    <code>carousel-controls.js</code> from the same folder, so copy both
+    files. Then the two buttons scroll one
     <code>.carousel-item</code> via
     <code>command=&quot;--prev&quot;</code> and
     <code>command=&quot;--next&quot;</code>.
@@ -182,7 +185,5 @@ const darkCode = `<div class="carousel slide" data-bs-theme="dark">
     code={examples.carousel}
   />
 
-  <script>
-    import "../../behaviors/carousel.js";
-  </script>
+  <script is:inline type="module" src={behaviorPath("carousel")}></script>
 </BaseLayout>

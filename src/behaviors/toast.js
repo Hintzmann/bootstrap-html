@@ -29,7 +29,8 @@
 class PeToast extends HTMLElement {
   #timer = 0;
 
-  connectedCallback() {
+  constructor() {
+    super();
     this.addEventListener("toggle", this);
     this.addEventListener("pointerenter", this);
     this.addEventListener("pointerleave", this);
@@ -39,11 +40,6 @@ class PeToast extends HTMLElement {
 
   disconnectedCallback() {
     this.#clear();
-    this.removeEventListener("toggle", this);
-    this.removeEventListener("pointerenter", this);
-    this.removeEventListener("pointerleave", this);
-    this.removeEventListener("focusin", this);
-    this.removeEventListener("focusout", this);
   }
 
   handleEvent(event) {
@@ -80,13 +76,13 @@ class PeToast extends HTMLElement {
       return;
     }
     this.style.setProperty("--pe-toast-delay", `${delay}ms`);
-    this.#timer = window.setTimeout(() => {
+    this.#timer = setTimeout(() => {
       if (this.matches(":popover-open")) this.hidePopover();
     }, delay);
   }
 
   #clear() {
-    window.clearTimeout(this.#timer);
+    clearTimeout(this.#timer);
     this.#timer = 0;
   }
 

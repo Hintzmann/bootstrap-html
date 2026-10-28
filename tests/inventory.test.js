@@ -72,7 +72,11 @@ describe("component inventory", () => {
         expect(existsSync(join(root, script.module)), script.module).toBe(true);
         expect(packageJson.exports[scriptSubpath(script)], script.module).toBe(`./${script.module}`);
         if (script.element) {
-          expect(readRepo(script.module), script.module).toContain(`customElements.define("${script.element}"`);
+          const source = readRepo(script.module);
+          const siblings = [...source.matchAll(/(?:import\(|from )"\.\/([a-z-]+\.js)"/g)].map(([, file]) =>
+            readRepo(`src/behaviors/${file}`),
+          );
+          expect([source, ...siblings].join("\n"), script.module).toContain(`customElements.define("${script.element}"`);
         }
       }
     }

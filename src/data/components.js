@@ -647,14 +647,14 @@ export const components = [
         element: "pe-carousel",
         module: "src/behaviors/carousel.js",
         required: false,
-        adds: "Prev, next, and pip controls where `::scroll-button` is missing. Inert where it is not.",
+        adds: "Prev, next, and pip controls where `::scroll-button` is missing. There it imports `carousel-controls.js` from the same folder, so copy both files. Where `::scroll-button` exists it fetches nothing more and `pe-carousel` stays undefined.",
       },
     ],
     cost: {
       bootstrap: "Carousel plugin (slide, swipe, indicators, keyboard)",
       bootstrapJs: "6.7 KB gzip",
       native: "CSS scroll snap. Optional pe-carousel when ::scroll-button is missing.",
-      nativeJs: "0 KB. Optional behavior is 1.4 KB gzip.",
+      nativeJs: "0 KB. Optional behavior is 0.1 KB gzip where `::scroll-button` exists, 1.4 KB where it is missing.",
       polyfill: ["invoker"],
     },
     support: {

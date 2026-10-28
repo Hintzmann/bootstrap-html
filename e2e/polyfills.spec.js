@@ -35,3 +35,26 @@ test("pattern pages load the minified behaviors as plain module scripts", async 
   expect(scripts.filter((path) => path.startsWith("/_astro/"))).toEqual([]);
   expect(await page.evaluate(() => customElements.get("pe-tabs") !== undefined)).toBe(true);
 });
+
+test("the carousel page fetches its controls only without ::scroll-button", async ({ page }) => {
+  await page.goto("about:blank");
+  const native = await page.evaluate(() => CSS.supports("selector(::scroll-button(inline-start))"));
+
+  const scripts = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "script") scripts.push(new URL(request.url()).pathname);
+  });
+  await page.goto("/components/carousel/");
+  await page.waitForLoadState("networkidle");
+
+  expect(scripts).toContain("/js/behaviors/carousel.js");
+  expect(scripts.includes("/js/behaviors/carousel-controls.js")).toBe(!native);
+  expect(scripts.filter((path) => path.includes("preload-helper"))).toEqual([]);
+  expect(await page.evaluate(() => customElements.get("pe-carousel") !== undefined)).toBe(!native);
+
+  if (!native) {
+    const carousel = page.locator("pe-carousel").first();
+    await carousel.locator('[command="--next"]').click();
+    await expect(carousel.locator('[command="--slide"]').nth(1)).toHaveAttribute("aria-current", "true");
+  }
+});
