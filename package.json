@@ -2,7 +2,7 @@
   "name": "bootstrap-html",
   "description": "Bootstrap 5.3.8 look on native HTML. No bootstrap.js. A polyfill loads only when a browser API is missing.",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT AND BSD-3-Clause",
   "homepage": "https://hintzmann.github.io/bootstrap-html/",
   "engines": {

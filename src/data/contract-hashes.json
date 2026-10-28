@@ -1,19 +1,19 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "hashVersion": 1,
   "hashes": {
     "accordion": "sha256-a1dc51e7f3c6176d",
-    "alerts": "sha256-d81d3c3aef82d9fa",
+    "alerts": "sha256-4015ff0a3fcaefbf",
     "buttons": "sha256-26231ef9d09efc7f",
     "collapse": "sha256-64b4f44eb33d03bc",
     "modal": "sha256-407f086f4276f46a",
     "offcanvas": "sha256-8ed945b06f5b4d60",
     "navbar": "sha256-3a983a967e636086",
-    "dropdown": "sha256-e331fbd50f667eca",
+    "dropdown": "sha256-4a9f78814589b9ae",
     "popover": "sha256-d50e101ef826a20c",
     "tooltip": "sha256-a17c2e4f6a29c4bf",
     "scrollspy": "sha256-a1c8b70d19b5399d",
-    "tabs": "sha256-44761439b44c317d",
+    "tabs": "sha256-f311a8a2e05251ac",
     "toasts": "sha256-cabd523ea0aab7dd",
     "carousel": "sha256-f134614a1ca5d015",
     "progress": "sha256-57dc101b8c1431e6",
@@ -23,8 +23,8 @@
     "datalist": "sha256-9675556b235f414c",
     "output": "sha256-4e89260bf4a2b013",
     "spin-button": "sha256-572ac02328da272c",
-    "range-group": "sha256-79829abd49635365",
-    "customizable-select": "sha256-a51e081086f388f7",
+    "range-group": "sha256-ef466a931fddd8b9",
+    "customizable-select": "sha256-a0d281921bbdd548",
     "composed": "sha256-228b59fb932e96bf"
   }
 }

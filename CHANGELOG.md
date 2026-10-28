@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
 
 - **Contract v2** — `components.json` has `contractVersion: 2`. Each component lists `scripts`: every module the markup loads, with its `pe-*` element or `null`, the package import, and whether it is required. Replaces `element`, which could not describe `step.js`, `count.js`, or `range-group.js`. Spin button now says that `step.js` is required for the buttons.
 - `src/polyfills/index.js` exports `loadPolyfills(root)`. A client-side router calls it after each render; the first import only sees the markup that was there. Same feature checks, and a fallback is not fetched twice.
