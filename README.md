@@ -131,6 +131,7 @@ Routes on the deployed site (GitHub Pages: `https://<owner>.github.io/<repo>/`):
 | Route | Source (works in this repo on GitHub) |
 | --- | --- |
 | `/getting-started/` | [src/pages/getting-started.astro](src/pages/getting-started.astro) |
+| `/changelog/` | [src/pages/changelog.astro](src/pages/changelog.astro) |
 | `/` (browser matrix) | [src/pages/index.astro](src/pages/index.astro) |
 | `/components/accordion/` | [src/pages/components/accordion.astro](src/pages/components/accordion.astro) |
 | `/components/alerts/` | [src/pages/components/alerts.astro](src/pages/components/alerts.astro) |

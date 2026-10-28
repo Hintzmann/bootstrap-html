@@ -65,6 +65,7 @@ export function buildLlms({ packageJson, site, base }) {
     `- [components.json](${url("/components.json")}): The same examples plus polyfills, browser support, and accessibility notes, as JSON for tooling. Packaged at \`node_modules/bootstrap-html/dist/components.json\`.`,
     `- [Principles](${page("/principles")}): Why native HTML, progressive enhancement, accessibility, and these contracts.`,
     `- [Getting started](${page("/getting-started")}): Stylesheet, polyfill loader, Sass, and the \`data-bs-*\` migration table.`,
+    `- [Changelog](${page("/changelog")}): Release notes for this package version.`,
     `- [Polyfills](${page("/polyfills")}): What each fallback covers and when the loader fetches it.`,
   ];
 

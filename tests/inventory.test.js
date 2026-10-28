@@ -114,6 +114,7 @@ describe("component inventory", () => {
     const text = buildLlms({ packageJson, site: "https://example.org", base: "/bootstrap-html/" });
     expect(text.startsWith("# Bootstrap HTML\n\n> ")).toBe(true);
     expect(text).toContain("(https://example.org/bootstrap-html/components.json)");
+    expect(text).toContain("[Changelog](https://example.org/bootstrap-html/changelog/)");
     expect(text).toContain("(https://example.org/bootstrap-html/llms-full.txt)");
     for (const item of components) {
       expect(text, item.id).toContain(`[${item.name}](https://example.org/bootstrap-html${item.route}/)`);
@@ -167,7 +168,7 @@ describe("component inventory", () => {
     for (const item of components) {
       expect(readme, item.route).toContain(item.route);
     }
-    for (const route of ["/getting-started/", "/", "/polyfills/", "/components.json", "/llms.txt", "/llms-full.txt"]) {
+    for (const route of ["/getting-started/", "/changelog/", "/", "/polyfills/", "/components.json", "/llms.txt", "/llms-full.txt"]) {
       expect(readme, route).toContain(route);
     }
   });
