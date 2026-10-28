@@ -7,28 +7,26 @@
  */
 [data-pe="accordion"] > details {
   interpolate-size: allow-keywords;
-}
 
-[data-pe="accordion"] > details > summary {
-  cursor: pointer;
-}
-
-[data-pe="accordion"] > details::details-content {
-  block-size: 0;
-  overflow: hidden;
-  transition: block-size var(--pe-duration, .35s) ease, content-visibility var(--pe-duration, .35s) ease allow-discrete;
-}
-
-[data-pe="accordion"] > details[open]::details-content {
-  block-size: auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-pe="accordion"] > details {
-    interpolate-size: numeric-only;
+  & > summary {
+    cursor: pointer;
   }
 
-  [data-pe="accordion"] > details::details-content {
-    transition: none;
+  &::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition: block-size var(--pe-duration, .35s) ease, content-visibility var(--pe-duration, .35s) ease allow-discrete;
+  }
+
+  &[open]::details-content {
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    interpolate-size: numeric-only;
+
+    &::details-content {
+      transition: none;
+    }
   }
 }

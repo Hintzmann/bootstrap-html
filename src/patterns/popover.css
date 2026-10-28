@@ -14,27 +14,23 @@
   margin-inline-start: var(--pe-popover-gap, .5rem);
   opacity: 0;
   transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
-}
 
-[data-pe="popover"]:popover-open {
-  opacity: 1;
-}
-
-@starting-style {
-  [data-pe="popover"]:popover-open {
-    opacity: 0;
+  &:popover-open {
+    opacity: 1;
   }
-}
 
-@supports not (anchor-name: --a) {
-  [data-pe="popover"] {
+  @starting-style {
+    &:popover-open {
+      opacity: 0;
+    }
+  }
+
+  @supports not (anchor-name: --a) {
     inset: 0;
     margin: auto;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  [data-pe="popover"] {
+  @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
 }

@@ -21,40 +21,38 @@ html:has(dialog[data-pe="modal"]:modal) {
 dialog[data-pe="modal"] {
   opacity: 0;
   transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
-}
 
-dialog[data-pe="modal"]:open {
-  opacity: 1;
-}
+  &:open {
+    opacity: 1;
+  }
 
-@starting-style {
-  dialog[data-pe="modal"]:open {
+  @starting-style {
+    &:open {
+      opacity: 0;
+    }
+  }
+
+  &::backdrop {
+    background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
     opacity: 0;
+    transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
   }
-}
 
-dialog[data-pe="modal"]::backdrop {
-  background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
-  opacity: 0;
-  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
-}
-
-dialog[data-pe="modal"]:open::backdrop {
-  opacity: 1;
-}
-
-@starting-style {
-  dialog[data-pe="modal"]:open::backdrop {
-    opacity: 0;
+  &:open::backdrop {
+    opacity: 1;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  dialog[data-pe="modal"] {
+  @starting-style {
+    &:open::backdrop {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
     transition: none;
-  }
 
-  dialog[data-pe="modal"]::backdrop {
-    transition: none;
+    &::backdrop {
+      transition: none;
+    }
   }
 }

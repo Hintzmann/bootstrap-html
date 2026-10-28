@@ -5,15 +5,14 @@
  */
 [data-pe="field-sizing"] {
   field-sizing: content;
-}
 
-textarea[data-pe="field-sizing"] {
-  min-block-size: 3lh;
-  max-block-size: 10lh;
-}
+  &:is(textarea) {
+    min-block-size: 3lh;
+    max-block-size: 10lh;
+  }
 
-input[data-pe="field-sizing"],
-select[data-pe="field-sizing"] {
-  min-inline-size: 15ch;
-  max-inline-size: 50ch;
+  &:is(input, select) {
+    min-inline-size: 15ch;
+    max-inline-size: 50ch;
+  }
 }

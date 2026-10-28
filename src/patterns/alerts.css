@@ -7,15 +7,13 @@
 pe-alert[data-pe="alerts"] {
   display: block;
   transition: opacity var(--pe-duration, .15s) linear, display var(--pe-duration, .15s) allow-discrete;
-}
 
-pe-alert[data-pe="alerts"][hidden] {
-  display: none;
-  opacity: 0;
-}
+  &[hidden] {
+    display: none;
+    opacity: 0;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  pe-alert[data-pe="alerts"] {
+  @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
 }

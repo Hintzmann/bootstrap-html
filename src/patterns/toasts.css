@@ -12,20 +12,18 @@
   margin: 0;
   opacity: 0;
   transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
-}
 
-[data-pe="toasts"]:popover-open {
-  opacity: 1;
-}
-
-@starting-style {
-  [data-pe="toasts"]:popover-open {
-    opacity: 0;
+  &:popover-open {
+    opacity: 1;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  [data-pe="toasts"] {
+  @starting-style {
+    &:popover-open {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
 }

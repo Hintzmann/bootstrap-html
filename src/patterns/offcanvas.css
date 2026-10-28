@@ -21,44 +21,42 @@ dialog[data-pe="offcanvas"] {
   margin: 0;
   transition: translate var(--pe-duration, .3s) ease-in-out, overlay var(--pe-duration, .3s) ease-in-out allow-discrete, display var(--pe-duration, .3s) ease-in-out allow-discrete;
   translate: var(--pe-offcanvas-from) 0;
-}
 
-dialog[data-pe="offcanvas"]:dir(rtl) {
-  --pe-offcanvas-from: 100%;
-}
-
-dialog[data-pe="offcanvas"]:open {
-  translate: none;
-}
-
-@starting-style {
-  dialog[data-pe="offcanvas"]:open {
-    translate: var(--pe-offcanvas-from) 0;
+  &:dir(rtl) {
+    --pe-offcanvas-from: 100%;
   }
-}
 
-dialog[data-pe="offcanvas"]::backdrop {
-  background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
-  opacity: 0;
-  transition: opacity var(--pe-duration, .3s) ease-in-out, overlay var(--pe-duration, .3s) ease-in-out allow-discrete, display var(--pe-duration, .3s) ease-in-out allow-discrete;
-}
+  &:open {
+    translate: none;
+  }
 
-dialog[data-pe="offcanvas"]:open::backdrop {
-  opacity: 1;
-}
+  @starting-style {
+    &:open {
+      translate: var(--pe-offcanvas-from) 0;
+    }
+  }
 
-@starting-style {
-  dialog[data-pe="offcanvas"]:open::backdrop {
+  &::backdrop {
+    background-color: var(--pe-backdrop, rgb(0 0 0 / .5));
     opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  dialog[data-pe="offcanvas"] {
-    transition: none;
+    transition: opacity var(--pe-duration, .3s) ease-in-out, overlay var(--pe-duration, .3s) ease-in-out allow-discrete, display var(--pe-duration, .3s) ease-in-out allow-discrete;
   }
 
-  dialog[data-pe="offcanvas"]::backdrop {
+  &:open::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    &:open::backdrop {
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
     transition: none;
+
+    &::backdrop {
+      transition: none;
+    }
   }
 }

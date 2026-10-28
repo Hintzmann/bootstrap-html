@@ -14,42 +14,42 @@ pe-focus-group {
 
 [data-pe="dropdown"] {
   anchor-scope: --pe-dropdown;
-}
 
-[data-pe="dropdown"] > button {
-  anchor-name: --pe-dropdown;
-}
+  & > button {
+    anchor-name: --pe-dropdown;
+  }
 
-[data-pe="dropdown"] > [popover] {
-  position-anchor: --pe-dropdown;
-  position-area: block-end span-inline-end;
-  position-try-fallbacks: flip-block, flip-inline;
-  inset: auto;
-  margin: 0;
-  list-style: none;
-  opacity: 0;
-  transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
-}
-
-[data-pe="dropdown"] > :popover-open {
-  opacity: 1;
-}
-
-@starting-style {
-  [data-pe="dropdown"] > :popover-open {
+  & > [popover] {
+    position-anchor: --pe-dropdown;
+    position-area: block-end span-inline-end;
+    position-try-fallbacks: flip-block, flip-inline;
+    inset: auto;
+    margin: 0;
+    list-style: none;
     opacity: 0;
+    transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) linear allow-discrete, display var(--pe-duration, .15s) linear allow-discrete;
   }
-}
 
-@supports not (anchor-name: --a) {
-  [data-pe="dropdown"] > [popover] {
-    inset: 0;
-    margin: auto;
+  & > :popover-open {
+    opacity: 1;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  [data-pe="dropdown"] > [popover] {
-    transition: none;
+  @starting-style {
+    & > :popover-open {
+      opacity: 0;
+    }
+  }
+
+  @supports not (anchor-name: --a) {
+    & > [popover] {
+      inset: 0;
+      margin: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & > [popover] {
+      transition: none;
+    }
   }
 }

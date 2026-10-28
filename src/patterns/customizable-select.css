@@ -10,39 +10,39 @@
 @supports (appearance: base-select) {
   [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])) {
     appearance: base-select;
-  }
 
-  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker(select) {
-    appearance: base-select;
-    opacity: 0;
-    transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) allow-discrete, display var(--pe-duration, .15s) allow-discrete;
-  }
-
-  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker(select) {
-    opacity: 1;
-  }
-
-  @starting-style {
-    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker(select) {
+    &::picker(select) {
+      appearance: base-select;
       opacity: 0;
-    }
-  }
-
-  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker-icon {
-    transition: rotate var(--pe-duration, .15s) linear;
-  }
-
-  [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"])):open::picker-icon {
-    rotate: 180deg;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker(select) {
-      transition: none;
+      transition: opacity var(--pe-duration, .15s) linear, overlay var(--pe-duration, .15s) allow-discrete, display var(--pe-duration, .15s) allow-discrete;
     }
 
-    [data-pe="customizable-select"]:not([multiple], [size]:not([size="1"]))::picker-icon {
-      transition: none;
+    &:open::picker(select) {
+      opacity: 1;
+    }
+
+    @starting-style {
+      &:open::picker(select) {
+        opacity: 0;
+      }
+    }
+
+    &::picker-icon {
+      transition: rotate var(--pe-duration, .15s) linear;
+    }
+
+    &:open::picker-icon {
+      rotate: 180deg;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::picker(select) {
+        transition: none;
+      }
+
+      &::picker-icon {
+        transition: none;
+      }
     }
   }
 }
